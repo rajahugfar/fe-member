@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaGift, FaPlus, FaEdit, FaTrash, FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
-import type { PromotionBanner } from '@types/siteContent'
+import type { PromotionBanner } from '@/types/siteContent'
 
 const PromotionsManagement = () => {
   const [banners, setBanners] = useState<PromotionBanner[]>([])

@@ -6,7 +6,7 @@ import type {
   BankAccount,
   DepositRequest,
   WithdrawalRequest,
-} from '@types/transaction'
+} from '@/types/transaction'
 
 export const transactionAPI = {
   // Get user balance

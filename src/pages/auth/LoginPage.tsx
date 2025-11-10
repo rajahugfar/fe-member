@@ -6,7 +6,7 @@ import { z } from 'zod'
 import toast from 'react-hot-toast'
 import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa'
 import { useAuthStore } from '@store/authStore'
-import type { LoginCredentials } from '@types/auth'
+import type { LoginCredentials } from '@/types/auth'
 
 const loginSchema = z.object({
   phone: z

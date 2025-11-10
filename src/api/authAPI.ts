@@ -1,5 +1,5 @@
 import apiClient from './client'
-import type { LoginCredentials, RegisterData, AuthResponse, RefreshTokenResponse } from '@types/auth'
+import type { LoginCredentials, RegisterData, AuthResponse, RefreshTokenResponse } from '@/types/auth'
 
 export const authAPI = {
   // Login

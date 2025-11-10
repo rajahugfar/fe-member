@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FaGamepad, FaDice, FaGift, FaStar } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
-import type { GameProvider as SiteGameProvider, PromotionBanner, SiteSettingsMap } from '@types/siteContent'
+import type { GameProvider as SiteGameProvider, PromotionBanner, SiteSettingsMap } from '@/types/siteContent'
 
 const HomePage = () => {
   const [providers, setProviders] = useState<SiteGameProvider[]>([])

@@ -1,5 +1,5 @@
 import apiClient from './client'
-import type { GameProvider, Game, GameLaunchResponse, GameCategory } from '@types/game'
+import type { GameProvider, Game, GameLaunchResponse, GameCategory } from '@/types/game'
 
 export const gameAPI = {
   // Get all game providers

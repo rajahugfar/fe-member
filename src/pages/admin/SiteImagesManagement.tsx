@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaImage, FaUpload, FaTrash, FaEdit, FaSearch, FaTimes } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
-import type { SiteImage, ImageCategory } from '@types/siteContent'
+import type { SiteImage, ImageCategory } from '@/types/siteContent'
 
 const SiteImagesManagement = () => {
   const [images, setImages] = useState<SiteImage[]>([])

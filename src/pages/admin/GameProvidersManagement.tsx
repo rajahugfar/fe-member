@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaGamepad, FaPlus, FaEdit, FaTrash, FaStar, FaTimes } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
-import type { GameProvider, GameCategory } from '@types/siteContent'
+import type { GameProvider, GameCategory } from '@/types/siteContent'
 
 const GameProvidersManagement = () => {
   const [providers, setProviders] = useState<GameProvider[]>([])

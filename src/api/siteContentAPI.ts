@@ -7,7 +7,7 @@ import type {
   SiteSetting,
   SiteSettingsMap,
   BulkUpdateSettingsRequest,
-} from '@types/siteContent'
+} from '@/types/siteContent'
 
 export const siteContentAPI = {
   // ==================== Public APIs ====================

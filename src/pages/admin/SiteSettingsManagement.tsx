@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaCog, FaSave, FaPalette, FaGlobe, FaPhone } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
-import type { SiteSetting } from '@types/siteContent'
+import type { SiteSetting } from '@/types/siteContent'
 
 const SiteSettingsManagement = () => {
   const [settings, setSettings] = useState<SiteSetting[]>([])

@@ -15,7 +15,7 @@ import {
 } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
 import { gameProviderAPI, type GameProvider as DBGameProvider } from '@api/gameProviderAPI'
-import type { PromotionBanner, SiteSettingsMap } from '@types/siteContent'
+import type { PromotionBanner, SiteSettingsMap } from '@/types/siteContent'
 
 import 'swiper/css'
 import 'swiper/css/pagination'

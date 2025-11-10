@@ -8,7 +8,7 @@ import { FaUser, FaLock, FaPhone, FaUserPlus, FaCreditCard, FaUniversity } from 
 import { FiMessageCircle } from 'react-icons/fi'
 import { authAPI } from '@api/authAPI'
 import { useMemberStore } from '../../store/memberStore'
-import type { RegisterData } from '@types/auth'
+import type { RegisterData } from '@/types/auth'
 
 const THAI_BANKS = [
   { value: '', label: 'เลือกธนาคาร' },
