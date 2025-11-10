@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination, Autoplay } from 'swiper/modules'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+import 'swiper/css'
+import 'swiper/css/pagination'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001' || 'http://localhost:3001'
 import { 
   FaUser, 
   FaSignOutAlt, 
@@ -16,10 +21,12 @@ import {
   FaMoneyBillWave,
   FaFootballBall
 } from 'react-icons/fa'
+import { FiCalendar, FiClock, FiTrendingUp } from 'react-icons/fi'
 import { SiLivechat } from 'react-icons/si'
 import { profileAPI } from '@api/memberAPI'
 import { gameProviderAPI, type GameProvider } from '@api/gameProviderAPI'
 import { siteContentAPI } from '@api/siteContentAPI'
+import { memberLotteryAPI, type OpenPeriod } from '@api/memberLotteryAPI'
 import type { PromotionBanner } from '@/types/siteContent'
 import { useMemberStore } from '@store/memberStore'
 import { toast } from 'react-hot-toast'
@@ -37,8 +44,24 @@ const MemberIndex = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [providers, setProviders] = useState<GameProvider[]>([])
   const [promotions, setPromotions] = useState<PromotionBanner[]>([])
+  const [smallBanners, setSmallBanners] = useState<PromotionBanner[]>([])
+  const [largeBanners, setLargeBanners] = useState<PromotionBanner[]>([])
+  const [bannerImages, setBannerImages] = useState<string[]>([])
   const [settings, setSettings] = useState<SiteSettingsMap>({})
-  const [activeTab, setActiveTab] = useState<string>('all')
+  const [activeTab, setActiveTab] = useState('all')
+  const [games, setGames] = useState<any[]>([])
+  const [gamesLoading, setGamesLoading] = useState(false)
+  const [lotteryPeriods, setLotteryPeriods] = useState<any[]>([])
+  const [lotteryLoading, setLotteryLoading] = useState(false)
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  // Update current time every second for countdown
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     loadContent()
@@ -46,30 +69,60 @@ const MemberIndex = () => {
 
   // Reload providers when tab changes
   useEffect(() => {
-    loadProviders(activeTab)
+    console.log('📌 Active tab changed to:', activeTab)
+    if (activeTab === 'Lottery') {
+      console.log('🎲 Tab is Lottery, loading lottery periods...')
+      loadLotteryPeriods()
+    } else {
+      console.log('🎮 Loading providers for category:', activeTab)
+      loadProviders(activeTab)
+    }
   }, [activeTab])
 
   const loadContent = async () => {
     try {
       setIsLoading(true)
-      const [profileRes, providersRes, promotionsRes, settingsRes] = await Promise.all([
-        profileAPI.getProfile(),
-        gameProviderAPI.getProviders(),
-        siteContentAPI.getPromotions('home'),
-        siteContentAPI.getSiteSettings()
-      ])
-
-      setProfile(profileRes.data)
-      setProviders(providersRes.data)
-      setPromotions(promotionsRes.data.data || [])
-      setSettings(settingsRes.data.data || {})
-    } catch (error) {
-      console.error('Failed to load content:', error)
-      // Fallback to member from store if API fails
+      
+      // Load member profile from store (already loaded from auth)
       if (member) {
         setProfile(member)
       }
-      toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูล')
+
+      // Load banners from promotion_banners API (public endpoint)
+      const bannersRes = await fetch(`${API_URL}/api/v1/public/promotion-banners`)
+      if (bannersRes.ok) {
+        const bannersData = await bannersRes.json()
+        if (bannersData.success && bannersData.data) {
+          // Filter banners for home page (display_location = 'home' or 'both')
+          const homeBanners = bannersData.data.filter((b: any) => 
+            b.display_location === 'home' || b.display_location === 'both'
+          )
+          setSmallBanners(homeBanners.filter((b: any) => b.banner_type === 'small'))
+          const largeBannersData = homeBanners.filter((b: any) => b.banner_type === 'large')
+          setLargeBanners(largeBannersData)
+          
+          // Convert large banners to image URLs
+          const imageUrls = largeBannersData.map((b: any) => {
+            const imagePath = b.image_url || b.image?.file_url
+            return imagePath ? `${API_URL}${imagePath}` : ''
+          }).filter((url: string) => url)
+          setBannerImages(imageUrls)
+        }
+      }
+
+      // Load settings
+      const settingsRes = await fetch(`${API_URL}/api/v1/public/settings`)
+      if (settingsRes.ok) {
+        const settingsData = await settingsRes.json()
+        if (settingsData.success && settingsData.data) {
+          setSettings(settingsData.data)
+        }
+      }
+
+      // Load initial providers
+      await loadProviders(activeTab)
+    } catch (error) {
+      console.error('Failed to load content:', error)
     } finally {
       setIsLoading(false)
     }
@@ -77,22 +130,34 @@ const MemberIndex = () => {
 
   const loadProviders = async (category?: string) => {
     try {
-      setIsLoading(true)
-      let response
-
-      // Filter by category if specified and not 'all' or 'new'
-      if (category && category !== 'all' && category !== 'new') {
-        response = await gameProviderAPI.getProvidersByCategory(category)
-      } else {
-        response = await gameProviderAPI.getProviders()
+      const url = category 
+        ? `${API_URL}/api/v1/member/providers?category=${category}`
+        : `${API_URL}/api/v1/member/providers`
+      
+      const response = await fetch(url)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data) {
+          setProviders(data.data)
+        }
       }
-
-      setProviders(response.data)
     } catch (error) {
       console.error('Failed to load providers:', error)
-      toast.error('ไม่สามารถโหลด providers ได้')
+    }
+  }
+
+  const loadLotteryPeriods = async () => {
+    console.log('🎲 Loading lottery periods...')
+    try {
+      setLotteryLoading(true)
+      const data = await memberLotteryAPI.getOpenPeriods()
+      console.log('🎲 Lottery periods loaded:', data)
+      setLotteryPeriods(data || [])
+    } catch (error) {
+      console.error('❌ Failed to load lottery periods:', error)
+      setLotteryPeriods([])
     } finally {
-      setIsLoading(false)
+      setLotteryLoading(false)
     }
   }
 
@@ -104,10 +169,87 @@ const MemberIndex = () => {
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('th-TH', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      style: 'currency',
+      currency: 'THB',
+      minimumFractionDigits: 2
     }).format(amount)
   }
+
+  // Calculate countdown
+  const getCountdown = (closeTime: string) => {
+    const close = new Date(closeTime).getTime()
+    const now = currentTime.getTime()
+    const diff = close - now
+
+    if (diff <= 0) {
+      return { text: 'ปิดรับแล้ว', expired: true, hours: 0, minutes: 0, seconds: 0 }
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+    return { 
+      text: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+      expired: false,
+      hours,
+      minutes,
+      seconds
+    }
+  }
+
+  // Get lottery theme color
+  const getLotteryTheme = (huayCode: string) => {
+    const themes: Record<string, { gradient: string, glow: string, icon: string }> = {
+      'GLO': { 
+        gradient: 'from-rose-500 via-red-600 to-rose-700', 
+        glow: 'shadow-rose-500/50',
+        icon: '🇹🇭'
+      },
+      'GSB': { 
+        gradient: 'from-pink-500 via-fuchsia-600 to-pink-700', 
+        glow: 'shadow-pink-500/50',
+        icon: '🏦'
+      },
+      'BAAC': { 
+        gradient: 'from-blue-600 via-indigo-700 to-blue-800', 
+        glow: 'shadow-blue-500/50',
+        icon: '🌾'
+      },
+    }
+    return themes[huayCode] || { 
+      gradient: 'from-purple-500 via-violet-600 to-purple-700', 
+      glow: 'shadow-purple-500/50',
+      icon: '🎲'
+    }
+  }
+
+  // Get provider image URL
+  const getProviderImage = (provider: GameProvider) => {
+    // Try to get from provider's image_path first
+    if (provider.image_path) {
+      // If it's already a full URL, use it
+      if (provider.image_path.startsWith('http')) {
+        return provider.image_path
+      }
+      // If it's a local path, prepend API URL
+      return `${API_URL}${provider.image_path}`
+    }
+    
+    // Fallback to SA Gaming local image
+    return `${API_URL}/uploads/providers/sa-gaming.png`
+  }
+
+  // Categories - ต้องตรงกับ category ใน database
+  const categories = [
+    { id: 'Lottery', name: 'หวย', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'all', name: 'ทั้งหมด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
+    { id: 'Slot', name: 'สล็อต', icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
+    { id: 'Live Casino', name: 'คาสิโนสด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
+    { id: 'Game Card', name: 'เกมไพ่', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Sport', name: 'กีฬา', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Poker', name: 'โป๊กเกอร์', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+  ]
 
   // Action buttons configuration
   const actionButtons = [
@@ -124,6 +266,20 @@ const MemberIndex = () => {
       icon: <FaMoneyBillWave className="text-2xl" />,
       link: '/member/withdraw',
       bg: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+    },
+    {
+      id: 'lottery-history',
+      name: 'โพยหวย',
+      icon: <FaDice className="text-2xl" />,
+      link: '/member/lottery/history',
+      bg: 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
+    },
+    {
+      id: 'lottery-results',
+      name: 'ผลหวย',
+      icon: <FaGamepad className="text-2xl" />,
+      link: '/member/lottery/results',
+      bg: 'bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700'
     },
     {
       id: 'promotions',
@@ -199,24 +355,21 @@ const MemberIndex = () => {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link to="/member" className="flex items-center space-x-3">
+            <Link to="/member" className="flex items-center">
               <img 
-                src="/images/logo.webp" 
-                alt="Logo" 
+                src={settings.site_logo || '/images/bicycle678-logo.svg'} 
+                alt={settings.site_name || 'Bicycle678'} 
                 className="h-12 w-auto" 
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = '/logo.png';
+                  target.src = '/images/bicycle678-logo.svg';
                 }}
               />
-              <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-                {settings.site_name || 'PERMCHOK'}
-              </span>
             </Link>
 
             {/* User Info & Actions */}
             {profile && (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
                 <div className="hidden md:flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
                   <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
                     <FaUser className="text-white text-sm" />
@@ -229,6 +382,25 @@ const MemberIndex = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Deposit Button */}
+                <Link
+                  to="/member/deposit"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                >
+                  <FaMoneyBillWave />
+                  <span className="hidden md:inline">ฝากเงิน</span>
+                </Link>
+                
+                {/* Withdraw Button */}
+                <Link
+                  to="/member/withdraw"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                >
+                  <FaCoins />
+                  <span className="hidden md:inline">ถอนเงิน</span>
+                </Link>
+                
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
@@ -243,176 +415,260 @@ const MemberIndex = () => {
       </header>
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-6 space-y-12">
-        {/* Hero Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center pt-8 pb-12 relative z-10"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
-            ยินดีต้อนรับสู่ {settings.site_name || 'Permchok'}
-          </h1>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            {settings.site_description || 'เว็บแทงหวยและเกมออนไลน์ จ่ายจริง จ่ายเร็ว ฝาก-ถอนออโต้ 24 ชั่วโมง'}
-          </p>
-          
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
-            {actionButtons.map((button) => (
-              <Link
-                key={button.id}
-                to={button.link}
-                className={`${button.bg} text-white rounded-xl p-4 flex flex-col items-center justify-center space-y-2 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg`}
-              >
-                {button.icon}
-                <span className="font-medium text-sm">{button.name}</span>
-              </Link>
-            ))}
-          </div>
-        </motion.section>
+      <div className="relative z-10">
+        {/* Special Menu - Removed hardcoded menu */}
 
-        {/* Game Categories */}
-        <section className="relative z-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">หมวดหมู่เกมส์</h2>
-          </div>
-          
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
-            {gameCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setActiveTab(category.id)}
-                className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 ${
-                  activeTab === category.id 
-                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg scale-105' 
-                    : 'bg-white/5 hover:bg-white/10'
-                }`}
-              >
-                <span className="text-2xl mb-2">{category.icon}</span>
-                <span className="text-sm font-medium">{category.name}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Games Grid */}
-        <section className="relative z-10">
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
-              <p className="mt-4 text-gray-400">กำลังโหลดเกมส์...</p>
+        {/* Small Banners (แบนเนอร์เล็ก - แถวบน) */}
+        {smallBanners.length > 0 && (
+          <div className="container mx-auto px-4 py-4">
+            <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
+              {smallBanners.map((banner) => {
+                console.log('Small Banner:', banner)
+                const imagePath = banner.image?.file_url || banner.image_url || banner.banner_image
+                const imageUrl = imagePath ? `${API_URL}${imagePath}` : ''
+                console.log('Image URL:', imageUrl)
+                return (
+                  <Link
+                    key={banner.id}
+                    to={banner.link_url || '#'}
+                    className="relative hover:scale-105 transition-transform group"
+                  >
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={banner.title}
+                        className="w-full h-auto rounded-lg shadow-lg border-2 border-yellow-600/50 group-hover:border-yellow-400"
+                        onError={(e) => {
+                          console.error('Image load error:', imageUrl)
+                          const target = e.target as HTMLImageElement
+                          target.style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-br from-yellow-600 to-yellow-800 rounded-lg p-4 text-center shadow-lg border-2 border-yellow-400">
+                        <span className="text-white font-bold text-sm">{banner.title}</span>
+                      </div>
+                    )}
+                  </Link>
+                )
+              })}
             </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredGames.map((game) => (
-              <motion.div
-                key={game.id}
-                whileHover={{ y: -5 }}
-                className="group"
-              >
-                <Link 
-                  to={`/games/play/${game.id}`}
-                  className="block bg-white/5 rounded-xl overflow-hidden border border-white/10 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20"
+          </div>
+        )}
+
+        {/* Large Banners Carousel (แบนเนอร์ใหญ่ - Swiper Slide from API) */}
+        {bannerImages.length > 0 && (
+          <div className="container mx-auto px-4 py-6">
+            <Swiper
+              modules={[Pagination, Autoplay]}
+              spaceBetween={20}
+              slidesPerView={1}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 4000, disableOnInteraction: false }}
+              loop={true}
+              breakpoints={{
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              className="!pb-12"
+            >
+              {bannerImages.map((imageUrl, index) => (
+                <SwiperSlide key={index}>
+                  <img
+                    src={imageUrl}
+                    alt={`Banner ${index + 1}`}
+                    className="w-full rounded-xl"
+                    onError={(e) => {
+                      console.error('Banner image load error:', imageUrl)
+                      const target = e.target as HTMLImageElement
+                      target.src = '/images/default-promo.jpg'
+                    }}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        )}
+
+        {/* Title */}
+        <div className="container mx-auto px-4 py-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-white text-center">
+            Bicycle678 บาคาร่า คาสิโนออนไลน์ เสือมังกร โปรแรงสุดในไทย ฝากถอนออโต้
+          </h1>
+        </div>
+
+        {/* Category Menu (Sticky) */}
+        <div className="bg-[#1a1f2e] border-y border-gray-800 sticky top-0 z-30">
+          <div className="container mx-auto px-4">
+            <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveTab(cat.id)}
+                  className={`flex flex-col items-center min-w-[80px] px-3 py-2 rounded-lg transition-all group
+                    ${activeTab === cat.id ? 'bg-gradient-to-b from-[#d4af37] to-[#8B6914]' : 'hover:bg-gray-800'}`}
                 >
-                  <div className="relative pt-[100%] bg-gray-800">
-                    <img
-                      src={game.image_path ? `${API_URL}/${game.image_path}` : '/images/game-placeholder.jpg'}
-                      alt={game.product_name}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/images/game-placeholder.jpg';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                      <span className="text-white font-medium text-sm truncate">{game.product_name}</span>
+                  <img 
+                    src={activeTab === cat.id ? cat.iconHover : cat.icon}
+                    alt={cat.name}
+                    className="w-12 h-12 mb-1"
+                  />
+                  <span className={`text-xs font-medium ${activeTab === cat.id ? 'text-white' : 'text-gray-400'}`}>
+                    {cat.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Games Grid or Lottery List */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-white">
+              {activeTab === 'Lottery' ? 'รายการหวยเปิดรับแทง' : 'เกมยอดนิยม'}
+            </h2>
+          </div>
+          
+          {activeTab === 'Lottery' ? (
+            /* Lottery Periods List */
+            <>
+              {console.log('🎲 Rendering lottery section. Loading:', lotteryLoading, 'Periods:', lotteryPeriods.length)}
+              {lotteryLoading ? (
+                <div className="flex justify-center items-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+                  <p className="ml-4 text-white">กำลังโหลดรายการหวย...</p>
+                </div>
+              ) : lotteryPeriods.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {lotteryPeriods.map((period) => {
+                    const theme = getLotteryTheme(period.huayCode)
+                    const countdown = getCountdown(period.closeTime)
+                    
+                    return (
+                  <Link
+                    key={period.id}
+                    to={`/member/lottery/bet/${period.id}`}
+                    className={`relative overflow-hidden rounded-2xl shadow-2xl ${theme.glow} hover:scale-105 transition-all duration-300 group`}
+                  >
+                    {/* Gradient Background */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-90`}></div>
+                    
+                    {/* Decorative Pattern */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -translate-y-16 translate-x-16"></div>
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white rounded-full translate-y-12 -translate-x-12"></div>
                     </div>
+
+                    {/* Content */}
+                    <div className="relative p-6 text-white">
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-3xl">{theme.icon}</span>
+                            <h3 className="text-xl font-bold drop-shadow-lg">
+                              {period.huayName}
+                            </h3>
+                          </div>
+                          <p className="text-white/80 text-sm">งวดวันที่ {period.periodName}</p>
+                        </div>
+                        <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1">
+                          <span className="text-xs font-semibold">#{period.id}</span>
+                        </div>
+                      </div>
+
+                      {/* Countdown Timer */}
+                      <div className="bg-black/30 backdrop-blur-md rounded-xl p-4 mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs text-white/70 flex items-center gap-1">
+                            <FiClock className="animate-pulse" />
+                            เหลือเวลา
+                          </span>
+                          {countdown.expired && (
+                            <span className="text-xs bg-red-500/80 px-2 py-0.5 rounded-full">ปิดรับแล้ว</span>
+                          )}
+                        </div>
+                        <div className={`text-center ${countdown.expired ? 'opacity-50' : ''}`}>
+                          <div className="flex justify-center gap-2">
+                            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px]">
+                              <div className="text-2xl font-bold font-mono">{countdown.hours.toString().padStart(2, '0')}</div>
+                              <div className="text-[10px] text-white/70">ชั่วโมง</div>
+                            </div>
+                            <div className="flex items-center text-2xl font-bold">:</div>
+                            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px]">
+                              <div className="text-2xl font-bold font-mono">{countdown.minutes.toString().padStart(2, '0')}</div>
+                              <div className="text-[10px] text-white/70">นาที</div>
+                            </div>
+                            <div className="flex items-center text-2xl font-bold">:</div>
+                            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px]">
+                              <div className="text-2xl font-bold font-mono">{countdown.seconds.toString().padStart(2, '0')}</div>
+                              <div className="text-[10px] text-white/70">วินาที</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <button 
+                        className={`w-full py-3 rounded-xl font-bold text-lg transition-all ${
+                          countdown.expired 
+                            ? 'bg-gray-500/50 cursor-not-allowed' 
+                            : 'bg-white/90 text-gray-900 hover:bg-white hover:shadow-lg'
+                        }`}
+                        disabled={countdown.expired}
+                      >
+                        {countdown.expired ? 'ปิดรับแทงแล้ว' : 'แทงหวยเลย!'}
+                      </button>
+                    </div>
+                  </Link>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-20 text-gray-400">
+                  <p>ไม่มีหวยเปิดรับแทงในขณะนี้</p>
+                </div>
+              )}
+            </>
+          ) : (
+            /* Game Providers Grid */
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {providers.map((provider) => (
+                <div 
+                  key={provider.id}
+                  className="relative group cursor-pointer rounded-lg overflow-hidden bg-gray-800 p-2 hover:scale-105 transition-transform"
+                >
+                  <img 
+                    src={getProviderImage(provider)}
+                    alt={provider.product_name}
+                    className="w-full h-auto transition-transform group-hover:scale-110"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = 'https://asset.cloudigame.co/build/admin/img/sa-gaming/ezs-sa-gaming-vertical.png'
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 text-white text-xs font-bold text-center px-2">
+                      {provider.product_name}
+                    </span>
                   </div>
-                </Link>
-              </motion.div>
+                </div>
               ))}
             </div>
           )}
-        </section>
-
-        {/* Features */}
-        <section className="relative z-10 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`bg-gradient-to-br ${feature.color}/10 border ${feature.color}/20 rounded-xl p-6 text-center backdrop-blur-sm`}
-              >
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br ${feature.color}/20 mb-4">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-gray-300">{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Promotions */}
-        {promotions.length > 0 && (
-          <section className="relative z-10 py-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl md:text-3xl font-bold">โปรโมชั่นพิเศษ</h2>
-              <Link 
-                to="/member/promotions" 
-                className="text-yellow-400 hover:text-yellow-300 text-sm font-medium flex items-center"
-              >
-                ดูทั้งหมด <span className="ml-1">→</span>
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {promotions.slice(0, 3).map((promo) => (
-                <motion.div
-                  key={promo.id}
-                  whileHover={{ y: -5 }}
-                  className="group"
-                >
-                  <Link 
-                    to={promo.link_url || '/member/promotions'}
-                    className="block bg-white/5 rounded-xl overflow-hidden border border-white/10 hover:border-yellow-500/50 transition-all duration-300"
-                  >
-                    <div className="relative pt-[56.25%] bg-gray-800">
-                      {promo.image ? (
-                        <img
-                          src={promo.image.file_url}
-                          alt={promo.image.alt_text || promo.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-yellow-500/20 to-yellow-600/20">
-                          <FaGift className="text-4xl text-yellow-400" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg mb-1">{promo.title}</h3>
-                      {promo.description && (
-                        <p className="text-gray-300 text-sm line-clamp-2">
-                          {promo.description}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Chat Widget */}
-        <div id="chat" className="fixed bottom-6 right-6 z-50">
-          <MemberChat />
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-[#0a0e13] py-8 mt-12">
+        <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
+          <p>© 2024 SA Casino Gaming. All rights reserved.</p>
+        </div>
+      </footer>
+
+      {/* Member Chat */}
+      <MemberChat />
     </div>
   )
 }

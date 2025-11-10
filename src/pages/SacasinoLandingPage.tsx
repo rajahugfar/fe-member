@@ -26,6 +26,8 @@ const SacasinoLandingPage = () => {
   const navigate = useNavigate()
   const [providers, setProviders] = useState<DBGameProvider[]>([])
   const [promotions, setPromotions] = useState<PromotionBanner[]>([])
+  const [smallBanners, setSmallBanners] = useState<PromotionBanner[]>([]) // แบนเนอร์เล็ก (แถวบน)
+  const [largeBanners, setLargeBanners] = useState<PromotionBanner[]>([]) // แบนเนอร์ใหญ่ (แถวล่าง slide)
   const [settings, setSettings] = useState<SiteSettingsMap>({})
   const [loading, setLoading] = useState(true)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -45,7 +47,13 @@ const SacasinoLandingPage = () => {
       ])
 
       setProviders(providersRes.data)
-      setPromotions(promotionsRes.data.data)
+      const allPromotions = promotionsRes.data.data || []
+      setPromotions(allPromotions)
+      
+      // แยกแบนเนอร์ตามประเภท
+      setSmallBanners(allPromotions.filter((p: any) => p.banner_type === 'small'))
+      setLargeBanners(allPromotions.filter((p: any) => p.banner_type === 'large' || !p.banner_type))
+      
       setSettings(settingsRes.data.data)
     } catch (error) {
       console.error('Failed to load content:', error)
@@ -236,6 +244,33 @@ const SacasinoLandingPage = () => {
             <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-b from-yellow-800 to-transparent" />
           </div>
 
+          {/* Small Banners (แบนเนอร์เล็ก - แถวบน) */}
+          {smallBanners.length > 0 && (
+            <div className="container mx-auto px-4 -mt-6 relative z-20 mb-6">
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                {smallBanners.map((banner) => (
+                  <Link
+                    key={banner.id}
+                    to={banner.link_url || '#'}
+                    className="relative hover:scale-105 transition-transform group"
+                  >
+                    {banner.image ? (
+                      <img
+                        src={banner.image.file_url}
+                        alt={banner.title}
+                        className="w-full h-auto rounded-xl shadow-lg border-2 border-yellow-600/50 group-hover:border-yellow-400"
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-4 text-center shadow-lg border-2 border-purple-400 group-hover:shadow-glow-green">
+                        <span className="text-white font-bold text-sm">{banner.title}</span>
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Quick Action Menu */}
           <div className="container mx-auto px-4 -mt-6 relative z-20">
             <div className="grid grid-cols-4 gap-4">
@@ -284,7 +319,46 @@ const SacasinoLandingPage = () => {
           </div>
         </header>
   
-      {/* Hero Section */}
+      {/* Large Banners Section (แบนเนอร์ใหญ่ - แถวล่าง Slide 3 คอลัมน์) */}
+      {largeBanners.length > 0 && (
+        <section className="container mx-auto px-4 py-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {largeBanners.slice(0, 3).map((banner) => (
+              <Link
+                key={banner.id}
+                to={banner.link_url || '#'}
+                className="relative group"
+              >
+                <div className="bg-gradient-to-br from-green-900/50 to-green-950/50 backdrop-blur-md rounded-2xl border-4 border-yellow-600/80 shadow-glow-yellow overflow-hidden hover:border-yellow-500 transition-all duration-300 group-hover:scale-105">
+                  {banner.image ? (
+                    <img
+                      src={banner.image.file_url}
+                      alt={banner.title}
+                      className="w-full aspect-video object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = '/images/sacasino/default-promo.jpg'
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full aspect-video flex items-center justify-center p-6">
+                      <div className="text-center">
+                        <h3 className="text-xl font-bold text-yellow-400 mb-2">{banner.title}</h3>
+                        {banner.description && (
+                          <p className="text-sm text-gray-300">{banner.description}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Hero Section (Fallback if no large banners) */}
+      {largeBanners.length === 0 && (
         <section className="container mx-auto px-4 py-10">
           <div className="bg-gradient-to-br from-green-900/50 to-green-950/50 backdrop-blur-md rounded-3xl border-4 border-yellow-600/80 shadow-glow-yellow overflow-hidden hover:border-yellow-500 transition-all duration-300">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
@@ -361,6 +435,7 @@ const SacasinoLandingPage = () => {
             </div>
           </div>
         </section>
+      )}
 
         {/* Game Categories */}
         <section className="container mx-auto px-4 py-10">

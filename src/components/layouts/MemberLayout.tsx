@@ -14,7 +14,8 @@ import {
   FaBars,
   FaTimes,
   FaWallet,
-  FaChartLine
+  FaChartLine,
+  FaCoins
 } from 'react-icons/fa'
 import { profileAPI } from '@api/memberAPI'
 import { useMemberStore } from '@store/memberStore'
@@ -80,57 +81,65 @@ const MemberLayout: React.FC = () => {
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
       </div>
-
       {/* Header */}
-      <header className="relative z-20 bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 border-b-4 border-yellow-400 shadow-2xl">
+      <header className="relative z-20 bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700 shadow-2xl">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link to="/member" className="flex items-center space-x-3">
-              <img src="/images/logo.webp" alt="Logo" className="h-12 w-auto" />
-              <span className="text-2xl font-black text-white drop-shadow-lg hidden sm:inline">PERMCHOK</span>
+            <Link to="/member" className="flex items-center">
+              <img 
+                src="/images/bicycle678-logo.svg" 
+                alt="Bicycle678" 
+                className="h-12 w-auto" 
+              />
             </Link>
 
-            {/* Center Menu */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/member" className="text-white hover:text-yellow-200 font-bold transition-colors">
-                หน้าแรก
-              </Link>
-              <Link to="/member/promotions" className="text-white hover:text-yellow-200 font-bold transition-colors">
-                สมัครสมาชิก
-              </Link>
-              <Link to="/member/promotions" className="text-white hover:text-yellow-200 font-bold transition-colors">
-                โปรโมชั่น
-              </Link>
-            </nav>
-
-            {/* Right: User Info & Fullname */}
+            {/* User Info & Actions */}
             {member && (
-              <div className="flex items-center space-x-3">
-                {member.fullname && (
-                  <Link to="/member/profile" className="hidden md:flex items-center space-x-2 text-white hover:text-yellow-200 font-bold">
-                    <span>{member.fullname}</span>
-                  </Link>
-                )}
-                <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-2 border border-yellow-300/50">
-                  <span className="text-yellow-200 text-sm font-bold">
-                    ฿{formatCurrency(member.credit || 0)}
-                  </span>
+              <div className="flex items-center space-x-2">
+                <div className="hidden md:flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
+                  <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
+                    <FaUser className="text-white text-sm" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-white font-bold text-sm">{member.phone}</div>
+                    <div className="text-yellow-400 text-xs font-semibold flex items-center">
+                      <FaCoins className="mr-1" />
+                      {formatCurrency(member.credit || 0)}
+                    </div>
+                  </div>
                 </div>
+                
+                {/* Deposit Button */}
+                <Link
+                  to="/member/deposit"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                >
+                  <FaMoneyBillWave />
+                  <span className="hidden md:inline">ฝากเงิน</span>
+                </Link>
+                
+                {/* Withdraw Button */}
+                <Link
+                  to="/member/withdraw"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                >
+                  <FaCoins />
+                  <span className="hidden md:inline">ถอนเงิน</span>
+                </Link>
+                
                 <button
                   onClick={handleLogout}
-                  className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white transition-all duration-300 shadow-lg hover:shadow-xl"
-                  title="ออกจากระบบ"
+                  className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                 >
                   <FaSignOutAlt />
+                  <span className="hidden md:inline">ออกจากระบบ</span>
                 </button>
               </div>
             )}
           </div>
         </div>
       </header>
-
-
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
         <Outlet />

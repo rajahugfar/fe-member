@@ -3,71 +3,40 @@ import { Link } from 'react-router-dom'
 import { useMemberStore } from '@/store/memberStore'
 import toast from 'react-hot-toast'
 import { FiGift, FiRotateCw, FiTrendingUp } from 'react-icons/fi'
-
-interface Prize {
-  id: number
-  name: string
-  type: 'cash' | 'item'
-  amount?: number
-  itemName?: string
-  itemImage?: string
-  color: string
-  probability: number
-}
-
-interface SpinHistory {
-  id: number
-  prizeName: string
-  amount: number
-  spunAt: string
-}
+import { luckyWheelAPI, Prize, SpinHistory } from '@/api/luckyWheelAPI'
 
 const LuckyWheelPage = () => {
   const { member } = useMemberStore()
   const [isSpinning, setIsSpinning] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [rotation, setRotation] = useState(0)
   const [canSpin, setCanSpin] = useState(true)
   const [spinCount, setSpinCount] = useState(0)
   const [maxSpins, setMaxSpins] = useState(3)
+  const [prizes, setPrizes] = useState<Prize[]>([])
   const [history, setHistory] = useState<SpinHistory[]>([])
   const wheelRef = useRef<HTMLDivElement>(null)
 
-  const prizes: Prize[] = [
-    { id: 1, name: '50 บาท', type: 'cash', amount: 50, color: '#ef4444', probability: 25 },
-    { id: 2, name: 'AirPods Pro', type: 'item', itemName: 'AirPods Pro', itemImage: '🎧', color: '#f59e0b', probability: 0.5 },
-    { id: 3, name: '100 บาท', type: 'cash', amount: 100, color: '#10b981', probability: 20 },
-    { id: 4, name: 'iPad Air', type: 'item', itemName: 'iPad Air', itemImage: '📱', color: '#3b82f6', probability: 0.3 },
-    { id: 5, name: '200 บาท', type: 'cash', amount: 200, color: '#8b5cf6', probability: 15 },
-    { id: 6, name: 'iPhone 15 Pro', type: 'item', itemName: 'iPhone 15 Pro Max', itemImage: '📱', color: '#ec4899', probability: 0.1 },
-    { id: 7, name: '500 บาท', type: 'cash', amount: 500, color: '#f97316', probability: 10 },
-    { id: 8, name: 'MacBook Pro', type: 'item', itemName: 'MacBook Pro M3', itemImage: '💻', color: '#06b6d4', probability: 0.05 },
-    { id: 9, name: '1000 บาท', type: 'cash', amount: 1000, color: '#a855f7', probability: 5 },
-    { id: 10, name: 'โชคดีครั้งหน้า', type: 'cash', amount: 0, color: '#6b7280', probability: 24.05 }
-  ]
-
   useEffect(() => {
-    fetchSpinData()
-  }, [])
+    if (member) {
+      fetchWheelInfo()
+    }
+  }, [member])
 
-  const fetchSpinData = async () => {
+  const fetchWheelInfo = async () => {
     try {
-      const response = await fetch('/api/v1/member/lucky-wheel/info', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('memberToken')}`
-        },
-        credentials: 'include'
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        if (data.data) {
-          setSpinCount(data.data.spinCount || 0)
-          setMaxSpins(data.data.maxSpins || 3)
-          setHistory(data.data.history || [])
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch spin data:', error)
+      setIsLoading(true)
+      const info = await luckyWheelAPI.getWheelInfo()
+      setPrizes(info.prizes)
+      setSpinCount(info.spinCount)
+      setMaxSpins(info.maxSpins)
+      setCanSpin(info.canSpin)
+      setHistory(info.history)
+    } catch (error: any) {
+      console.error('Failed to fetch wheel info:', error)
+      toast.error(error.response?.data?.message || 'ไม่สามารถโหลดข้อมูลกงล้อได้')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -89,21 +58,13 @@ const LuckyWheelPage = () => {
 
     try {
       // Call API to spin
-      const response = await fetch('/api/v1/member/lucky-wheel/spin', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('memberToken')}`,
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to spin')
+      const result = await luckyWheelAPI.spin()
+      
+      // Find the won prize
+      const wonPrize = prizes.find(p => p.id === result.prizeId)
+      if (!wonPrize) {
+        throw new Error('Prize not found')
       }
-
-      const data = await response.json()
-      const wonPrize = prizes.find(p => p.id === data.data.prizeId) || prizes[7]
 
       // Calculate rotation
       const prizeIndex = prizes.findIndex(p => p.id === wonPrize.id)
@@ -117,31 +78,40 @@ const LuckyWheelPage = () => {
       // Wait for animation to complete
       setTimeout(() => {
         setIsSpinning(false)
-        setSpinCount(prev => prev + 1)
+        setSpinCount(result.spinCount)
         
+        // Show result
         if (wonPrize.type === 'item') {
-          toast.success(`🎉 ยินดีด้วย! คุณได้รับ ${wonPrize.itemName}!`, { duration: 5000 })
-        } else if (wonPrize.amount && wonPrize.amount > 0) {
-          toast.success(`🎉 ยินดีด้วย! คุณได้รับ ${wonPrize.amount} บาท`)
+          toast.success(`🎉 ยินดีด้วย! คุณได้รับ ${wonPrize.itemName || wonPrize.name}!`, { duration: 5000 })
+        } else if (result.amount > 0) {
+          toast.success(`🎉 ยินดีด้วย! คุณได้รับ ${result.amount} บาท`)
         } else {
-          toast.error('โชคดีครั้งหน้า!')
+          toast('โชคดีครั้งหน้า!', { icon: '🍀' })
         }
 
         // Refresh data
-        fetchSpinData()
+        fetchWheelInfo()
         
         // Allow spin again after 2 seconds
         setTimeout(() => {
-          setCanSpin(true)
+          setCanSpin(result.spinCount < result.maxSpins)
         }, 2000)
       }, 4000)
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Spin error:', error)
-      toast.error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง')
+      toast.error(error.response?.data?.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง')
       setIsSpinning(false)
       setCanSpin(true)
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#0f1419] to-[#1a1f2e] flex items-center justify-center">
+        <div className="text-white text-xl">กำลังโหลด...</div>
+      </div>
+    )
   }
 
   return (
@@ -241,7 +211,7 @@ const LuckyWheelPage = () => {
                           }}
                         >
                           <div className="text-white font-extrabold text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-                            {prize.type === 'item' && (
+                            {prize.type === 'item' && prize.itemImage && (
                               <div className="text-4xl mb-2">{prize.itemImage}</div>
                             )}
                             <div className={`${prize.type === 'item' ? 'text-sm' : 'text-lg'} leading-tight px-2`}>
@@ -300,7 +270,7 @@ const LuckyWheelPage = () => {
                   <div key={prize.id} className="flex items-center justify-between p-3 bg-[#0f1419] rounded-lg hover:bg-[#1a1f2e] transition">
                     <div className="flex items-center gap-3">
                       <div className="w-4 h-4 rounded-full" style={{ backgroundColor: prize.color }}></div>
-                      {prize.type === 'item' && (
+                      {prize.type === 'item' && prize.itemImage && (
                         <span className="text-2xl">{prize.itemImage}</span>
                       )}
                       <div>

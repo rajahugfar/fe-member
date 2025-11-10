@@ -64,6 +64,8 @@ export interface AvailableLottery {
 
 export interface OpenPeriod {
   id: string
+  name?: string
+  round?: string
   lotteryId: number
   huayCode: string
   huayName: string
@@ -73,6 +75,8 @@ export interface OpenPeriod {
   openTime: string
   closeTime: string
   resultTime: string
+  drawTime?: string
+  icon?: string
   status: 'OPEN'
   totalBetAmount: number
   totalPayoutAmount: number
@@ -99,7 +103,20 @@ export interface PlaceBetRequest {
 }
 
 export interface PlaceBulkBetsRequest {
-  bets: PlaceBetRequest[]
+  stockId: number
+  bets: {
+    betType: string
+    number: string
+    amount: number
+  }[]
+  note: string
+}
+
+export interface PlaceBulkBetsResponse {
+  poyId: string
+  poyNumber: string
+  totalBets: number
+  totalPrice: number
 }
 
 export interface BetResponse {
@@ -148,12 +165,41 @@ export const memberLotteryAPI = {
     return response.data.data
   },
 
-  // Get open periods (optionally filter by lottery code)
+  // Get active lotteries from stock_master
   getOpenPeriods: async (lotteryCode?: string): Promise<OpenPeriod[]> => {
-    const response = await memberAPIClient.get('/lottery/periods', {
-      params: lotteryCode ? { lottery_code: lotteryCode } : {},
+    const response = await memberAPIClient.get('/lottery/active', {
+      params: {
+        status: 'ACTIVE',
+        limit: 100,
+        ...(lotteryCode ? { lottery_code: lotteryCode } : {})
+      }
     })
-    return response.data.data
+
+    // Transform response to match OpenPeriod interface
+    const lotteries = response.data.data || []
+    return lotteries.map((lottery: any) => ({
+      id: String(lottery.id),
+      name: lottery.name || lottery.stockName,
+      round: lottery.round,
+      closeTime: lottery.closeTime || lottery.dateClose,
+      resultTime: lottery.resultTime || lottery.stockTime,
+      huayCode: lottery.huayCode,
+      icon: lottery.icon,
+      // Add computed fields for backward compatibility
+      huayName: lottery.name || lottery.stockName,
+      periodName: lottery.round || lottery.name || new Date(lottery.stockTime || lottery.closeTime).toLocaleDateString('th-TH'),
+      periodDate: lottery.stockTime || lottery.closeTime,
+      drawTime: lottery.resultTime || lottery.stockTime,
+      openTime: lottery.dateBuy || lottery.openTime,
+      status: 'OPEN' as const,
+      lotteryId: lottery.id || 0,
+      huayGroup: lottery.stockType || 0,
+      totalBetAmount: 0,
+      totalPayoutAmount: 0,
+      totalProfit: 0,
+      createdAt: lottery.dateBuy || '',
+      updatedAt: lottery.dateBuy || ''
+    }))
   },
 
   // Get lottery payout rates
@@ -168,9 +214,9 @@ export const memberLotteryAPI = {
     return response.data.data
   },
 
-  // Place multiple bets at once
-  placeBulkBets: async (bets: PlaceBetRequest[]): Promise<BetResponse[]> => {
-    const response = await memberAPIClient.post('/lottery/bet/bulk', { bets })
+  // Place multiple bets at once with poy
+  placeBulkBets: async (request: PlaceBulkBetsRequest): Promise<PlaceBulkBetsResponse> => {
+    const response = await memberAPIClient.post('/lottery/bet/bulk', request)
     return response.data.data
   },
 

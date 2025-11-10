@@ -174,7 +174,7 @@ export default function AdminLayout() {
                   <span className="text-white font-bold text-xl">P</span>
                 </div>
                 <div>
-                  <h1 className="text-gold-500 font-display font-bold text-lg">Permchok</h1>
+                  <h1 className="text-gold-500 font-display font-bold text-lg">Bicycle678</h1>
                   <p className="text-brown-400 text-xs">Admin Panel</p>
                 </div>
               </div>

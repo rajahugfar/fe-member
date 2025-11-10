@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useMemberStore } from '../store/memberStore'
 
 const LoginPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { login, isLoading } = useMemberStore()
   const [showPassword, setShowPassword] = useState(false)
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login')
 
@@ -16,7 +18,7 @@ const LoginPage = () => {
     }
   }, [location.pathname])
   const [loginData, setLoginData] = useState({
-    username: '',
+    phone: '',
     password: '',
     remember: false
   })
@@ -30,22 +32,37 @@ const LoginPage = () => {
     line: '',
     referralCode: ''
   })
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
+
+    if (!loginData.phone || !loginData.password) {
+      setError('กรุณากรอกข้อมูลให้ครบถ้วน')
+      return
+    }
 
     try {
-      console.log('Login attempt:', loginData)
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      navigate('/')
+      await login({
+        phone: loginData.phone,
+        password: loginData.password,
+      })
+
+      if (loginData.remember) {
+        localStorage.setItem('rememberMe', 'true')
+        localStorage.setItem('savedPhone', loginData.phone)
+      } else {
+        localStorage.removeItem('rememberMe')
+        localStorage.removeItem('savedPhone')
+      }
+
+      // Wait for Zustand persist to save, then navigate
+      setTimeout(() => {
+        navigate('/member')
+      }, 100)
     } catch (err) {
-      setError('เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
-    } finally {
-      setLoading(false)
+      setError('เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบเบอร์โทรและรหัสผ่าน')
     }
   }
 
@@ -58,7 +75,6 @@ const LoginPage = () => {
       return
     }
 
-    setLoading(true)
     try {
       console.log('Register attempt:', registerData)
       await new Promise(resolve => setTimeout(resolve, 1500))
@@ -66,8 +82,6 @@ const LoginPage = () => {
       setError('')
     } catch (err) {
       setError('สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -133,11 +147,12 @@ const LoginPage = () => {
 
               <div>
                 <input
-                  type="text"
-                  value={loginData.username}
-                  onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
+                  type="tel"
+                  value={loginData.phone}
+                  onChange={(e) => setLoginData({ ...loginData, phone: e.target.value })}
                   className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
-                  placeholder="ชื่อผู้ใช้"
+                  placeholder="เบอร์โทรศัพท์"
+                  maxLength={10}
                   required
                 />
               </div>
@@ -162,10 +177,10 @@ const LoginPage = () => {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#10b981] to-[#059669] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50"
               >
-                {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+                {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
               </button>
 
               <div className="text-center">
@@ -296,10 +311,10 @@ const LoginPage = () => {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#fbbf24] to-[#f59e0b] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 mt-2"
               >
-                {loading ? 'กำลังสมัครสมาชิก...' : 'สมัครสมาชิก'}
+                {isLoading ? 'กำลังสมัครสมาชิก...' : 'สมัครสมาชิก'}
               </button>
             </form>
           )}

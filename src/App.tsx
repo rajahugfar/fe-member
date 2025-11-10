@@ -100,10 +100,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
 }
 
-// Guest Route Component (redirect to home if already logged in)
+// Guest Route Component (redirect to member dashboard if already logged in)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthStore()
-  return !isAuthenticated ? <>{children}</> : <Navigate to="/" />
+  const { isAuthenticated: isMemberAuth } = useMemberStore()
+  
+  // Check both old and new auth stores
+  if (isAuthenticated || isMemberAuth) {
+    return <Navigate to="/member" />
+  }
+  
+  return <>{children}</>
 }
 
 // Admin Protected Route Component

@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
-import { gameProviderAPI, GameProvider } from '@/api/gameProviderAPI'
+import { GameProvider } from '@/api/gameProviderAPI'
 import { publicGameAPI, Game } from '@/api/publicGameAPI'
+import { siteContentAPI } from '@/api/siteContentAPI'
+import { getImageUrl } from '@/api/client'
 import { useMemberStore } from '@/store/memberStore'
 import DailyCheckInModal from '@/components/DailyCheckInModal'
 import 'swiper/css'
@@ -11,39 +13,86 @@ import 'swiper/css/pagination'
 
 const SacasinoHomePage = () => {
   const { member } = useMemberStore()
-  const [activeCategory, setActiveCategory] = useState('casino')
+  const [activeTab, setActiveTab] = useState('all')
   const [providers, setProviders] = useState<GameProvider[]>([])
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [gamesLoading, setGamesLoading] = useState(false)
   const [showDailyCheckIn, setShowDailyCheckIn] = useState(false)
+  const [bannerImages, setBannerImages] = useState<string[]>([])
+  const [smallBanners, setSmallBanners] = useState<any[]>([])
 
-  // Load providers from database
+  // Load providers and banners from database
   useEffect(() => {
-    const loadProviders = async () => {
+    const loadContent = async () => {
       try {
         setLoading(true)
-        const response = await gameProviderAPI.getProviders()
-        console.log('Providers response:', response)
-        if (response.success) {
-          console.log('Providers data:', response.data)
-          setProviders(response.data)
-        }
+        
+        // Load banners
+        const [smallBannersRes, largeBannersRes] = await Promise.all([
+          siteContentAPI.getPromotions('home', 'small'),
+          siteContentAPI.getPromotions('home', 'large')
+        ])
+
+        // Load small banners from API
+        const smallBannersData = smallBannersRes.data?.data || smallBannersRes.data || []
+        console.log('Small Banners from API:', smallBannersData)
+        setSmallBanners(Array.isArray(smallBannersData) ? smallBannersData : [])
+        
+        // Load large banners from API
+        const largeBannersData = largeBannersRes.data?.data || largeBannersRes.data || []
+        console.log('Large Banners from API:', largeBannersData)
+        
+        // แปลง large banners เป็น array ของ image URLs
+        const bannerUrls = (Array.isArray(largeBannersData) ? largeBannersData : [])
+          .map((b: any) => {
+            const imagePath = b.image_url || b.image?.file_url
+            return imagePath ? getImageUrl(imagePath) : ''
+          })
+          .filter((url: string) => url)
+        console.log('Banner URLs for carousel:', bannerUrls)
+        console.log('Large banners count:', bannerUrls.length)
+        setBannerImages(bannerUrls)
       } catch (error) {
-        console.error('Failed to load providers:', error)
+        console.error('Failed to load content:', error)
       } finally {
         setLoading(false)
       }
     }
-    loadProviders()
+    loadContent()
   }, [])
 
-  // Load games when category changes
+  // Reload providers when tab changes
+  useEffect(() => {
+    loadProviders(activeTab)
+  }, [activeTab])
+
+  const loadProviders = async (category?: string) => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+      const url = category && category !== 'all'
+        ? `${API_URL}/api/v1/member/providers?category=${category}`
+        : `${API_URL}/api/v1/member/providers?category=all`
+      
+      const response = await fetch(url)
+      if (response.ok) {
+        const data = await response.json()
+        console.log('Providers response:', data)
+        if (data.success && data.data) {
+          setProviders(Array.isArray(data.data) ? data.data : [])
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load providers:', error)
+    }
+  }
+
+  // Load games when tab changes
   useEffect(() => {
     const loadGames = async () => {
       try {
         setGamesLoading(true)
-        const gameType = mapCategoryToGameType(activeCategory)
+        const gameType = mapCategoryToGameType(activeTab)
         const response = await publicGameAPI.getGamesByType(gameType, { limit: 20 })
         setGames(response.games || [])
       } catch (error) {
@@ -54,7 +103,7 @@ const SacasinoHomePage = () => {
       }
     }
     loadGames()
-  }, [activeCategory])
+  }, [activeTab])
 
   // Check if should show daily check-in modal
   useEffect(() => {
@@ -79,16 +128,13 @@ const SacasinoHomePage = () => {
   // Map category to game type
   const mapCategoryToGameType = (category: string): string => {
     const mapping: Record<string, string> = {
-      'casino': 'live',
-      'baccarat_vip': 'live',
-      'dragon_tiger': 'dragon_tiger',
-      'roulette': 'roulette',
-      'hilo': 'hilo',
-      'blackjack': 'blackjack',
-      'slot': 'slot',
-      'sport': 'sport',
-      'lotto': 'lottery',
-      'game_show': 'game_show',
+      'all': 'live',
+      'Slot': 'slot',
+      'Live Casino': 'live',
+      'Game Card': 'card',
+      'Lottery': 'lottery',
+      'Sport': 'sport',
+      'Poker': 'poker',
     }
     return mapping[category] || 'live'
   }
@@ -96,22 +142,19 @@ const SacasinoHomePage = () => {
   // Get category display name
   const getCategoryDisplayName = (category: string): string => {
     const names: Record<string, string> = {
-      'casino': 'คาสิโน',
-      'baccarat_vip': 'บาคาร่า VIP',
-      'dragon_tiger': 'เสือมังกร',
-      'roulette': 'รูเล็ต',
-      'hilo': 'ไฮโล',
-      'blackjack': 'แบล็กแจ็ก',
-      'slot': 'สล็อต',
-      'sport': 'กีฬา',
-      'lotto': 'หวย',
-      'game_show': 'เกมโชว์',
+      'all': 'เกมทั้งหมด',
+      'Slot': 'สล็อต',
+      'Live Casino': 'คาสิโนสด',
+      'Game Card': 'เกมไพ่',
+      'Lottery': 'หวย',
+      'Sport': 'กีฬา',
+      'Poker': 'โป๊กเกอร์',
     }
-    return names[category] || 'คาสิโน'
+    return names[category] || 'เกมทั้งหมด'
   }
 
-  // Banner images
-  const banners = [
+  // Fallback banner images (if API fails)
+  const fallbackBanners = [
     '/images/sacasino/banners/fad31dcc94be4093b4d36e7786893ca6.jpg',
     '/images/sacasino/banners/6ac8f2cc45f6b89e2266496f03a8f270.jpg',
     '/images/sacasino/banners/ed589e77f72bb6e2edc67040e18c6de4.jpg',
@@ -119,18 +162,18 @@ const SacasinoHomePage = () => {
     '/images/sacasino/banners/062a43b54902c26ca542b464642b4dbf.jpg',
   ]
 
+  // Use API banners if available, otherwise use fallback
+  const banners = bannerImages.length > 0 ? bannerImages : fallbackBanners
+
   // Categories
   const categories = [
-    { id: 'casino', name: 'คาสิโน', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
-    { id: 'baccarat_vip', name: 'บาคาร่า VIP', icon: '/images/sacasino/categories/menu-icon-category-baccarat-vip.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-vip-hover.png' },
-    { id: 'dragon_tiger', name: 'เสือมังกร', icon: '/images/sacasino/categories/menu-icon-category-dragon-tiger.png', iconHover: '/images/sacasino/categories/menu-icon-category-dragon-tiger-hover.png' },
-    { id: 'roulette', name: 'รูเล็ต', icon: '/images/sacasino/categories/menu-icon-category-roulette.png', iconHover: '/images/sacasino/categories/menu-icon-category-roulette-hover.png' },
-    { id: 'hilo', name: 'ไฮโล', icon: '/images/sacasino/categories/menu-icon-category-hilo.png', iconHover: '/images/sacasino/categories/menu-icon-category-hilo-hover.png' },
-    { id: 'blackjack', name: 'แบล็กแจ็ก', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
-    { id: 'slot', name: 'สล็อต', icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
-    { id: 'sport', name: 'กีฬา', icon: '/images/sacasino/categories/menu-icon-category-sport.png', iconHover: '/images/sacasino/categories/menu-icon-category-sport-hover.png' },
-    { id: 'lotto', name: 'หวย', icon: '/images/sacasino/categories/menu-icon-category-lotto.png', iconHover: '/images/sacasino/categories/menu-icon-category-lotto-hover.png' },
-    { id: 'game_show', name: 'เกมโชว์', icon: '/images/sacasino/categories/menu-icon-category-game-show.png', iconHover: '/images/sacasino/categories/menu-icon-category-game-show-hover.png' },
+    { id: 'all', name: 'ทั้งหมด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
+    { id: 'Slot', name: 'สล็อต', icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
+    { id: 'Live Casino', name: 'คาสิโนสด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
+    { id: 'Game Card', name: 'เกมไพ่', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Lottery', name: 'หวย', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Sport', name: 'กีฬา', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Poker', name: 'โป๊กเกอร์', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
   ]
 
   // Provider images mapping (fallback for providers without images in DB)
@@ -148,10 +191,19 @@ const SacasinoHomePage = () => {
 
   // Get provider image (from DB or fallback)
   const getProviderImage = (provider: GameProvider) => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+    // Try to get from provider's image_path first
     if (provider.image_path) {
-      return provider.image_path
+      // If it's already a full URL, use it
+      if (provider.image_path.startsWith('http')) {
+        return provider.image_path
+      }
+      // If it's a local path, prepend API URL
+      return `${API_URL}${provider.image_path}`
     }
-    return providerImageMap[provider.product_name] || '/images/sacasino/games/casino/ezs-sa-gaming-vertical.png'
+    
+    // Fallback to SA Gaming local image
+    return `${API_URL}/uploads/providers/sa-gaming.png`
   }
 
   // Static providers as fallback (if API fails)
@@ -168,10 +220,10 @@ const SacasinoHomePage = () => {
   ]
 
   // Use static providers if no data from API
-  const displayProviders = providers.length > 0 ? providers : staticProviders as any[]
+  const displayProviders = (providers && providers.length > 0) ? providers : staticProviders as any[]
 
-  // Special menu items
-  const specialMenu = [
+  // Special menu items - use small banners from API or fallback to static
+  const fallbackSpecialMenu = [
     { name: 'แชร์โซเชียล', image: '/images/sacasino/special/special-menu-entry-social-share.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '#' },
     { name: 'เช็คอินประจำวัน', image: '/images/sacasino/special/special-menu-entry-daily-check-in.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '#' },
     { name: 'กงล้อพารวย', image: '/images/sacasino/special/special-menu-entry-wheel.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '/lucky-wheel' },
@@ -180,6 +232,25 @@ const SacasinoHomePage = () => {
     { name: 'วันเกิด', image: '/images/sacasino/special/special-menu-entry-happy-birth-day.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: 'https://line.me/support', external: true },
     { name: 'จัดอันดับ', image: '/images/sacasino/special/special-menu-entry-ranking.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '/ranking/win' },
   ]
+
+  // Map small banners from API to special menu format
+  const specialMenu = smallBanners.length > 0 
+    ? smallBanners.map((banner: any) => {
+        console.log('Processing small banner:', banner)
+        const imagePath = banner.image_url || banner.image?.file_url
+        const fullImageUrl = imagePath ? getImageUrl(imagePath) : ''
+        console.log('Image path:', imagePath, '-> Full URL:', fullImageUrl)
+        return {
+          name: banner.title,
+          image: fullImageUrl,
+          bg: '/images/sacasino/special/special-menu-entry-item-bg.png',
+          link: banner.link_url || '#',
+          external: banner.link_url?.startsWith('http')
+        }
+      })
+    : fallbackSpecialMenu
+  
+  console.log('Special Menu Items:', specialMenu)
 
   return (
     <div className="min-h-screen" style={{ background: '#0f1419' }}>
@@ -314,7 +385,7 @@ const SacasinoHomePage = () => {
         {/* Title */}
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-2xl md:text-3xl font-bold text-white text-center">
-            SA GAMING CASINO บาคาร่า คาสิโนออนไลน์ เสือมังกร โปรแรงสุดในไทย ฝากถอนออโต้
+            Bicycle678 บาคาร่า คาสิโนออนไลน์ เสือมังกร โปรแรงสุดในไทย ฝากถอนออโต้
           </h1>
         </div>
 
@@ -325,16 +396,16 @@ const SacasinoHomePage = () => {
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
+                  onClick={() => setActiveTab(cat.id)}
                   className={`flex flex-col items-center min-w-[80px] px-3 py-2 rounded-lg transition-all group
-                    ${activeCategory === cat.id ? 'bg-gradient-to-b from-[#d4af37] to-[#8B6914]' : 'hover:bg-gray-800'}`}
+                    ${activeTab === cat.id ? 'bg-gradient-to-b from-[#d4af37] to-[#8B6914]' : 'hover:bg-gray-800'}`}
                 >
                   <img 
-                    src={activeCategory === cat.id ? cat.iconHover : cat.icon}
+                    src={activeTab === cat.id ? cat.iconHover : cat.icon}
                     alt={cat.name}
                     className="w-12 h-12 mb-1"
                   />
-                  <span className={`text-xs font-medium ${activeCategory === cat.id ? 'text-white' : 'text-gray-400'}`}>
+                  <span className={`text-xs font-medium ${activeTab === cat.id ? 'text-white' : 'text-gray-400'}`}>
                     {cat.name}
                   </span>
                 </button>
@@ -347,10 +418,10 @@ const SacasinoHomePage = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-white">
-              {getCategoryDisplayName(activeCategory)}
+              {getCategoryDisplayName(activeTab)}
             </h2>
             <Link 
-              to={`/games?category=${activeCategory}`}
+              to={`/games?category=${activeTab}`}
               className="text-yellow-500 hover:text-yellow-400 text-sm font-medium"
             >
               ดูทั้งหมด →
@@ -405,22 +476,22 @@ const SacasinoHomePage = () => {
           )}
 
           {/* Show Providers Section */}
-          {activeCategory === 'casino' && (
+          {activeTab && (
             <div className="mt-12">
-              <h3 className="text-lg font-bold text-white mb-4">ค่ายเกมชั้นนำ</h3>
+              <h3 className="text-lg font-bold text-white mb-4">ค่ายเกมชั้นนำ ({displayProviders.length} ค่าย)</h3>
               {loading ? (
                 <div className="flex justify-center items-center py-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-yellow-500"></div>
                 </div>
               ) : (
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                  {displayProviders.slice(0, 12).map((provider) => (
+                  {displayProviders.map((provider) => (
                     <div 
                       key={provider.id}
-                      className="relative group cursor-pointer rounded-lg overflow-hidden bg-gray-800 p-2"
+                      className="relative group cursor-pointer rounded-lg overflow-hidden bg-gray-800 p-2 hover:bg-gray-700 transition-all"
                     >
                       <img 
-                        src={provider.image_path || getProviderImage(provider)}
+                        src={getProviderImage(provider)}
                         alt={provider.product_name}
                         className="w-full h-auto transition-transform group-hover:scale-110"
                         onError={(e) => {
@@ -429,7 +500,7 @@ const SacasinoHomePage = () => {
                         }}
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center">
-                        <span className="opacity-0 group-hover:opacity-100 text-white text-xs font-bold">
+                        <span className="opacity-0 group-hover:opacity-100 text-white text-xs font-bold text-center px-2">
                           {provider.product_name}
                         </span>
                       </div>

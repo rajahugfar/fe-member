@@ -42,7 +42,7 @@ const HomePage = () => {
         className="text-center py-12"
       >
         <h1 className="text-5xl md:text-6xl font-bold gradient-text mb-4">
-          {settings.site_name || 'ยินดีต้อนรับสู่ Permchok'}
+          {settings.site_name || 'ยินดีต้อนรับสู่ Bicycle678'}
         </h1>
         <p className="text-xl text-gray-400 mb-8">
           {settings.site_description || 'เว็บแทงหวยและเกมออนไลน์ จ่ายจริง จ่ายเร็ว ฝาก-ถอนออโต้ 24 ชั่วโมง'}

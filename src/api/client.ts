@@ -69,4 +69,19 @@ apiClient.interceptors.response.use(
   }
 )
 
+// Helper function to get full image URL
+export const getImageUrl = (path: string | null | undefined): string => {
+  if (!path) return ''
+  
+  // If already a full URL, return as is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+  
+  // If starts with /, remove it to avoid double slash
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path
+  
+  return `${API_URL}/${cleanPath}`
+}
+
 export default apiClient

@@ -15,8 +15,13 @@ export const siteContentAPI = {
   /**
    * Get active promotions for display
    */
-  getPromotions: (location: 'home' | 'member' = 'home') =>
-    apiClient.get<{ data: PromotionBanner[] }>(`/public/promotions?location=${location}`),
+  getPromotions: (location: 'home' | 'member' = 'home', bannerType?: 'small' | 'large') => {
+    const params = new URLSearchParams({ location })
+    if (bannerType) {
+      params.append('banner_type', bannerType)
+    }
+    return apiClient.get<{ data: PromotionBanner[] }>(`/public/promotion-banners?${params}`)
+  },
 
   /**
    * Get all active game categories
