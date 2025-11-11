@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   FiClock,
@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fi'
 import { memberLotteryAPI, OpenPeriod } from '@api/memberLotteryAPI'
 import { toast } from 'react-hot-toast'
+import LotteryResults from './LotteryResults'
 
 type TabType = 'list' | 'results' | 'history'
 
@@ -120,6 +121,7 @@ const isPremiumLottery = (huayCode: string) => {
 }
 
 const MemberLottery: React.FC = () => {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<TabType>('list')
   const [periods, setPeriods] = useState<OpenPeriod[]>([])
   const [loading, setLoading] = useState(false)
@@ -502,24 +504,314 @@ const StandardLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ 
   )
 }
 
-// Component: Lottery Results
-const LotteryResults: React.FC = () => {
-  return (
-    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-12 border border-white/10 text-center">
-      <FiAward className="text-5xl text-yellow-400/80 mx-auto mb-3" />
-      <h2 className="text-xl font-bold text-white mb-2">ผลหวย</h2>
-      <p className="text-gray-400 text-sm">กำลังพัฒนา...</p>
-    </div>
-  )
-}
-
-// Component: My Bets
+// Component: My Bets (Poy History)
 const LotteryMyBets: React.FC = () => {
+  const navigate = useNavigate()
+  const [poys, setPoys] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
+  const [activeSubTab, setActiveSubTab] = useState<'today' | 'pending' | 'completed'>('today')
+
+  useEffect(() => {
+    loadPoyHistory()
+  }, [])
+
+  const loadPoyHistory = async () => {
+    setLoading(true)
+    try {
+      const data = await memberLotteryAPI.getPoyHistory({ limit: 100 })
+      setPoys(data || [])
+    } catch (error) {
+      console.error('Failed to load poy history:', error)
+      toast.error('ไม่สามารถโหลดประวัติโพยได้')
+      setPoys([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Filter poys by tab
+  const todayPoys = poys.filter(poy => {
+    const buyDate = new Date(poy.dateBuy)
+    const today = new Date()
+    return buyDate.toDateString() === today.toDateString()
+  })
+
+  const pendingPoys = poys.filter(poy => poy.status === 1)
+  const completedPoys = poys.filter(poy => poy.status === 2 || poy.status === 0)
+
+  const getFilteredPoys = () => {
+    switch (activeSubTab) {
+      case 'today':
+        return todayPoys
+      case 'pending':
+        return pendingPoys
+      case 'completed':
+        return completedPoys
+      default:
+        return todayPoys
+    }
+  }
+
+  const filteredPoys = getFilteredPoys()
+
+  const canCancelPoy = (dateBuy: string) => {
+    const buyTime = new Date(dateBuy).getTime()
+    const now = new Date().getTime()
+    const diffMinutes = (now - buyTime) / (1000 * 60)
+    return diffMinutes < 30
+  }
+
+  const getTimeLeftToCancel = (dateBuy: string) => {
+    const buyTime = new Date(dateBuy).getTime()
+    const now = new Date().getTime()
+    const diffMinutes = 30 - (now - buyTime) / (1000 * 60)
+    if (diffMinutes <= 0) return null
+    return Math.floor(diffMinutes)
+  }
+
+  const handleCancelPoy = async (poyId: string) => {
+    if (!confirm('คุณต้องการยกเลิกโพยนี้ใช่หรือไม่?\n\nเครดิตจะถูกคืนให้ทันที')) {
+      return
+    }
+
+    setCancellingId(poyId)
+    try {
+      await memberLotteryAPI.cancelPoy(poyId)
+      toast.success('ยกเลิกโพยสำเร็จ เครดิตได้รับคืนแล้ว')
+      loadPoyHistory()
+    } catch (error: any) {
+      console.error('Failed to cancel poy:', error)
+      toast.error(error.response?.data?.message || 'ไม่สามารถยกเลิกโพยได้')
+    } finally {
+      setCancellingId(null)
+    }
+  }
+
+  const getStatusBadge = (status: number) => {
+    switch (status) {
+      case 0:
+        return (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-500/20 to-rose-600/20 border border-red-400/30 rounded-lg">
+            <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+            <span className="text-red-300 font-semibold text-xs">ยกเลิกแล้ว</span>
+          </div>
+        )
+      case 1:
+        return (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-yellow-500/20 to-amber-600/20 border border-yellow-400/30 rounded-lg">
+            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+            <span className="text-yellow-300 font-semibold text-xs">รอออกผล</span>
+          </div>
+        )
+      case 2:
+        return (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-600/20 border border-green-400/30 rounded-lg">
+            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+            <span className="text-green-300 font-semibold text-xs">ออกผลแล้ว</span>
+          </div>
+        )
+      default:
+        return (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gray-500/20 to-slate-600/20 border border-gray-400/30 rounded-lg">
+            <span className="text-gray-300 font-semibold text-xs">ไม่ทราบสถานะ</span>
+          </div>
+        )
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const getPoyIcon = (status: number) => {
+    switch (status) {
+      case 0: return '❌'
+      case 1: return '🎫'
+      case 2: return '🏆'
+      default: return '📋'
+    }
+  }
+
+  const subTabs = [
+    { key: 'today' as const, label: 'ซื้อวันนี้', icon: '📅', count: todayPoys.length, color: 'from-blue-500 to-cyan-500' },
+    { key: 'pending' as const, label: 'รอผลออก', icon: '⏳', count: pendingPoys.length, color: 'from-yellow-500 to-orange-500' },
+    { key: 'completed' as const, label: 'ออกผลแล้ว', icon: '🏆', count: completedPoys.length, color: 'from-green-500 to-emerald-500' },
+  ]
+
+  if (loading) {
+    return (
+      <div className="text-center py-16">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="inline-block"
+        >
+          <FiFileText className="text-5xl text-purple-400" />
+        </motion.div>
+        <p className="text-gray-300 mt-4 font-medium">กำลังโหลดโพยหวย...</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-12 border border-white/10 text-center">
-      <FiFileText className="text-5xl text-purple-400/80 mx-auto mb-3" />
-      <h2 className="text-xl font-bold text-white mb-2">โพยหวยของฉัน</h2>
-      <p className="text-gray-400 text-sm">กำลังพัฒนา...</p>
+    <div className="space-y-6">
+      {/* Sub Tabs */}
+      <div className="flex justify-center gap-3 flex-wrap">
+        {subTabs.map((tab) => (
+          <motion.button
+            key={tab.key}
+            onClick={() => setActiveSubTab(tab.key)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`relative px-6 py-3 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 overflow-hidden ${
+              activeSubTab === tab.key
+                ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
+                : 'bg-white/5 backdrop-blur-md text-gray-300 hover:bg-white/10 border border-white/10'
+            }`}
+          >
+            <span className="text-xl">{tab.icon}</span>
+            <span>{tab.label}</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+              activeSubTab === tab.key ? 'bg-white/20' : 'bg-white/10'
+            }`}>
+              {tab.count}
+            </span>
+          </motion.button>
+        ))}
+      </div>
+
+      {/* Empty State */}
+      {filteredPoys.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white/5 backdrop-blur-md rounded-2xl p-16 border border-white/10 text-center"
+        >
+          <div className="text-8xl mb-6">🎴</div>
+          <h2 className="text-2xl font-bold text-white mb-3">
+            {activeSubTab === 'today' && 'ยังไม่มีโพยวันนี้'}
+            {activeSubTab === 'pending' && 'ไม่มีโพยรอผล'}
+            {activeSubTab === 'completed' && 'ไม่มีโพยที่ออกผล'}
+          </h2>
+          <p className="text-gray-400">
+            {activeSubTab === 'today' && 'เริ่มต้นแทงหวยเพื่อสร้างโพยของคุณ'}
+            {activeSubTab === 'pending' && 'โพยทั้งหมดออกผลแล้ว'}
+            {activeSubTab === 'completed' && 'ยังไม่มีโพยที่ออกผล'}
+          </p>
+        </motion.div>
+      )}
+
+      {/* Poy Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredPoys.map((poy, index) => {
+          const canCancel = poy.status === 1 && canCancelPoy(poy.dateBuy)
+          const timeLeft = canCancel ? getTimeLeftToCancel(poy.dateBuy) : null
+
+          return (
+            <motion.div
+              key={poy.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="relative group"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+              <div className="relative bg-gradient-to-br from-slate-900/95 via-purple-900/40 to-blue-900/40 backdrop-blur-xl rounded-2xl border border-purple-400/20 overflow-hidden">
+                <div className="relative p-6">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="text-4xl">{getPoyIcon(poy.status)}</div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 mb-1">
+                          {poy.poyName || 'โพยหวย'}
+                        </h3>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-gray-400">เลขโพย:</span>
+                          <span className="font-mono text-purple-300 font-semibold">{poy.poyNumber}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                          <FiClock className="text-blue-400" />
+                          <span>{formatDate(poy.dateBuy)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    {getStatusBadge(poy.status)}
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-sm rounded-xl p-3 border border-purple-400/20">
+                      <p className="text-purple-300 text-xs mb-1">💰 ยอดแทง</p>
+                      <p className="text-white font-bold text-lg">{poy.totalPrice?.toFixed(2) || '0.00'}</p>
+                      <p className="text-gray-500 text-xs">บาท</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/5 backdrop-blur-sm rounded-xl p-3 border border-green-400/20">
+                      <p className="text-green-300 text-xs mb-1">🎁 ยอดชนะ</p>
+                      <p className="text-green-400 font-bold text-lg">{poy.winPrice?.toFixed(2) || '0.00'}</p>
+                      <p className="text-gray-500 text-xs">บาท</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-500/10 to-cyan-600/5 backdrop-blur-sm rounded-xl p-3 border border-blue-400/20">
+                      <p className="text-blue-300 text-xs mb-1">💳 เครดิตหลัง</p>
+                      <p className="text-blue-400 font-bold text-lg">{poy.balanceAfter?.toFixed(2) || '0.00'}</p>
+                      <p className="text-gray-500 text-xs">บาท</p>
+                    </div>
+                  </div>
+
+                  {/* Cancel Timer */}
+                  {canCancel && timeLeft && (
+                    <div className="mb-4 p-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-400/30 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FiClock className="text-orange-400 animate-pulse" />
+                          <span className="text-orange-300 text-sm font-medium">
+                            เหลือเวลายกเลิก {timeLeft} นาที
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => handleCancelPoy(poy.id)}
+                          disabled={cancellingId === poy.id}
+                          className="px-4 py-1.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-50"
+                        >
+                          {cancellingId === poy.id ? 'กำลังยกเลิก...' : 'ยกเลิกโพย'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Note */}
+                  {poy.note && (
+                    <div className="mb-4 p-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-400/20 rounded-xl">
+                      <p className="text-indigo-300 text-xs mb-1 flex items-center gap-1">
+                        <FiFileText /> หมายเหตุ
+                      </p>
+                      <p className="text-gray-300 text-sm">{poy.note}</p>
+                    </div>
+                  )}
+
+                  {/* View Detail Button */}
+                  <Link to={`/member/lottery/poy/${poy.id}`}>
+                    <button className="w-full py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-400/30 rounded-xl transition-all flex items-center justify-center gap-2 text-purple-300 font-medium text-sm">
+                      <FiFileText />
+                      ดูรายการแทงทั้งหมด
+                      <FiChevronRight />
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
     </div>
   )
 }

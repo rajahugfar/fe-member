@@ -42,6 +42,9 @@ const LotteryBetting: React.FC = () => {
   // Success State
   const [successPoyId, setSuccessPoyId] = useState('')
   const [successNote, setSuccessNote] = useState('')
+  const [successCart, setSuccessCart] = useState<typeof cart>([])
+  const [successTotalAmount, setSuccessTotalAmount] = useState(0)
+  const [successTotalPotentialWin, setSuccessTotalPotentialWin] = useState(0)
 
   // Mobile Cart Drawer State
   const [showMobileCart, setShowMobileCart] = useState(false)
@@ -252,9 +255,15 @@ const LotteryBetting: React.FC = () => {
         note: note
       })
 
-      // Success
+      // Success - Store cart data before clearing
+      const currentTotalAmount = cart.reduce((sum, item) => sum + item.amount, 0)
+      const currentTotalPotentialWin = cart.reduce((sum, item) => sum + item.potential_win, 0)
+      
       setSuccessPoyId(response.poyId || 'N/A')
       setSuccessNote(note)
+      setSuccessCart([...cart]) // Store cart snapshot
+      setSuccessTotalAmount(currentTotalAmount)
+      setSuccessTotalPotentialWin(currentTotalPotentialWin)
       setShowSuccessModal(true)
       clearCart() // ล้างตะกร้าหลังส่งสำเร็จ
 
@@ -276,8 +285,8 @@ const LotteryBetting: React.FC = () => {
   }
 
   const handleBetAgain = () => {
-    clearCart()
     setShowSuccessModal(false)
+    setSuccessCart([])
   }
 
   // Loading State
@@ -487,12 +496,12 @@ const LotteryBetting: React.FC = () => {
         show={showSuccessModal}
         onClose={() => {
           setShowSuccessModal(false)
-          clearCart()
+          setSuccessCart([])
         }}
         poyId={successPoyId}
-        cart={cart}
-        totalAmount={totalAmount}
-        totalPotentialWin={totalPotentialWin}
+        cart={successCart}
+        totalAmount={successTotalAmount}
+        totalPotentialWin={successTotalPotentialWin}
         periodName={period.periodName || ''}
         huayName={period.huayName || ''}
         note={successNote}

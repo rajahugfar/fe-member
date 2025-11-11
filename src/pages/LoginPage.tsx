@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useMemberStore } from '../store/memberStore'
+import { authAPI } from '../api/authAPI'
+import { toast } from 'react-hot-toast'
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -70,18 +72,61 @@ const LoginPage = () => {
     e.preventDefault()
     setError('')
 
+    // Validate password match
     if (registerData.password !== registerData.confirmPassword) {
       setError('รหัสผ่านไม่ตรงกัน')
       return
     }
 
+    // Validate phone number
+    if (!/^0[0-9]{9}$/.test(registerData.phone)) {
+      setError('เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องเป็น 10 หลัก)')
+      return
+    }
+
+    // Validate password length
+    if (registerData.password.length < 6) {
+      setError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
+      return
+    }
+
+    // Validate bank number
+    if (!/^[0-9]{10,12}$/.test(registerData.bankNumber)) {
+      setError('เลขบัญชีไม่ถูกต้อง (ต้องเป็น 10-12 หลัก)')
+      return
+    }
+
     try {
-      console.log('Register attempt:', registerData)
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      setActiveTab('login')
-      setError('')
-    } catch (err) {
-      setError('สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
+      // Call register API
+      const response = await authAPI.register({
+        phone: registerData.phone,
+        password: registerData.password,
+        fullname: registerData.fullname,
+        bankCode: registerData.bankCode,
+        bankNumber: registerData.bankNumber,
+        line: registerData.line || undefined,
+        ref: registerData.referralCode || undefined,
+      })
+
+      // Show success message
+      toast.success('สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...')
+
+      // Auto login after successful registration
+      const { user, accessToken, refreshToken } = response
+      
+      // Save to store
+      useMemberStore.getState().setAuth(user, accessToken, refreshToken)
+
+      // Navigate to member page
+      setTimeout(() => {
+        navigate('/member')
+      }, 500)
+
+    } catch (err: any) {
+      console.error('Register error:', err)
+      const errorMessage = err.response?.data?.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'
+      setError(errorMessage)
+      toast.error(errorMessage)
     }
   }
 

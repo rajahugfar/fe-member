@@ -239,6 +239,27 @@ export const memberLotteryAPI = {
     const response = await memberAPIClient.post(`/lottery/bet/${id}/cancel`)
     return response.data.data
   },
+
+  // Get poy history
+  getPoyHistory: async (params?: {
+    limit?: number
+    offset?: number
+  }): Promise<any[]> => {
+    const response = await memberAPIClient.get('/lottery/history', { params })
+    return response.data.data.poys || []
+  },
+
+  // Cancel poy
+  cancelPoy: async (poyId: string): Promise<{ message: string }> => {
+    const response = await memberAPIClient.post(`/lottery/poy/${poyId}/cancel`)
+    return response.data.data
+  },
+
+  // Get poy detail
+  getPoyDetail: async (poyId: string): Promise<any> => {
+    const response = await memberAPIClient.get(`/lottery/poy/${poyId}`)
+    return response.data.data
+  },
 }
 
 export default memberLotteryAPI

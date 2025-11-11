@@ -71,6 +71,7 @@ import MemberLottery from '@pages/member/MemberLottery'
 import LotteryBetting from '@pages/member/LotteryBetting'
 import LotteryHistory from '@pages/member/LotteryHistory'
 import LotteryResults from '@pages/member/LotteryResults'
+import LotteryPoyDetail from '@pages/member/LotteryPoyDetail'
 
 // New Member System Pages
 import MemberLogin from '@pages/member/Login'
@@ -290,6 +291,16 @@ function App() {
           }
         />
 
+        {/* Member Game Lobby (Standalone - no layout) */}
+        <Route
+          path="/member/games"
+          element={
+            <MemberProtectedRoute>
+              <MemberGameLobby />
+            </MemberProtectedRoute>
+          }
+        />
+
         {/* Member Protected Routes with Layout */}
         <Route
           element={
@@ -302,9 +313,9 @@ function App() {
           <Route path="/member/profile" element={<MemberProfile />} />
           <Route path="/member/deposit" element={<MemberDeposit />} />
           <Route path="/member/deposit/history" element={<MemberDepositHistory />} />
+          <Route path="/member/withdraw" element={<MemberWithdrawal />} />
           <Route path="/member/withdrawal" element={<MemberWithdrawal />} />
           <Route path="/member/withdrawal/history" element={<MemberWithdrawalHistory />} />
-          <Route path="/member/games" element={<MemberGameLobby />} />
           <Route path="/member/transactions" element={<MemberTransactionHistory />} />
           <Route path="/member/promotions" element={<MemberPromotions />} />
           <Route path="/member/bonuses" element={<MemberBonusHistory />} />
@@ -314,6 +325,7 @@ function App() {
           <Route path="/member/lottery/bet/:periodId" element={<LotteryBetting />} />
           <Route path="/member/lottery/history" element={<LotteryHistory />} />
           <Route path="/member/lottery/results" element={<LotteryResults />} />
+          <Route path="/member/lottery/poy/:poyId" element={<LotteryPoyDetail />} />
         </Route>
 
         {/* Admin Routes */}

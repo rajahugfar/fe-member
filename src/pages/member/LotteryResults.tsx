@@ -134,85 +134,84 @@ const LotteryResults: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 flex justify-between items-center">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-2">ผลรางวัล</h2>
+          <p className="text-gray-400 text-sm">ดูผลการออกรางวัลหวย</p>
+        </div>
+        <button
+          onClick={fetchResults}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all"
+        >
+          <FiRefreshCw />
+          รีเฟรช
+        </button>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">ผลรางวัล</h1>
-            <p className="text-gray-600">ดูผลการออกรางวัลหวย</p>
+            <label className="block text-sm font-medium text-gray-300 mb-1">เลือกวันที่</label>
+            <input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
-          <button
-            onClick={fetchResults}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            <FiRefreshCw />
-            รีเฟรช
-          </button>
-        </div>
-
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">เลือกวันที่</label>
-              <input
-                type="date"
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ประเภทหวย</label>
-              <select
-                value={filterLotteryType}
-                onChange={(e) => setFilterLotteryType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">ทั้งหมด</option>
-                <option value="government">หวยรัฐบาล</option>
-                <option value="stock">หวยหุ้น</option>
-                <option value="yeekee">หวยยี่กี</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">รีเฟรชอัตโนมัติ</label>
-              <div className="flex items-center h-[42px]">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={autoRefresh}
-                    onChange={(e) => setAutoRefresh(e.target.checked)}
-                    className="mr-2 w-4 h-4 text-blue-600"
-                  />
-                  <span className="text-sm text-gray-700">
-                    เปิดใช้งาน (ทุก 60 วินาที)
-                  </span>
-                </label>
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">ประเภทหวย</label>
+            <select
+              value={filterLotteryType}
+              onChange={(e) => setFilterLotteryType(e.target.value)}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">ทั้งหมด</option>
+              <option value="government">หวยรัฐบาล</option>
+              <option value="stock">หวยหุ้น</option>
+              <option value="yeekee">หวยยี่กี</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">รีเฟรชอัตโนมัติ</label>
+            <div className="flex items-center h-[42px]">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={autoRefresh}
+                  onChange={(e) => setAutoRefresh(e.target.checked)}
+                  className="mr-2 w-4 h-4 text-blue-600"
+                />
+                <span className="text-sm text-gray-300">
+                  เปิดใช้งาน (ทุก 60 วินาที)
+                </span>
+              </label>
             </div>
           </div>
         </div>
+        </div>
 
-        {/* Results Grid */}
-        {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">กำลังโหลด...</p>
-          </div>
-        ) : results.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <FiAward className="mx-auto text-gray-300 mb-4" size={64} />
-            <h3 className="text-xl font-bold text-gray-800 mb-2">ยังไม่มีผลรางวัล</h3>
-            <p className="text-gray-600">ยังไม่มีการประกาศผลรางวัลในวันนี้</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((result) => (
-              <div
-                key={result.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition"
-              >
+      {/* Results Grid */}
+      {loading ? (
+        <div className="p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
+          <p className="mt-4 text-gray-300">กำลังโหลด...</p>
+        </div>
+      ) : results.length === 0 ? (
+        <div className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-8 text-center">
+          <FiAward className="mx-auto text-gray-500 mb-4" size={64} />
+          <h3 className="text-xl font-bold text-white mb-2">ยังไม่มีผลรางวัล</h3>
+          <p className="text-gray-400">ยังไม่มีการประกาศผลรางวัลในวันนี้</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {results.map((result) => (
+            <div
+              key={result.id}
+              className="bg-gradient-to-br from-slate-900/95 via-purple-900/40 to-blue-900/40 backdrop-blur-xl rounded-xl border border-purple-400/20 overflow-hidden hover:shadow-xl transition"
+            >
                 {/* Header */}
                 <div
                   className={`bg-gradient-to-r ${getLotteryTypeColor(
@@ -292,18 +291,17 @@ const LotteryResults: React.FC = () => {
                       <span>ประกาศเมื่อ {result.announced_at ? formatTime(result.announced_at) : '-'}</span>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleViewMyBets(result.id)}
-                    className="w-full py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition"
-                  >
-                    ดูโพยของฉัน
-                  </button>
-                </div>
+                <button
+                  onClick={() => handleViewMyBets(result.id)}
+                  className="w-full py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-400/30 text-purple-300 rounded-lg font-medium transition"
+                >
+                  ดูโพยของฉัน
+                </button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
