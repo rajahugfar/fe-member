@@ -27,7 +27,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 
 const Dashboard: React.FC = () => {
-  const { member } = useMemberStore()
+  const { member, loadProfile } = useMemberStore()
   const [summary, setSummary] = useState<any>({
     todayDeposit: 0,
     todayWithdrawal: 0,
@@ -44,6 +44,18 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     loadDashboardData()
+    loadProfile() // Load credit immediately on mount
+  }, [])
+
+  // Auto refresh credit every 1 minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadProfile().catch(err => {
+        console.error('Failed to refresh credit:', err)
+      })
+    }, 60000) // 60000ms = 1 minute
+
+    return () => clearInterval(interval)
   }, [])
 
   const loadDashboardData = async () => {
