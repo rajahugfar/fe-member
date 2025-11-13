@@ -3,6 +3,8 @@ import { Toaster } from 'react-hot-toast'
 import { useAuthStore } from '@store/authStore'
 import { useAdminStore } from '@store/adminStore'
 import { useMemberStore } from '@store/memberStore'
+import { useEffect } from 'react'
+import { siteContentAPI } from '@api/siteContentAPI'
 
 // Layouts
 import MainLayout from '@components/layouts/MainLayout'
@@ -143,6 +145,25 @@ const MemberProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 }
 
 function App() {
+  // Load site settings and update document title
+  useEffect(() => {
+    const loadSiteSettings = async () => {
+      try {
+        const response = await siteContentAPI.getSiteSettings()
+        const settings = response.data?.data || response.data
+
+        // Update document title if site_name exists
+        if (settings.site_name) {
+          document.title = `${settings.site_name} - เว็บแทงหวยและเกมออนไลน์`
+        }
+      } catch (error) {
+        console.error('Failed to load site settings:', error)
+      }
+    }
+
+    loadSiteSettings()
+  }, [])
+
   return (
     <>
       <Toaster
