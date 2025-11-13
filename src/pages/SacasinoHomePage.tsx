@@ -36,12 +36,12 @@ const SacasinoHomePage = () => {
 
         // Load small banners from API
         const smallBannersData = smallBannersRes.data?.data || smallBannersRes.data || []
-        console.log('Small Banners from API:', smallBannersData)
+        //console.log('Small Banners from API:', smallBannersData)
         setSmallBanners(Array.isArray(smallBannersData) ? smallBannersData : [])
         
         // Load large banners from API
         const largeBannersData = largeBannersRes.data?.data || largeBannersRes.data || []
-        console.log('Large Banners from API:', largeBannersData)
+        // console.log('Large Banners from API:', largeBannersData)
         
         // แปลง large banners เป็น array ของ image URLs
         const bannerUrls = (Array.isArray(largeBannersData) ? largeBannersData : [])
@@ -50,8 +50,8 @@ const SacasinoHomePage = () => {
             return imagePath ? getImageUrl(imagePath) : ''
           })
           .filter((url: string) => url)
-        console.log('Banner URLs for carousel:', bannerUrls)
-        console.log('Large banners count:', bannerUrls.length)
+        //console.log('Banner URLs for carousel:', bannerUrls)
+        //console.log('Large banners count:', bannerUrls.length)
         setBannerImages(bannerUrls)
       } catch (error) {
         console.error('Failed to load content:', error)

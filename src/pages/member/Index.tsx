@@ -67,22 +67,42 @@ const MemberIndex = () => {
     loadContent()
   }, [])
 
+  // Auto-refresh profile every 1 minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadProfile()
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [])
+
   // Reload providers when tab changes
   useEffect(() => {
-    console.log('📌 Active tab changed to:', activeTab)
     if (activeTab === 'Lottery') {
-      console.log('🎲 Tab is Lottery, loading lottery periods...')
       loadLotteryPeriods()
     } else {
-      console.log('🎮 Loading providers for category:', activeTab)
       loadProviders(activeTab)
     }
   }, [activeTab])
 
+  const { loadProfile: loadMemberProfile } = useMemberStore()
+
+  const loadProfile = async () => {
+    try {
+      await loadMemberProfile()
+      // Update local profile state from store
+      const updatedMember = useMemberStore.getState().member
+      if (updatedMember) {
+        setProfile(updatedMember)
+      }
+    } catch (error) {
+      console.error('Failed to refresh profile:', error)
+    }
+  }
+
   const loadContent = async () => {
     try {
       setIsLoading(true)
-      
+
       // Load member profile from store (already loaded from auth)
       if (member) {
         setProfile(member)
@@ -147,14 +167,12 @@ const MemberIndex = () => {
   }
 
   const loadLotteryPeriods = async () => {
-    console.log('🎲 Loading lottery periods...')
     try {
       setLotteryLoading(true)
       const data = await memberLotteryAPI.getOpenPeriods()
-      console.log('🎲 Lottery periods loaded:', data)
       setLotteryPeriods(data || [])
     } catch (error) {
-      console.error('❌ Failed to load lottery periods:', error)
+      console.error('Failed to load lottery periods:', error)
       setLotteryPeriods([])
     } finally {
       setLotteryLoading(false)
@@ -378,7 +396,7 @@ const MemberIndex = () => {
                     <div className="text-white font-bold text-sm">{profile.username || profile.phone}</div>
                     <div className="text-yellow-400 text-xs font-semibold flex items-center">
                       <FaCoins className="mr-1" />
-                      {formatCurrency(profile.credits || 0)}
+                      {formatCurrency(profile.credit || 0)}
                     </div>
                   </div>
                 </div>
@@ -423,10 +441,8 @@ const MemberIndex = () => {
           <div className="container mx-auto px-4 py-4">
             <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
               {smallBanners.map((banner) => {
-                console.log('Small Banner:', banner)
                 const imagePath = banner.image?.file_url || banner.image_url || banner.banner_image
                 const imageUrl = imagePath ? `${API_URL}${imagePath}` : ''
-                console.log('Image URL:', imageUrl)
                 return (
                   <Link
                     key={banner.id}
@@ -439,7 +455,6 @@ const MemberIndex = () => {
                         alt={banner.title}
                         className="w-full h-auto rounded-lg shadow-lg border-2 border-yellow-600/50 group-hover:border-yellow-400"
                         onError={(e) => {
-                          console.error('Image load error:', imageUrl)
                           const target = e.target as HTMLImageElement
                           target.style.display = 'none'
                         }}
@@ -533,7 +548,6 @@ const MemberIndex = () => {
           {activeTab === 'Lottery' ? (
             /* Lottery Periods List */
             <>
-              {console.log('🎲 Rendering lottery section. Loading:', lotteryLoading, 'Periods:', lotteryPeriods.length)}
               {lotteryLoading ? (
                 <div className="flex justify-center items-center py-20">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
