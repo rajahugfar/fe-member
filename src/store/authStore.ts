@@ -16,6 +16,7 @@ interface AuthState {
   register: (data: RegisterData) => Promise<void>
   logout: () => void
   refreshAccessToken: () => Promise<void>
+  refreshUser: () => Promise<void>
   clearError: () => void
   updateUser: (user: Partial<User>) => void
 }
@@ -101,6 +102,44 @@ export const useAuthStore = create<AuthState>()(
           // If refresh fails, logout user
           get().logout()
           throw error
+        }
+      },
+
+      refreshUser: async () => {
+        try {
+          const { isAuthenticated } = get()
+          if (!isAuthenticated) return
+
+          const response = await authAPI.getProfile()
+
+          // Debug log to see response structure
+          console.log('[refreshUser] Response:', response)
+
+          // Handle different response structures
+          let userData = null
+          if (response.data?.member) {
+            userData = response.data.member
+          } else if (response.data?.user) {
+            userData = response.data.user
+          } else if (response.data) {
+            userData = response.data
+          } else if (response.member) {
+            userData = response.member
+          } else if (response.user) {
+            userData = response.user
+          }
+
+          console.log('[refreshUser] Parsed userData:', userData)
+
+          if (userData) {
+            set((state) => ({
+              user: { ...state.user, ...userData }, // Always merge to preserve other fields
+            }))
+            console.log('[refreshUser] User updated with credit:', userData.credit)
+          }
+        } catch (error) {
+          console.error('[refreshUser] Failed to refresh user data:', error)
+          // Don't logout on refresh failure, just log the error
         }
       },
 

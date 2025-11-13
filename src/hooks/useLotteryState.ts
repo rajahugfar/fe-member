@@ -14,6 +14,12 @@ export interface CartItem {
   last_add_num?: number
   is_duplicate?: boolean
   huayName?: string
+  // Special number data from checkMultiply API
+  isSpecialNumber?: boolean
+  soldAmount?: number
+  remainingAmount?: number
+  maxSaleAmount?: number
+  checkResult?: number // 1=ok, 2=reduced, 99=max reached
 }
 
 /**
@@ -74,10 +80,12 @@ const STORAGE_KEY_INPUT_MODE = 'lottery_input_mode'
 export function useLotteryState(periodId?: string): LotteryState {
   // ==================== State ====================
 
-  // Bet Selection
+  // Bet Selection - Default to 3ตัวบน (teng_bon_3)
   const [selectedBetType, setSelectedBetTypeState] = useState<string>(() => {
     if (typeof window === 'undefined') return 'teng_bon_3'
-    return localStorage.getItem(STORAGE_KEY_BET_TYPE) || 'teng_bon_3'
+    const stored = localStorage.getItem(STORAGE_KEY_BET_TYPE)
+    // Always default to teng_bon_3 if no stored value
+    return stored || 'teng_bon_3'
   })
 
   // Input Mode

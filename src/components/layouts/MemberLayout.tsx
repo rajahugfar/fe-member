@@ -21,6 +21,7 @@ import { profileAPI } from '@api/memberAPI'
 import { useMemberStore } from '@store/memberStore'
 import { toast } from 'react-hot-toast'
 import MemberChat from '@/components/chat/MemberChat'
+import { siteContentAPI } from '@api/siteContentAPI'
 
 const MemberLayout: React.FC = () => {
   const navigate = useNavigate()
@@ -28,6 +29,7 @@ const MemberLayout: React.FC = () => {
   const { logout, member, loadProfile } = useMemberStore()
   const [loading, setLoading] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@permchok')
 
   useEffect(() => {
     // Load profile only if not already in store
@@ -40,6 +42,41 @@ const MemberLayout: React.FC = () => {
         .finally(() => {
           setLoading(false)
         })
+    }
+  }, [])
+
+  // Load site settings (LINE URL)
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await siteContentAPI.getSiteSettings()
+        const settings = response.data.data
+        if (settings.site_line) {
+          setLineUrl(settings.site_line)
+        }
+      } catch (error) {
+        console.error('Failed to load site settings:', error)
+      }
+    }
+    loadSettings()
+  }, [])
+
+  // Auto-refresh credit every 1 minute
+  useEffect(() => {
+    console.log('[MemberLayout] Setting up credit refresh interval')
+
+    // Refresh immediately
+    loadProfile().catch(err => console.error('[MemberLayout] Initial refresh failed:', err))
+
+    // Set up interval
+    const interval = setInterval(() => {
+      console.log('[MemberLayout] Refreshing credit...')
+      loadProfile().catch(err => console.error('[MemberLayout] Refresh failed:', err))
+    }, 60000) // 60 seconds
+
+    return () => {
+      console.log('[MemberLayout] Cleaning up credit refresh interval')
+      clearInterval(interval)
     }
   }, [])
 
@@ -155,7 +192,7 @@ const MemberLayout: React.FC = () => {
           <FaTrophy className="text-2xl" />
         </Link>
         <a
-          href="https://line.me/ti/p/@permchok"
+          href={lineUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform duration-300"

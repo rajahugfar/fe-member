@@ -16,6 +16,10 @@ export interface CheckMultiplyResponse {
   codition: string // description
   totalPoy?: number // times bought
   DAUmultiply?: number // max price per user
+  isSpecialNumber?: boolean // true if in huay_limit (หวยอั๋น)
+  soldAmount?: number // total sold for this number
+  remainingAmount?: number // remaining available (for special numbers)
+  maxSaleAmount?: number // max sale amount (p_price from huay_limit)
 }
 
 export const memberLotteryCheckAPI = {

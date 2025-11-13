@@ -16,9 +16,24 @@ export const apiClient = axios.create({
 // Request interceptor - Add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // Try multiple token sources for compatibility (same as memberAPIClient)
     const { accessToken } = useAuthStore.getState()
-    if (accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${accessToken}`
+    const token = accessToken ||
+                  localStorage.getItem('memberToken') ||
+                  localStorage.getItem('token') ||
+                  JSON.parse(localStorage.getItem('auth-storage') || '{}')?.state?.accessToken
+
+    // Debug: Log token status
+    if (import.meta.env.DEV) {
+      console.log('[API Request]', config.url, {
+        hasToken: !!token,
+        tokenSource: accessToken ? 'zustand' : 'localStorage',
+        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none'
+      })
+    }
+
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`
     }
     return config
   },

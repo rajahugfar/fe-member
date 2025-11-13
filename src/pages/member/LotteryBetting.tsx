@@ -8,6 +8,7 @@ import { FaUser, FaSignOutAlt, FaCoins, FaMoneyBillWave } from 'react-icons/fa'
 import { useLotteryState } from '@/hooks/useLotteryState'
 import { useKeyboardInput } from '@/hooks/useKeyboardInput'
 import { reloadCredit } from '@/utils/creditHelpers'
+import { useAuthStore } from '@store/authStore'
 import { useMemberStore } from '@store/memberStore'
 import {
   BET_TYPES,
@@ -33,6 +34,7 @@ const LotteryBetting: React.FC = () => {
   const { periodId } = useParams<{ periodId: string }>()
   const navigate = useNavigate()
   const { logout, member } = useMemberStore()
+  const { refreshUser } = useAuthStore()
 
   // Data States
   const [period, setPeriod] = useState<OpenPeriod | null>(null)
@@ -116,9 +118,10 @@ const LotteryBetting: React.FC = () => {
       const ratesData = await memberLotteryAPI.getLotteryRates(foundPeriod.huayCode)
       setRates(ratesData || [])
 
-      // Set default bet type
+      // Set default bet type to teng_bon_3 (3ตัวบน) if available, otherwise use first available
       if (ratesData && ratesData.length > 0) {
-        setSelectedBetType(ratesData[0].bet_type)
+        const preferredBetType = ratesData.find(r => r.bet_type === 'teng_bon_3')
+        setSelectedBetType(preferredBetType ? 'teng_bon_3' : ratesData[0].bet_type)
       }
     } catch (error) {
       console.error('Load error:', error)
@@ -176,14 +179,20 @@ const LotteryBetting: React.FC = () => {
             value: 1
           })
 
-          // Use actual multiply and set initial amount to limitprice
+          // Use actual multiply and set initial amount to minPrice
           addToCart({
             bet_type: selectedBetType,
             bet_type_label: config.label,
             number: num,
-            amount: checkResult.limitprice || 1, // ใส่ราคาต่ำสุดที่แทงได้
+            amount: checkResult.minPrice || 1, // ใส่ราคาต่ำสุดที่แทงได้
             payout_rate: checkResult.multiply, // ใช้ราคาจ่ายจริง
-            huayName: period?.huayName
+            huayName: period?.huayName,
+            // Store special number data
+            isSpecialNumber: checkResult.isSpecialNumber,
+            soldAmount: checkResult.soldAmount,
+            remainingAmount: checkResult.remainingAmount,
+            maxSaleAmount: checkResult.maxSaleAmount,
+            checkResult: checkResult.result
           })
 
           // Show condition message if available
@@ -299,6 +308,9 @@ const LotteryBetting: React.FC = () => {
 
       // Reload credit across the app
       reloadCredit()
+
+      // Refresh user data immediately to update credit
+      await refreshUser()
 
       toast.success('แทงหวยสำเร็จ!')
     } catch (error: any) {

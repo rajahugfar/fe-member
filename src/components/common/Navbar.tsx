@@ -1,16 +1,34 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import { FaHome, FaGamepad, FaDice, FaGift, FaUser, FaWallet, FaSignOutAlt } from 'react-icons/fa'
 import { useAuthStore } from '@store/authStore'
 import { formatCurrency } from '@utils/format'
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { user, isAuthenticated, logout } = useAuthStore()
+  const { user, isAuthenticated, logout, refreshUser } = useAuthStore()
 
   const handleLogout = () => {
     logout()
     navigate('/login')
   }
+
+  // Auto-refresh credit every 1 minute
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    // Refresh immediately on mount
+    refreshUser()
+
+    // Set up interval to refresh every 60 seconds
+    const interval = setInterval(() => {
+      refreshUser()
+    }, 60000) // 60000ms = 1 minute
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]) // Only depend on isAuthenticated, not refreshUser
 
   return (
     <nav className="bg-dark-800/95 backdrop-blur-md border-b border-dark-700 sticky top-0 z-50">

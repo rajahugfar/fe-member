@@ -48,6 +48,20 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
     }
   }
 
+  // Helper function to get remaining amount color based on percentage
+  const getRemainingColor = (remaining: number, max: number): string => {
+    if (remaining === 0) return 'text-gray-400' // Sold out
+    const percentage = (remaining / max) * 100
+    if (percentage > 50) return 'text-green-400' // Plenty
+    if (percentage >= 20) return 'text-orange-400' // Low
+    return 'text-red-400' // Very low
+  }
+
+  // Check if item is sold out
+  const isSoldOut = (item: CartItem): boolean => {
+    return item.isSpecialNumber === true && item.remainingAmount === 0 && item.checkResult === 99
+  }
+
   // Group cart items by bet type category (digit count)
   const groupedCart = cart.reduce((groups, item) => {
     const category = getBetTypeCategory(item.bet_type)
@@ -136,7 +150,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                       className={`
                         bg-gradient-to-r from-white/10 to-white/5 rounded-md p-1.5 border transition-all
                         ${item.is_duplicate ? 'border-yellow-400/50' : 'border-white/10'}
-                        hover:border-yellow-400/70 hover:bg-white/15
+                        ${isSoldOut(item) ? 'opacity-60 bg-gray-800/30' : 'hover:border-yellow-400/70 hover:bg-white/15'}
                       `}
                     >
                       <div className="flex items-center gap-1.5">
@@ -148,6 +162,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                           <div className="text-[9px] text-white/60 text-center leading-none">
                             {item.bet_type_label}
                           </div>
+                          {/* Special Number Badge */}
+                          {item.isSpecialNumber && (
+                            <div className="mt-0.5">
+                              <span className="inline-block bg-purple-600 text-white text-[8px] px-1 py-0.5 rounded font-bold">
+                                เลขพิเศษ
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Amount Input */}
@@ -156,11 +178,25 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                             type="number"
                             value={item.amount || ''}
                             onChange={(e) => onUpdateAmount(item.id, parseFloat(e.target.value) || 0)}
-                            className="w-full px-1.5 py-1 bg-white/10 border border-white/20 rounded text-white font-bold text-xs focus:outline-none focus:border-yellow-400 transition-colors"
+                            className={`w-full px-1.5 py-1 bg-white/10 border border-white/20 rounded text-white font-bold text-xs focus:outline-none focus:border-yellow-400 transition-colors ${isSoldOut(item) ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder="0"
                             min={config?.min || 1}
                             max={config?.max || 1000}
+                            disabled={isSoldOut(item)}
                           />
+
+                          {/* Special Number Info */}
+                          {item.isSpecialNumber && item.maxSaleAmount !== undefined && (
+                            <div className="mt-0.5 space-y-0.5">
+                              <div className="text-[8px] text-white/60">
+                                ขายแล้ว: {formatNumber(item.soldAmount || 0)} / {formatNumber(item.maxSaleAmount)}
+                              </div>
+                              <div className={`text-[8px] font-bold ${getRemainingColor(item.remainingAmount || 0, item.maxSaleAmount)}`}>
+                                เหลือ: {formatNumber(item.remainingAmount || 0)} บาท
+                                {isSoldOut(item) && <span className="text-red-400"> (ขายหมด)</span>}
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         {/* Win Amount */}
@@ -206,18 +242,32 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
             </div>
           </div>
 
+          {/* Sold Out Warning */}
+          {cart.some(item => isSoldOut(item)) && (
+            <div className="bg-red-600/20 border border-red-600/50 rounded-lg p-1.5 mb-1.5">
+              <p className="text-red-400 text-[10px] font-semibold text-center">
+                มีเลขที่ขายหมดในตะกร้า กรุณาลบออกก่อนทำการแทง
+              </p>
+            </div>
+          )}
+
           {/* Submit Button */}
           <motion.button
             onClick={onSubmit}
-            disabled={submitting}
-            whileHover={!submitting ? { scale: 1.02 } : {}}
-            whileTap={!submitting ? { scale: 0.98 } : {}}
+            disabled={submitting || cart.some(item => isSoldOut(item))}
+            whileHover={!submitting && !cart.some(item => isSoldOut(item)) ? { scale: 1.02 } : {}}
+            whileTap={!submitting && !cart.some(item => isSoldOut(item)) ? { scale: 0.98 } : {}}
             className="w-full py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-lg font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-1.5 disabled:opacity-50"
           >
             {submitting ? (
               <>
                 <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-white"></div>
                 <span className="text-xs">กำลังส่งโพย...</span>
+              </>
+            ) : cart.some(item => isSoldOut(item)) ? (
+              <>
+                <FiX className="text-sm" />
+                <span className="text-xs">มีเลขขายหมด</span>
               </>
             ) : (
               <>
