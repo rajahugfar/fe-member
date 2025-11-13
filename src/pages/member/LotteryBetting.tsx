@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { memberLotteryAPI, OpenPeriod, LotteryRate } from '@api/memberLotteryAPI'
+import { memberLotteryCheckAPI } from '@api/memberLotteryCheckAPI'
 import { toast } from 'react-hot-toast'
 import { FiClock, FiX, FiShoppingCart, FiArrowLeft } from 'react-icons/fi'
 import { FaUser, FaSignOutAlt, FaCoins, FaMoneyBillWave } from 'react-icons/fa'
@@ -127,8 +128,8 @@ const LotteryBetting: React.FC = () => {
     }
   }
 
-  // Handle Add Number
-  function handleAddNumber(number: string) {
+  // Handle Add Number with multiply check
+  async function handleAddNumber(number: string) {
     if (!number) return
 
     const rate = rates.find(r => r.bet_type === selectedBetType)
@@ -160,20 +161,49 @@ const LotteryBetting: React.FC = () => {
       }
     }
 
-    // Add all numbers to cart
-    numbersToAdd.forEach(num => {
+    // Add all numbers to cart with multiply check
+    for (const num of numbersToAdd) {
       // Check duplicate for each
       if (!checkDuplicate(num, selectedBetType, cart)) {
-        addToCart({
-          bet_type: selectedBetType,
-          bet_type_label: config.label,
-          number: num,
-          amount: 0,
-          payout_rate: rate.multiply,
-          huayName: period?.huayName
-        })
+        try {
+          // Check multiply for this number
+          const checkResult = await memberLotteryCheckAPI.checkMultiply({
+            huayId: period?.lotteryId || 1,
+            stockType: period?.huayCode?.startsWith('g') ? 'g' : 's',
+            huayOption: selectedBetType,
+            poyNumber: num,
+            multiply: rate.multiply,
+            value: 1
+          })
+
+          // Use actual multiply and set initial amount to limitprice
+          addToCart({
+            bet_type: selectedBetType,
+            bet_type_label: config.label,
+            number: num,
+            amount: checkResult.limitprice || 1, // ใส่ราคาต่ำสุดที่แทงได้
+            payout_rate: checkResult.multiply, // ใช้ราคาจ่ายจริง
+            huayName: period?.huayName
+          })
+
+          // Show condition message if available
+          if (checkResult.codition && checkResult.result !== 1) {
+            toast.info(`${num}: ${checkResult.codition}`, { duration: 3000 })
+          }
+        } catch (error) {
+          console.error('Check multiply error:', error)
+          // Fallback to default rate if API fails
+          addToCart({
+            bet_type: selectedBetType,
+            bet_type_label: config.label,
+            number: num,
+            amount: 1,
+            payout_rate: rate.multiply,
+            huayName: period?.huayName
+          })
+        }
       }
-    })
+    }
 
     if (numbersToAdd.length > 1) {
       toast.success(`เพิ่ม ${numbersToAdd.length} เลขลงตะกร้าแล้ว`)
