@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FiDollarSign, FiCreditCard, FiUpload, FiCamera, FiCheck, FiArrowRight, FiCopy, FiZap, FiX } from 'react-icons/fi'
 import { GiTwoCoins, GiSparkles, GiDiamonds, GiMagicSwirl, GiCrystalBall } from 'react-icons/gi'
 import { depositAPI } from '../../api/memberAPI'
+import { siteContentAPI } from '../../api/siteContentAPI'
 import { toast } from 'react-hot-toast'
 import BankIcon from '../../components/BankIcon'
 import { Html5Qrcode } from 'html5-qrcode'
@@ -38,9 +39,32 @@ const Deposit: React.FC = () => {
   const [qrPaymentData, setQrPaymentData] = useState<any>(null)
   const [showQrPayment, setShowQrPayment] = useState(false)
 
+  // Payment method settings
+  const [bankTransferEnabled, setBankTransferEnabled] = useState(true)
+  const [gatewayEnabled, setGatewayEnabled] = useState(true)
+
   useEffect(() => {
     loadCompanyBanks()
+    loadPaymentSettings()
   }, [])
+
+  const loadPaymentSettings = async () => {
+    try {
+      const response = await siteContentAPI.getSiteSettings()
+      const settings = response.data?.data || response.data
+
+      // Check if payment method settings exist
+      if (settings.payment) {
+        setBankTransferEnabled(settings.payment.deposit_bank_transfer_enabled ?? true)
+        setGatewayEnabled(settings.payment.deposit_gateway_enabled ?? true)
+      }
+    } catch (error) {
+      console.error('Failed to load payment settings:', error)
+      // Default to enabled if API fails
+      setBankTransferEnabled(true)
+      setGatewayEnabled(true)
+    }
+  }
 
   const loadCompanyBanks = async () => {
     try {
@@ -313,66 +337,79 @@ const Deposit: React.FC = () => {
                 เลือกวิธีการฝากเงิน
               </label>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className={`grid grid-cols-1 ${bankTransferEnabled && gatewayEnabled ? 'md:grid-cols-2' : ''} gap-6`}>
                 {/* โอนเงินปกติ */}
-                <button
-                  onClick={() => setDepositMethod('transfer')}
-                  className={`relative p-8 rounded-2xl transition-all duration-300 overflow-hidden group ${
-                    depositMethod === 'transfer'
-                      ? 'bg-gradient-to-br from-emerald-600 to-green-600 border-2 border-emerald-300 shadow-[0_0_40px_rgba(16,185,129,0.6)] scale-105'
-                      : 'bg-gradient-to-br from-emerald-900/40 to-green-900/40 border-2 border-emerald-500/30 hover:border-emerald-400/60 hover:scale-105'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                  {depositMethod === 'transfer' && (
-                    <>
-                      <GiSparkles className="absolute top-3 right-3 text-yellow-300 animate-pulse" size={24} />
-                      <div className="absolute top-3 right-12">
-                        <FiCheck className="text-white bg-emerald-500 rounded-full p-1" size={28} />
-                      </div>
-                    </>
-                  )}
+                {bankTransferEnabled && (
+                  <button
+                    onClick={() => setDepositMethod('transfer')}
+                    className={`relative p-8 rounded-2xl transition-all duration-300 overflow-hidden group ${
+                      depositMethod === 'transfer'
+                        ? 'bg-gradient-to-br from-emerald-600 to-green-600 border-2 border-emerald-300 shadow-[0_0_40px_rgba(16,185,129,0.6)] scale-105'
+                        : 'bg-gradient-to-br from-emerald-900/40 to-green-900/40 border-2 border-emerald-500/30 hover:border-emerald-400/60 hover:scale-105'
+                    }`}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    {depositMethod === 'transfer' && (
+                      <>
+                        <GiSparkles className="absolute top-3 right-3 text-yellow-300 animate-pulse" size={24} />
+                        <div className="absolute top-3 right-12">
+                          <FiCheck className="text-white bg-emerald-500 rounded-full p-1" size={28} />
+                        </div>
+                      </>
+                    )}
 
-                  <div className="relative flex flex-col items-center gap-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <FiCreditCard size={40} className="text-white" />
+                    <div className="relative flex flex-col items-center gap-4">
+                      <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <FiCreditCard size={40} className="text-white" />
+                      </div>
+                      <div className="text-center">
+                        <h3 className="text-white font-black text-2xl mb-2">โอนเงินปกติ</h3>
+                        <p className="text-emerald-200 text-sm">โอนผ่านธนาคารและอัพโหลดสลิป</p>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <h3 className="text-white font-black text-2xl mb-2">โอนเงินปกติ</h3>
-                      <p className="text-emerald-200 text-sm">โอนผ่านธนาคารและอัพโหลดสลิป</p>
-                    </div>
-                  </div>
-                </button>
+                  </button>
+                )}
 
                 {/* สแกน QR Code */}
-                <button
-                  onClick={() => setDepositMethod('qr')}
-                  className={`relative p-8 rounded-2xl transition-all duration-300 overflow-hidden group ${
-                    depositMethod === 'qr'
-                      ? 'bg-gradient-to-br from-cyan-600 to-blue-600 border-2 border-cyan-300 shadow-[0_0_40px_rgba(6,182,212,0.6)] scale-105'
-                      : 'bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-2 border-cyan-500/30 hover:border-cyan-400/60 hover:scale-105'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                  {depositMethod === 'qr' && (
-                    <>
-                      <GiMagicSwirl className="absolute top-3 right-3 text-cyan-300 animate-spin" style={{ animationDuration: '2s' }} size={24} />
-                      <div className="absolute top-3 right-12">
-                        <FiCheck className="text-white bg-cyan-500 rounded-full p-1" size={28} />
-                      </div>
-                    </>
-                  )}
+                {gatewayEnabled && (
+                  <button
+                    onClick={() => setDepositMethod('qr')}
+                    className={`relative p-8 rounded-2xl transition-all duration-300 overflow-hidden group ${
+                      depositMethod === 'qr'
+                        ? 'bg-gradient-to-br from-cyan-600 to-blue-600 border-2 border-cyan-300 shadow-[0_0_40px_rgba(6,182,212,0.6)] scale-105'
+                        : 'bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-2 border-cyan-500/30 hover:border-cyan-400/60 hover:scale-105'
+                    }`}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    {depositMethod === 'qr' && (
+                      <>
+                        <GiMagicSwirl className="absolute top-3 right-3 text-cyan-300 animate-spin" style={{ animationDuration: '2s' }} size={24} />
+                        <div className="absolute top-3 right-12">
+                          <FiCheck className="text-white bg-cyan-500 rounded-full p-1" size={28} />
+                        </div>
+                      </>
+                    )}
 
-                  <div className="relative flex flex-col items-center gap-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <GiCrystalBall size={40} className="text-white animate-pulse" />
+                    <div className="relative flex flex-col items-center gap-4">
+                      <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <GiCrystalBall size={40} className="text-white animate-pulse" />
+                      </div>
+                      <div className="text-center">
+                        <h3 className="text-white font-black text-2xl mb-2">สแกน QR Code</h3>
+                        <p className="text-cyan-200 text-sm">สแกน QR PromptPay เพื่อฝากเงินง่ายๆ</p>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <h3 className="text-white font-black text-2xl mb-2">สแกน QR Code</h3>
-                      <p className="text-cyan-200 text-sm">สแกน QR PromptPay เพื่อฝากเงินง่ายๆ</p>
-                    </div>
+                  </button>
+                )}
+
+                {/* No payment methods available */}
+                {!bankTransferEnabled && !gatewayEnabled && (
+                  <div className="col-span-full p-8 bg-gradient-to-br from-red-900/40 to-orange-900/40 border-2 border-red-500/30 rounded-2xl text-center">
+                    <FiX className="mx-auto text-red-400 mb-4" size={48} />
+                    <h3 className="text-white font-bold text-xl mb-2">ระบบฝากเงินปิดปรับปรุงชั่วคราว</h3>
+                    <p className="text-red-200">กรุณาติดต่อแอดมินเพื่อขอความช่วยเหลือ</p>
                   </div>
-                </button>
+                )}
               </div>
             </div>
           </div>
