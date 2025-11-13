@@ -1,0 +1,338 @@
+[
+  {
+    "code": "wt-ppa-live",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wt-ppa-live.png"
+  },
+  {
+    "code": "sa-gaming",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/sa-gaming.png"
+  },
+  {
+    "code": "wm",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wm.png"
+  },
+  {
+    "code": "wt-pt-live",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wt-pt-live.png"
+  },
+  {
+    "code": "wt-eg",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wt-eg.png"
+  },
+  {
+    "code": "wt-aesexy",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wt-aesexy.png"
+  },
+  {
+    "code": "wt-allbet-full",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wt-allbet-full.png"
+  },
+  {
+    "code": "wt-dg-v2",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wt-dg-v2.png"
+  },
+  {
+    "code": "wtm-asia-gaming",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "คาสิโน",
+    "localImage": "/uploads/providers/wtm-asia-gaming.png"
+  },
+  {
+    "code": "image",
+    "name": "Image",
+    "image": "https://sacasino.tech/build/web/ezl-sa-casino/img/error-404-content.png?v=4",
+    "category": "บาคาร่า VIP",
+    "localImage": "/uploads/providers/image.png"
+  },
+  {
+    "code": "sacasino",
+    "name": "Sacasino",
+    "image": "https://asset.cloudigame.co/build/admin/img/wt_theme/ezl/loading-logo.png",
+    "category": "บาคาร่า VIP",
+    "localImage": "/uploads/providers/sacasino.png"
+  },
+  {
+    "code": "wt-ppa",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-ppa.png"
+  },
+  {
+    "code": "smm-pg-soft",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/smm-pg-soft.png"
+  },
+  {
+    "code": "wt-advant-play",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-advant-play.png"
+  },
+  {
+    "code": "sm-5g-games",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/sm-5g-games.png"
+  },
+  {
+    "code": "wt-joker",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-joker.png"
+  },
+  {
+    "code": "wt-jili",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-jili.png"
+  },
+  {
+    "code": "wtm-endorphina",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wtm-endorphina.png"
+  },
+  {
+    "code": "wt-habanero",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-habanero.png"
+  },
+  {
+    "code": "wt-wm-slot",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-wm-slot.png"
+  },
+  {
+    "code": "wt-evo-play",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-evo-play.png"
+  },
+  {
+    "code": "sp",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/sp.png"
+  },
+  {
+    "code": "wt-goldy",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-goldy.png"
+  },
+  {
+    "code": "sm-bt-gaming",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/sm-bt-gaming.png"
+  },
+  {
+    "code": "sm-ygr",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/sm-ygr.png"
+  },
+  {
+    "code": "sm-kingmaker",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/sm-kingmaker.png"
+  },
+  {
+    "code": "wt-mpoker",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-mpoker.png"
+  },
+  {
+    "code": "wt-dragoon-soft",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-dragoon-soft.png"
+  },
+  {
+    "code": "wt-fa-chai",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-fa-chai.png"
+  },
+  {
+    "code": "wt-rich88",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-rich88.png"
+  },
+  {
+    "code": "wt-fat-panda",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-fat-panda.png"
+  },
+  {
+    "code": "wt-kalamba",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-kalamba.png"
+  },
+  {
+    "code": "wt-play-tech",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-play-tech.png"
+  },
+  {
+    "code": "wt-netent-slot",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-netent-slot.png"
+  },
+  {
+    "code": "wt-red-tiger",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-red-tiger.png"
+  },
+  {
+    "code": "wt-ps",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-ps.png"
+  },
+  {
+    "code": "wt-cq9",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-cq9.png"
+  },
+  {
+    "code": "wt-only-play",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/wt-only-play.png"
+  },
+  {
+    "code": "sm-hot-dog",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-big.png",
+    "category": "สล็อต",
+    "localImage": "/uploads/providers/sm-hot-dog.png"
+  },
+  {
+    "code": "wt-imone-es",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-horizontal.png",
+    "category": "กีฬา",
+    "localImage": "/uploads/providers/wt-imone-es.png"
+  },
+  {
+    "code": "wt-pinnacle",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-horizontal.png",
+    "category": "กีฬา",
+    "localImage": "/uploads/providers/wt-pinnacle.png"
+  },
+  {
+    "code": "wt-saba",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-horizontal.png",
+    "category": "กีฬา",
+    "localImage": "/uploads/providers/wt-saba.png"
+  },
+  {
+    "code": "wt-imone-sb",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-horizontal.png",
+    "category": "กีฬา",
+    "localImage": "/uploads/providers/wt-imone-sb.png"
+  },
+  {
+    "code": "wt-sbo-sport",
+    "name": "Img",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezs-default-loading-horizontal.png",
+    "category": "กีฬา",
+    "localImage": "/uploads/providers/wt-sbo-sport.png"
+  },
+  {
+    "code": "icon",
+    "name": "Icon",
+    "image": "https://asset.cloudigame.co/build/admin/img/wt_theme/ezl/ic-website-menu-blog.png",
+    "category": "กีฬา",
+    "localImage": "/uploads/providers/icon.png"
+  },
+  {
+    "code": "steal",
+    "name": "Steal",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezl-default-loading-big-with-countdown-flat.png",
+    "category": "หวย",
+    "localImage": "/uploads/providers/steal.png"
+  },
+  {
+    "code": "provider",
+    "name": "Provider",
+    "image": "https://asset.cloudigame.co/build/admin/img/wt_theme/ezl/ajax-ic-live-animate.png",
+    "category": "หวย",
+    "localImage": "/uploads/providers/provider.png"
+  },
+  {
+    "code": "lotto",
+    "name": "Lotto",
+    "image": "https://asset.cloudigame.co/build/admin/img/ezl-default-loading-big-with-countdown-flat.png",
+    "category": "หวย",
+    "localImage": "/uploads/providers/lotto.png"
+  }
+]

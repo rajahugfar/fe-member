@@ -1,0 +1,50 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGradient)"/>
+  <circle cx="32" cy="32" r="28" fill="#0f1419"/>
+  
+  <!-- Bicycle Icon -->
+  <g transform="translate(16, 20)">
+    <!-- Front Wheel -->
+    <circle cx="8" cy="18" r="7" stroke="url(#gradient1)" stroke-width="2.5" fill="none"/>
+    <circle cx="8" cy="18" r="2" fill="url(#gradient1)"/>
+    
+    <!-- Back Wheel -->
+    <circle cx="24" cy="18" r="7" stroke="url(#gradient1)" stroke-width="2.5" fill="none"/>
+    <circle cx="24" cy="18" r="2" fill="url(#gradient1)"/>
+    
+    <!-- Frame -->
+    <path d="M 8 18 L 16 8 L 24 18" stroke="url(#gradient1)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 16 8 L 16 4" stroke="url(#gradient1)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 14 4 L 18 4" stroke="url(#gradient1)" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- Seat -->
+    <ellipse cx="16" cy="6" rx="3" ry="1.5" fill="url(#gradient1)"/>
+  </g>
+  
+  <!-- Number 678 -->
+  <text x="32" y="50" font-family="'Inter', sans-serif" font-size="10" font-weight="700" fill="url(#gradient2)" text-anchor="middle">
+    678
+  </text>
+  
+  <!-- Gradients -->
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gold Gradient -->
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Green Gradient -->
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

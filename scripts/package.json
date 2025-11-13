@@ -1,0 +1,13 @@
+{
+  "name": "sacasino-image-downloader",
+  "version": "1.0.0",
+  "description": "Download images from sacasino.tech for testing",
+  "main": "download-with-puppeteer.js",
+  "scripts": {
+    "download": "node download-with-puppeteer.js",
+    "download-simple": "node download-sacasino-images.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}
