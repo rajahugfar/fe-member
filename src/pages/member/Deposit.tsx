@@ -53,11 +53,9 @@ const Deposit: React.FC = () => {
       const response = await siteContentAPI.getSiteSettings()
       const settings = response.data?.data || response.data
 
-      // Check if payment method settings exist
-      if (settings.payment) {
-        setBankTransferEnabled(settings.payment.deposit_bank_transfer_enabled ?? true)
-        setGatewayEnabled(settings.payment.deposit_gateway_enabled ?? true)
-      }
+      // Public API returns flat object, not grouped
+      setBankTransferEnabled(settings.deposit_bank_transfer_enabled ?? true)
+      setGatewayEnabled(settings.deposit_gateway_enabled ?? true)
     } catch (error) {
       console.error('Failed to load payment settings:', error)
       // Default to enabled if API fails
