@@ -6,19 +6,15 @@ import { GameProvider } from '@/api/gameProviderAPI'
 import { publicGameAPI, Game } from '@/api/publicGameAPI'
 import { siteContentAPI } from '@/api/siteContentAPI'
 import { getImageUrl } from '@/api/client'
-import { useMemberStore } from '@/store/memberStore'
-import DailyCheckInModal from '@/components/DailyCheckInModal'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
 const SacasinoHomePage = () => {
-  const { member } = useMemberStore()
   const [activeTab, setActiveTab] = useState('all')
   const [providers, setProviders] = useState<GameProvider[]>([])
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [gamesLoading, setGamesLoading] = useState(false)
-  const [showDailyCheckIn, setShowDailyCheckIn] = useState(false)
   const [bannerImages, setBannerImages] = useState<string[]>([])
   const [smallBanners, setSmallBanners] = useState<any[]>([])
 
@@ -105,25 +101,7 @@ const SacasinoHomePage = () => {
     loadGames()
   }, [activeTab])
 
-  // Check if should show daily check-in modal
-  useEffect(() => {
-    if (member) {
-      const lastCheckIn = localStorage.getItem('lastDailyCheckIn')
-      const today = new Date().toDateString()
-      
-      if (lastCheckIn !== today) {
-        // Show modal after 1 second
-        setTimeout(() => {
-          setShowDailyCheckIn(true)
-        }, 1000)
-      }
-    }
-  }, [member])
 
-  const handleCloseCheckIn = () => {
-    setShowDailyCheckIn(false)
-    localStorage.setItem('lastDailyCheckIn', new Date().toDateString())
-  }
 
   // Map category to game type
   const mapCategoryToGameType = (category: string): string => {
@@ -222,10 +200,9 @@ const SacasinoHomePage = () => {
   // Use static providers if no data from API
   const displayProviders = (providers && providers.length > 0) ? providers : staticProviders as any[]
 
-  // Special menu items - use small banners from API or fallback to static
+  // Special menu items - use small banners from API or fallback to static (removed daily check-in for non-logged in users)
   const fallbackSpecialMenu = [
     { name: 'แชร์โซเชียล', image: '/images/sacasino/special/special-menu-entry-social-share.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '#' },
-    { name: 'เช็คอินประจำวัน', image: '/images/sacasino/special/special-menu-entry-daily-check-in.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '#' },
     { name: 'กงล้อพารวย', image: '/images/sacasino/special/special-menu-entry-wheel.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '/lucky-wheel' },
     { name: 'ผูกโซเชียล', image: '/images/sacasino/special/special-menu-entry-bind-social.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '#' },
     { name: 'ชวนเพื่อน', image: '/images/sacasino/special/special-menu-entry-invitation.png', bg: '/images/sacasino/special/special-menu-entry-item-bg.png', link: '/invitation' },
@@ -519,12 +496,6 @@ const SacasinoHomePage = () => {
           <p>© 2024 SA Casino Gaming. All rights reserved.</p>
         </div>
       </footer>
-
-      {/* Daily Check-in Modal */}
-      <DailyCheckInModal 
-        isOpen={showDailyCheckIn} 
-        onClose={handleCloseCheckIn} 
-      />
     </div>
   )
 }

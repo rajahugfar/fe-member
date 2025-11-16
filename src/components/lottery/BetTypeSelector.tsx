@@ -79,11 +79,23 @@ const BetTypeSelector: React.FC<BetTypeSelectorProps> = ({
         })}
       </div>
 
-      {/* Compact Info */}
+      {/* Compact Info - Show config from huay_config */}
       {selectedConfig && (
-        <div className="flex gap-3 text-xs text-white/70 mt-2 pt-2 border-t border-white/10">
-          <span>ต่ำสุด: <span className="text-white font-semibold">{selectedConfig.min}฿</span></span>
-          <span>สูงสุด: <span className="text-white font-semibold">{selectedConfig.max.toLocaleString()}฿</span></span>
+        <div className="mt-2 pt-2 border-t border-white/10">
+          <div className="grid grid-cols-3 gap-2 text-xs">
+            <div className="text-center">
+              <div className="text-white/60 mb-0.5">ต่ำสุด</div>
+              <div className="text-yellow-400 font-bold">{selectedConfig.min}฿</div>
+            </div>
+            <div className="text-center">
+              <div className="text-white/60 mb-0.5">สูงสุด</div>
+              <div className="text-yellow-400 font-bold">{selectedConfig.max.toLocaleString()}฿</div>
+            </div>
+            <div className="text-center">
+              <div className="text-white/60 mb-0.5">ราคาจ่าย</div>
+              <div className="text-green-400 font-bold">{selectedConfig.multiply.toLocaleString()}</div>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { memberLotteryAPI, OpenPeriod, LotteryRate } from '@api/memberLotteryAPI'
+import { memberLotteryAPI, OpenPeriod, LotteryRate, HuayConfig } from '@api/memberLotteryAPI'
 import { memberLotteryCheckAPI } from '@api/memberLotteryCheckAPI'
 import { toast } from 'react-hot-toast'
 import { FiClock, FiX, FiShoppingCart, FiArrowLeft } from 'react-icons/fi'
@@ -39,6 +39,7 @@ const LotteryBetting: React.FC = () => {
   // Data States
   const [period, setPeriod] = useState<OpenPeriod | null>(null)
   const [rates, setRates] = useState<LotteryRate[]>([])
+  const [huayConfigs, setHuayConfigs] = useState<HuayConfig[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
 
@@ -115,8 +116,22 @@ const LotteryBetting: React.FC = () => {
 
       setPeriod(foundPeriod)
 
-      const ratesData = await memberLotteryAPI.getLotteryRates(foundPeriod.huayCode)
-      setRates(ratesData || [])
+      // Load huay config (default configs only, type=1 for payout)
+      const configsData = await memberLotteryAPI.getHuayConfig(foundPeriod.lotteryId, 1)
+      const defaultConfigs = configsData.filter(c => c.default === 1 && c.status === 1)
+      setHuayConfigs(defaultConfigs)
+
+      // Transform configs to rates format for backward compatibility
+      const ratesData: LotteryRate[] = defaultConfigs.map(config => ({
+        id: String(config.id),
+        bet_type: config.optionType,
+        multiply: config.multiply,
+        min_bet: config.minPrice,
+        max_bet: config.maxPrice,
+        max_per_number: config.maxPricePerNum,
+        is_active: config.status === 1
+      }))
+      setRates(ratesData)
 
       // Set default bet type to teng_bon_3 (3ตัวบน) if available, otherwise use first available
       if (ratesData && ratesData.length > 0) {
@@ -179,12 +194,13 @@ const LotteryBetting: React.FC = () => {
             value: 1
           })
 
-          // Use actual multiply and set initial amount to minPrice
+          // Use actual multiply and set initial amount to rate min_bet
+          const currentRate = rates.find(r => r.bet_type === selectedBetType)
           addToCart({
             bet_type: selectedBetType,
             bet_type_label: config.label,
             number: num,
-            amount: checkResult.minPrice || 1, // ใส่ราคาต่ำสุดที่แทงได้
+            amount: currentRate?.min_bet || 1, // ใส่ราคาต่ำสุดที่แทงได้
             payout_rate: checkResult.multiply, // ใช้ราคาจ่ายจริง
             huayName: period?.huayName,
             // Store special number data
@@ -197,7 +213,7 @@ const LotteryBetting: React.FC = () => {
 
           // Show condition message if available
           if (checkResult.codition && checkResult.result !== 1) {
-            toast.info(`${num}: ${checkResult.codition}`, { duration: 3000 })
+            toast(`${num}: ${checkResult.codition}`, { duration: 3000, icon: 'ℹ️' })
           }
         } catch (error) {
           console.error('Check multiply error:', error)

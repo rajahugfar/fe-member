@@ -95,6 +95,21 @@ export interface LotteryRate {
   is_active: boolean
 }
 
+export interface HuayConfig {
+  id: number
+  huayId: number
+  huayType: string
+  optionType: string
+  minPrice: number
+  maxPrice: number
+  multiply: number
+  status: number
+  default: number
+  maxPricePerNum: number
+  maxPricePerUser: number
+  typeConfig: number
+}
+
 export interface PlaceBetRequest {
   period_id: string
   bet_type: string
@@ -206,6 +221,14 @@ export const memberLotteryAPI = {
   getLotteryRates: async (lotteryCode: string): Promise<LotteryRate[]> => {
     const response = await memberAPIClient.get(`/lottery/${lotteryCode}/rates`)
     return response.data.data
+  },
+
+  // Get huay config by lottery ID (default configs only)
+  getHuayConfig: async (lotteryId: number, type: number = 1): Promise<HuayConfig[]> => {
+    const response = await memberAPIClient.get(`/lottery/${lotteryId}/huay-config`, {
+      params: { type }
+    })
+    return response.data.data || []
   },
 
   // Place single bet
