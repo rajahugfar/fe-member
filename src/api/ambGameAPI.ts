@@ -12,26 +12,58 @@ const authClient = axios.create({
 })
 
 // Add auth token interceptor
-authClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('memberToken')
-  const selector = localStorage.getItem('memberSelector')
+authClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('memberToken')
 
-  if (token && selector) {
-    config.headers.Authorization = `Bearer ${selector}:${token}`
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
   }
+)
 
-  return config
-})
+// Add response interceptor to handle 401 errors
+authClient.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    // If 401 Unauthorized, redirect to landing page
+    if (error.response && error.response.status === 401) {
+      // Prevent multiple redirects
+      if (!sessionStorage.getItem('redirecting')) {
+        sessionStorage.setItem('redirecting', 'true')
+
+        // Clear auth data
+        localStorage.removeItem('memberToken')
+        localStorage.removeItem('memberId')
+        localStorage.removeItem('memberProfile')
+        localStorage.removeItem('member-storage')
+
+        // Redirect to login page
+        setTimeout(() => {
+          sessionStorage.removeItem('redirecting')
+          window.location.href = '/member/login'
+        }, 100)
+      }
+    }
+
+    return Promise.reject(error)
+  }
+)
 
 export interface AMBGame {
-  gameCode: string
-  gameName: string
-  imageUrl: string
-  thumbnailUrl?: string
-  provider: string
-  category: string
-  isFeatured: boolean
-  isActive: boolean
+  name: string      // Game name
+  category: string  // Category (e.g., "EGAMES")
+  type: string      // Game type (e.g., "SLOT")
+  code: string      // Game code (e.g., "KYS-H5-99999")
+  img: string       // Image URL
+  rank: number      // Display rank/order
 }
 
 export interface AMBGameListResponse {
@@ -85,11 +117,11 @@ export const ambGameAPI = {
   },
 
   /**
-   * Launch game - need to implement backend endpoint
+   * Launch game
    */
   launchGame: async (gameCode: string, provider: string): Promise<AMBLaunchGameResponse> => {
     const response = await authClient.post<AMBLaunchGameResponse>(
-      '/member/games/launch',
+      '/member/games/amb/launch',
       {
         gameCode,
         provider,

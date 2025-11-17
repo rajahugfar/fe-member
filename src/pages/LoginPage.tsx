@@ -61,8 +61,8 @@ const LoginPage = () => {
 
       // Wait for Zustand persist to save, then navigate
       setTimeout(() => {
-        navigate('/member')
-      }, 100)
+        navigate('/member', { replace: true })
+      }, 500)
     } catch (err) {
       setError('เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบเบอร์โทรและรหัสผ่าน')
     }

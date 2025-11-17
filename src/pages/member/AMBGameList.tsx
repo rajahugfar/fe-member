@@ -32,11 +32,20 @@ const AMBGameList: React.FC = () => {
     toast.success('ออกจากระบบสำเร็จ')
   }
 
+  // Check authentication on mount
   useEffect(() => {
+    const token = localStorage.getItem('memberToken')
+
+    if (!token) {
+      toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน')
+      navigate('/member/login')
+      return
+    }
+
     if (provider) {
       loadGames()
     }
-  }, [provider])
+  }, [provider, navigate])
 
   const loadGames = async () => {
     if (!provider) return
@@ -89,7 +98,7 @@ const AMBGameList: React.FC = () => {
   // Filter games by search query
   const filteredGames = games.filter(game => {
     if (!searchQuery) return true
-    return game.gameName.toLowerCase().includes(searchQuery.toLowerCase())
+    return game.name.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
   // Calculate grid columns based on game count
@@ -289,7 +298,7 @@ const AMBGameList: React.FC = () => {
               <div className={`grid ${getGridColumns()} gap-4`}>
                 {filteredGames.map((game, index) => (
                   <motion.div
-                    key={game.gameCode}
+                    key={game.code}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.02 }}
@@ -299,13 +308,13 @@ const AMBGameList: React.FC = () => {
                       {/* Game Card */}
                       <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-800">
                         <img
-                          src={game.imageUrl || game.thumbnailUrl || 'https://via.placeholder.com/300x300?text=Game'}
-                          alt={game.gameName}
+                          src={game.img || 'https://via.placeholder.com/300x300?text=Game'}
+                          alt={game.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         />
 
                         {/* Badges */}
-                        {game.isFeatured && (
+                        {game.rank <= 5 && (
                           <span className="absolute top-2 left-2 px-2 py-1 bg-yellow-500 text-gray-900 text-xs font-bold rounded-lg z-20">
                             ⭐ แนะนำ
                           </span>
@@ -315,7 +324,7 @@ const AMBGameList: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20 flex items-end justify-center pb-4 gap-2">
                           <button
                             type="button"
-                            onClick={() => handlePlayGame(game.gameCode, game.gameName)}
+                            onClick={() => handlePlayGame(game.code, game.name)}
                             className="px-4 py-2 bg-gradient-to-r from-yellow-600 to-orange-600 text-white rounded-lg font-bold hover:from-yellow-500 hover:to-orange-500 transition-all flex items-center gap-2 shadow-lg border-2 border-yellow-400"
                           >
                             <FiPlay size={16} />
@@ -327,8 +336,8 @@ const AMBGameList: React.FC = () => {
 
                     {/* Game Info */}
                     <div className="mt-2">
-                      <p className="text-white font-bold text-sm truncate">{game.gameName}</p>
-                      <p className="text-yellow-400 text-xs uppercase">{game.provider}</p>
+                      <p className="text-white font-bold text-sm truncate">{game.name}</p>
+                      <p className="text-yellow-400 text-xs uppercase">{game.type}</p>
                     </div>
                   </motion.div>
                 ))}

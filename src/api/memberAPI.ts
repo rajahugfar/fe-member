@@ -8,36 +8,44 @@ const memberAPI = axios.create({
 })
 
 // Interceptor to add JWT
-memberAPI.interceptors.request.use(config => {
-  const token = localStorage.getItem('memberToken')
+memberAPI.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('memberToken')
 
-  console.log('[Member API] Request:', config.method?.toUpperCase(), config.url)
-  console.log('[Member API] Token:', token ? token.substring(0, 50) + '...' : 'NOT FOUND')
-  console.log('[Member API] Authorization header will be:', token ? `Bearer ${token.substring(0, 50)}...` : 'NOT SET')
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-
-  return config
-}, error => {
-  return Promise.reject(error)
-})
-
-// Interceptor for 401 redirect - DISABLED FOR DEBUGGING
-memberAPI.interceptors.response.use(
-  res => res,
-  err => {
-    if (err.response?.status === 401) {
-      console.error('[Member API] 401 Unauthorized - Token:', localStorage.getItem('memberToken') ? 'EXISTS' : 'NOT FOUND')
-      // COMMENTED OUT FOR DEBUGGING
-      // localStorage.removeItem('memberToken')
-      // localStorage.removeItem('memberId')
-      // localStorage.removeItem('memberProfile')
-      // localStorage.removeItem('member-storage')
-      // window.location.href = '/member/login'
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
     }
-    return Promise.reject(err)
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// Interceptor for 401 redirect
+memberAPI.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Prevent multiple redirects
+      if (!sessionStorage.getItem('redirecting')) {
+        sessionStorage.setItem('redirecting', 'true')
+
+        // Clear all auth data
+        localStorage.removeItem('memberToken')
+        localStorage.removeItem('memberId')
+        localStorage.removeItem('memberProfile')
+        localStorage.removeItem('member-storage')
+
+        // Redirect to login page
+        setTimeout(() => {
+          sessionStorage.removeItem('redirecting')
+          window.location.href = '/member/login'
+        }, 100)
+      }
+    }
+    return Promise.reject(error)
   }
 )
 

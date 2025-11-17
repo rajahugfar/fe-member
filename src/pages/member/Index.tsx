@@ -55,6 +55,17 @@ const MemberIndex = () => {
   const [lotteryLoading, setLotteryLoading] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
 
+  // Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem('memberToken')
+
+    if (!token) {
+      // Redirect to login without showing toast (prevents multiple toasts in loop)
+      window.location.href = '/member/login'
+      return
+    }
+  }, [navigate])
+
   // Update current time every second for countdown
   useEffect(() => {
     const timer = setInterval(() => {
@@ -64,7 +75,11 @@ const MemberIndex = () => {
   }, [])
 
   useEffect(() => {
-    loadContent()
+    const token = localStorage.getItem('memberToken')
+
+    if (token) {
+      loadContent()
+    }
   }, [])
 
   // Auto-refresh profile every 1 minute
