@@ -649,11 +649,12 @@ const MemberIndex = () => {
             /* Game Providers Grid */
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {providers.map((provider) => (
-                <div 
+                <div
                   key={provider.id}
                   className="relative group cursor-pointer rounded-lg overflow-hidden bg-gray-800 p-2 hover:scale-105 transition-transform"
+                  onClick={() => navigate(`/member/games/${provider.product_code}`)}
                 >
-                  <img 
+                  <img
                     src={getProviderImage(provider)}
                     alt={provider.product_name}
                     className="w-full h-auto transition-transform group-hover:scale-110"

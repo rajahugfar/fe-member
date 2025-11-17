@@ -90,6 +90,7 @@ import MemberTransactionHistory from '@pages/member/TransactionHistory'
 import MemberPromotions from '@pages/member/Promotions'
 import MemberBonusHistory from '@pages/member/BonusHistory'
 import MemberAffiliate from '@pages/member/Affiliate'
+import AMBGameList from '@pages/member/AMBGameList'
 
 // Admin Layout
 import AdminLayout from '@components/admin/AdminLayout'
@@ -318,6 +319,16 @@ function App() {
           element={
             <MemberProtectedRoute>
               <MemberGameLobby />
+            </MemberProtectedRoute>
+          }
+        />
+
+        {/* AMB Game List by Provider (Standalone - no layout) */}
+        <Route
+          path="/member/games/:provider"
+          element={
+            <MemberProtectedRoute>
+              <AMBGameList />
             </MemberProtectedRoute>
           }
         />
