@@ -1,12 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { FaHome, FaGamepad, FaDice, FaGift, FaUser, FaWallet, FaSignOutAlt } from 'react-icons/fa'
-import { useAuthStore } from '@store/authStore'
+import { useMemberStore } from '@store/memberStore'
 import { formatCurrency } from '@utils/format'
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { user, isAuthenticated, logout, refreshUser } = useAuthStore()
+  const { member, isAuthenticated, logout, loadProfile } = useMemberStore()
 
   const handleLogout = () => {
     logout()
@@ -18,17 +18,17 @@ const Navbar = () => {
     if (!isAuthenticated) return
 
     // Refresh immediately on mount
-    refreshUser()
+    loadProfile().catch(console.error)
 
     // Set up interval to refresh every 60 seconds
     const interval = setInterval(() => {
-      refreshUser()
+      loadProfile().catch(console.error)
     }, 60000) // 60000ms = 1 minute
 
     // Cleanup interval on unmount
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]) // Only depend on isAuthenticated, not refreshUser
+  }, [isAuthenticated]) // Only depend on isAuthenticated, not loadProfile
 
   return (
     <nav className="bg-dark-800/95 backdrop-blur-md border-b border-dark-700 sticky top-0 z-50">
@@ -73,14 +73,14 @@ const Navbar = () => {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated && user ? (
+            {isAuthenticated && member ? (
               <>
                 {/* Balance Display */}
                 <div className="glass px-4 py-2 rounded-lg">
                   <div className="flex items-center space-x-2">
                     <FaWallet className="text-primary-500" />
                     <span className="font-semibold text-primary-500">
-                      {formatCurrency(user.credit)}
+                      {formatCurrency(member.credit)}
                     </span>
                   </div>
                 </div>
@@ -97,7 +97,7 @@ const Navbar = () => {
                 <div className="relative group">
                   <button className="flex items-center space-x-2 glass px-4 py-2 rounded-lg hover:bg-white/20 transition-colors">
                     <FaUser />
-                    <span>{user.fullname || user.phone}</span>
+                    <span>{member.fullname || member.phone}</span>
                   </button>
 
                   {/* Dropdown Menu */}
