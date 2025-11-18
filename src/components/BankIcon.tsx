@@ -4,26 +4,28 @@ interface BankIconProps {
   className?: string
 }
 
-const bankInfo: Record<string, { name: string; file: string }> = {
-  KBANK: { name: 'กสิกรไทย', file: 'ksb' },
-  KBank: { name: 'กสิกรไทย', file: 'ksb' },
-  SCB: { name: 'ไทยพาณิชย์', file: 'scb' },
-  BBL: { name: 'กรุงเทพ', file: 'bkb' },
-  KTB: { name: 'กรุงไทย', file: 'ktb' },
-  BAY: { name: 'กรุงศรี', file: 'bkb' },
-  TMB: { name: 'ทหารไทยธนชาต', file: 'tmb' },
-  CIMB: { name: 'ซีไอเอ็มบี', file: 'cimb' },
-  TISCO: { name: 'ทิสโก้', file: 'ksi' },
-  KKP: { name: 'เกียรตินาคิน', file: 'knk' },
-  LH: { name: 'แลนด์ แอนด์ เฮ้าส์', file: 'lhb' },
-  LHB: { name: 'แลนด์ แอนด์ เฮ้าส์', file: 'lhb' },
-  TBANK: { name: 'ธนชาต', file: 'tnc' },
-  TNC: { name: 'ธนชาต', file: 'tnc' },
-  GSB: { name: 'ออมสิน', file: 'gsb' },
-  BAAC: { name: 'ธ.ก.ส.', file: 'baac' },
-  GHBANK: { name: 'อาคารสงเคราะห์', file: 'ghb' },
-  GHB: { name: 'อาคารสงเคราะห์', file: 'ghb' },
-  UOB: { name: 'ยูโอบี', file: 'uob' },
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+
+const bankInfo: Record<string, { name: string; file: string; color: string }> = {
+  KBANK: { name: 'กสิกรไทย', file: 'kbank', color: '#138f2d' },
+  KBank: { name: 'กสิกรไทย', file: 'kbank', color: '#138f2d' },
+  SCB: { name: 'ไทยพาณิชย์', file: 'scb', color: '#4e2e7f' },
+  BBL: { name: 'กรุงเทพ', file: 'bbl', color: '#1e4598' },
+  KTB: { name: 'กรุงไทย', file: 'ktb', color: '#1ba5e1' },
+  BAY: { name: 'กรุงศรี', file: 'bay', color: '#fec43b' },
+  TMB: { name: 'ทหารไทยธนชาต', file: 'tmb', color: '#1279be' },
+  CIMB: { name: 'ซีไอเอ็มบี', file: 'cimb', color: '#7e2f36' },
+  TISCO: { name: 'ทิสโก้', file: 'tisco', color: '#12549f' },
+  KKP: { name: 'เกียรตินาคิน', file: 'kk', color: '#199cc5' },
+  LH: { name: 'แลนด์ แอนด์ เฮ้าส์', file: 'lhb', color: '#6d6e71' },
+  LHB: { name: 'แลนด์ แอนด์ เฮ้าส์', file: 'lhb', color: '#6d6e71' },
+  TBANK: { name: 'ธนชาต', file: 'tbank', color: '#fc4f1f' },
+  TNC: { name: 'ธนชาต', file: 'tbank', color: '#fc4f1f' },
+  GSB: { name: 'ออมสิน', file: 'gsb', color: '#eb198d' },
+  BAAC: { name: 'ธ.ก.ส.', file: 'baac', color: '#4b9b1d' },
+  GHBANK: { name: 'อาคารสงเคราะห์', file: 'ghb', color: '#f57d23' },
+  GHB: { name: 'อาคารสงเคราะห์', file: 'ghb', color: '#f57d23' },
+  UOB: { name: 'ยูโอบี', file: 'uob', color: '#0b3979' },
 }
 
 const sizeClasses = {
@@ -45,28 +47,40 @@ export default function BankIcon({ bankCode, size = 'md', className = '' }: Bank
     )
   }
 
+  // Try to find bank info by exact match or uppercase match
   const bank = bankInfo[bankCode] || bankInfo[bankCode.toUpperCase()]
 
-  if (!bank) {
-    return (
-      <div
-        className={`${sizeClasses[size]} rounded-lg bg-gray-600 flex items-center justify-center text-white font-bold text-xs ${className}`}
-        title={bankCode}
-      >
-        {bankCode.substring(0, 2)}
-      </div>
-    )
+  // Determine the file name and background color to use
+  let fileName = ''
+  let bgColor = '#ffffff'
+
+  if (bank) {
+    fileName = bank.file
+    bgColor = bank.color
+  } else {
+    // If not found in bankInfo, try using bankCode directly as filename
+    fileName = bankCode
+    bgColor = '#6b7280' // gray-500
   }
 
   return (
     <div
-      className={`${sizeClasses[size]} rounded-lg overflow-hidden bg-white shadow-md ${className}`}
-      title={bank.name}
+      className={`${sizeClasses[size]} rounded-lg overflow-hidden shadow-md ${className}`}
+      style={{ backgroundColor: bgColor }}
+      title={bank?.name || bankCode}
     >
       <img
-        src={`/images/banks/bank-${bank.file}.png`}
-        alt={bank.name}
-        className="w-full h-full object-contain p-0.5"
+        src={`${API_URL}/uploads/banks-logo/th/${fileName.toLowerCase()}.svg`}
+        alt={bank?.name || bankCode}
+        className="w-full h-full object-contain p-1"
+        onError={(e) => {
+          const target = e.target as HTMLImageElement
+          // On error, show bank code text instead
+          const parent = target.parentElement
+          if (parent) {
+            parent.innerHTML = `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-white">${bankCode.substring(0, 3)}</div>`
+          }
+        }}
       />
     </div>
   )

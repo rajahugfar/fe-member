@@ -26,8 +26,10 @@ const WithdrawalHistory: React.FC = () => {
         limit: pagination.limit,
         offset: pagination.offset
       })
-      setWithdrawals(response.data.withdrawals || [])
-      setPagination(prev => ({ ...prev, total: response.data.total || 0 }))
+      // API returns data as array directly in response.data.data
+      const withdrawalData = response.data.data || []
+      setWithdrawals(withdrawalData)
+      setPagination(prev => ({ ...prev, total: withdrawalData.length }))
     } catch (error) {
       console.error('Load withdrawals error:', error)
       toast.error('โหลดข้อมูลไม่สำเร็จ')
@@ -165,10 +167,10 @@ const WithdrawalHistory: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <BankIcon bank={withdrawal.bankAccount?.bankName} size="sm" />
+                        <BankIcon bankCode={withdrawal.bankCode} size="sm" />
                         <div>
-                          <p className="text-white/80 text-sm">{withdrawal.bankAccount?.bankName}</p>
-                          <p className="text-white/60 text-xs">{withdrawal.bankAccount?.accountNumber}</p>
+                          <p className="text-white/80 text-sm">{withdrawal.accountName}</p>
+                          <p className="text-white/60 text-xs">{withdrawal.bankAccount}</p>
                         </div>
                       </div>
                     </td>

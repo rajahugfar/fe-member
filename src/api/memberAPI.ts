@@ -118,7 +118,7 @@ export const depositAPI = {
 // Withdrawal APIs
 export const withdrawalAPI = {
   requestWithdrawal: (data: WithdrawalRequestData) =>
-    memberAPI.post('/withdrawal/request', data),
+    memberAPI.post('/withdrawals', data),
   getWithdrawals: (params: WithdrawalParams) =>
     memberAPI.get('/withdrawals', { params }),
   getWithdrawalById: (id: number) =>
