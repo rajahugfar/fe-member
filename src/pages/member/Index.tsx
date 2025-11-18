@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -8,20 +8,23 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001' || 'http://localhost:3001'
-import { 
-  FaUser, 
-  FaSignOutAlt, 
-  FaGamepad, 
-  FaDice, 
-  FaGift, 
+import {
+  FaUser,
+  FaSignOutAlt,
+  FaGamepad,
+  FaDice,
+  FaGift,
   FaCoins,
   FaHeadset,
   FaMobileAlt,
   FaShieldAlt,
   FaMoneyBillWave,
-  FaFootballBall
+  FaFootballBall,
+  FaChevronDown,
+  FaWallet
 } from 'react-icons/fa'
 import { FiCalendar, FiClock, FiTrendingUp } from 'react-icons/fi'
+import { MdHistory } from 'react-icons/md'
 import { SiLivechat } from 'react-icons/si'
 import { profileAPI } from '@api/memberAPI'
 import { gameProviderAPI, type GameProvider } from '@api/gameProviderAPI'
@@ -31,6 +34,7 @@ import type { PromotionBanner } from '@/types/siteContent'
 import { useMemberStore } from '@store/memberStore'
 import { toast } from 'react-hot-toast'
 import MemberChat from '@/components/chat/MemberChat'
+import MemberNavbar from '@/components/MemberNavbar'
 
 // Use the imported PromotionBanner type from siteContentAPI
 type SiteSettingsMap = {
@@ -418,70 +422,7 @@ const MemberIndex = () => {
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
       </div>
-
-      {/* Header */}
-      <header className="relative z-20 bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700 shadow-2xl">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/member" className="flex items-center">
-              <img 
-                src={settings.site_logo || '/images/bicycle678-logo.svg'} 
-                alt={settings.site_name || 'Bicycle678'} 
-                className="h-12 w-auto" 
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/bicycle678-logo.svg';
-                }}
-              />
-            </Link>
-
-            {/* User Info & Actions */}
-            {profile && (
-              <div className="flex items-center space-x-2">
-                <div className="hidden md:flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
-                  <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
-                    <FaUser className="text-white text-sm" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-white font-bold text-sm">{profile.username || profile.phone}</div>
-                    <div className="text-yellow-400 text-xs font-semibold flex items-center">
-                      <FaCoins className="mr-1" />
-                      {formatCurrency(profile.credit || 0)}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Deposit Button */}
-                <Link
-                  to="/member/deposit"
-                  className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
-                >
-                  <FaMoneyBillWave />
-                  <span className="hidden md:inline">ฝากเงิน</span>
-                </Link>
-                
-                {/* Withdraw Button */}
-                <Link
-                  to="/member/withdraw"
-                  className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
-                >
-                  <FaCoins />
-                  <span className="hidden md:inline">ถอนเงิน</span>
-                </Link>
-                
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
-                >
-                  <FaSignOutAlt />
-                  <span className="hidden md:inline">ออกจากระบบ</span>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <MemberNavbar profile={profile} settings={settings} onLogout={handleLogout} />
 
       {/* Main Content */}
       <div className="relative z-10">

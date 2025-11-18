@@ -198,7 +198,7 @@ const MemberLayout: React.FC = () => {
                         </Link>
 
                         <Link
-                          to="/member/deposit-history"
+                          to="/member/deposit/history"
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
                         >
@@ -207,7 +207,7 @@ const MemberLayout: React.FC = () => {
                         </Link>
 
                         <Link
-                          to="/member/withdrawal-history"
+                          to="/member/withdrawal/history"
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
                         >
@@ -277,6 +277,16 @@ const MemberLayout: React.FC = () => {
                   <FaWallet />
                   <span className="hidden md:inline">{language === 'th' ? 'ถอนเงิน' : 'Withdraw'}</span>
                 </Link>
+
+                {/* Logout Button */}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 md:px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                >
+                  <FaSignOutAlt />
+                  <span className="hidden md:inline">{language === 'th' ? 'ออกจากระบบ' : 'Logout'}</span>
+                </button>
               </div>
             )}
           </div>
