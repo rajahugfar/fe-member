@@ -48,12 +48,13 @@ const MemberIndex = () => {
   const [largeBanners, setLargeBanners] = useState<PromotionBanner[]>([])
   const [bannerImages, setBannerImages] = useState<string[]>([])
   const [settings, setSettings] = useState<SiteSettingsMap>({})
-  const [activeTab, setActiveTab] = useState('all')
+  const [activeTab, setActiveTab] = useState('Lottery')
   const [games, setGames] = useState<any[]>([])
   const [gamesLoading, setGamesLoading] = useState(false)
   const [lotteryPeriods, setLotteryPeriods] = useState<any[]>([])
   const [lotteryLoading, setLotteryLoading] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
 
   // Check authentication on mount
   useEffect(() => {
@@ -63,6 +64,13 @@ const MemberIndex = () => {
       // Redirect to login without showing toast (prevents multiple toasts in loop)
       window.location.href = '/member/login'
       return
+    }
+
+    // Check if this is first login
+    const isFirstLogin = localStorage.getItem('isFirstLogin')
+    if (isFirstLogin === 'true') {
+      setShowWelcomeModal(true)
+      localStorage.removeItem('isFirstLogin') // Remove flag after showing
     }
   }, [navigate])
 
@@ -185,7 +193,35 @@ const MemberIndex = () => {
     try {
       setLotteryLoading(true)
       const data = await memberLotteryAPI.getOpenPeriods()
-      setLotteryPeriods(data || [])
+
+      // Sort lottery periods: open lotteries first, then closed ones
+      const priorityOrder = ['GLO', 'GSB', 'BAAC']
+      const sortedData = (data || []).sort((a, b) => {
+        const now = new Date().getTime()
+        const aExpired = new Date(a.closeTime).getTime() <= now
+        const bExpired = new Date(b.closeTime).getTime() <= now
+
+        // Open lotteries come before closed ones
+        if (aExpired !== bExpired) {
+          return aExpired ? 1 : -1
+        }
+
+        // Within same status (both open or both closed), prioritize GLO, GSB, BAAC
+        const indexA = priorityOrder.indexOf(a.huayCode)
+        const indexB = priorityOrder.indexOf(b.huayCode)
+
+        // If both are in priority list, sort by priority order
+        if (indexA !== -1 && indexB !== -1) {
+          return indexA - indexB
+        }
+        // Priority items come first
+        if (indexA !== -1) return -1
+        if (indexB !== -1) return 1
+        // Others sorted by close time
+        return new Date(a.closeTime).getTime() - new Date(b.closeTime).getTime()
+      })
+
+      setLotteryPeriods(sortedData)
     } catch (error) {
       console.error('Failed to load lottery periods:', error)
       setLotteryPeriods([])
@@ -573,12 +609,17 @@ const MemberIndex = () => {
                   {lotteryPeriods.map((period) => {
                     const theme = getLotteryTheme(period.huayCode)
                     const countdown = getCountdown(period.closeTime)
-                    
+
+                    // If lottery is closed, redirect to results page instead of betting page
+                    const targetUrl = countdown.expired
+                      ? '/member/lottery/results'
+                      : `/member/lottery/bet/${period.id}`
+
                     return (
                   <Link
                     key={period.id}
-                    to={`/member/lottery/bet/${period.id}`}
-                    className={`relative overflow-hidden rounded-2xl shadow-2xl ${theme.glow} hover:scale-105 transition-all duration-300 group`}
+                    to={targetUrl}
+                    className={`relative overflow-hidden rounded-2xl shadow-2xl ${theme.glow} ${countdown.expired ? 'opacity-75' : 'hover:scale-105'} transition-all duration-300 group`}
                   >
                     {/* Gradient Background */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-90`}></div>
@@ -639,15 +680,14 @@ const MemberIndex = () => {
                       </div>
 
                       {/* Action Button */}
-                      <button 
+                      <button
                         className={`w-full py-3 rounded-xl font-bold text-lg transition-all ${
-                          countdown.expired 
-                            ? 'bg-gray-500/50 cursor-not-allowed' 
+                          countdown.expired
+                            ? 'bg-blue-500/80 text-white hover:bg-blue-600'
                             : 'bg-white/90 text-gray-900 hover:bg-white hover:shadow-lg'
                         }`}
-                        disabled={countdown.expired}
                       >
-                        {countdown.expired ? 'ปิดรับแทงแล้ว' : 'แทงหวยเลย!'}
+                        {countdown.expired ? 'ดูผลหวย' : 'แทงหวยเลย!'}
                       </button>
                     </div>
                   </Link>
@@ -689,6 +729,57 @@ const MemberIndex = () => {
           )}
         </div>
       </div>
+
+      {/* Welcome Modal */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md mx-4 border-2 border-yellow-500 shadow-2xl"
+          >
+            {/* Confetti Animation */}
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-4 animate-bounce">🎉</div>
+              <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-2">
+                ยินดีต้อนรับ!
+              </h2>
+              <p className="text-white text-lg mb-4">
+                สมัครสมาชิกสำเร็จ
+              </p>
+            </div>
+
+            {/* Welcome Message */}
+            <div className="bg-white/10 rounded-xl p-6 mb-6">
+              <p className="text-white text-center mb-4">
+                ขอบคุณที่เป็นส่วนหนึ่งของครอบครัว <span className="font-bold text-yellow-400">Bicycle678</span>
+              </p>
+              <div className="space-y-2 text-gray-300 text-sm">
+                <div className="flex items-center gap-2">
+                  <FaCoins className="text-yellow-400" />
+                  <span>ฝาก-ถอน ออโต้ รวดเร็วภายใน 1 นาที</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FaGift className="text-pink-400" />
+                  <span>โปรโมชั่นสุดพิเศษรอคุณอยู่</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FaDice className="text-purple-400" />
+                  <span>เริ่มเล่นหวยได้ทันที!</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <button
+              onClick={() => setShowWelcomeModal(false)}
+              className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              เริ่มต้นใช้งาน
+            </button>
+          </motion.div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-[#0a0e13] py-8 mt-12">

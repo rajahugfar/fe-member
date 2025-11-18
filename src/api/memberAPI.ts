@@ -52,9 +52,9 @@ memberAPI.interceptors.response.use(
 // Authentication APIs
 export const authAPI = {
   login: (phone: string, password: string) =>
-    memberAPI.post('/login', { phone, password }),
+    memberAPI.post('/auth/login', { phone, password }),
   register: (data: RegisterData) =>
-    memberAPI.post('/register', data),
+    memberAPI.post('/auth/register', data),
   logout: () =>
     memberAPI.post('/logout'),
   forgotPassword: (phone: string) =>

@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiTrendingUp, FiAlertCircle, FiCheck } from 'react-icons/fi'
+import { FiTrendingUp, FiAlertCircle, FiUser } from 'react-icons/fi'
 import { withdrawalAPI, profileAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 import BankIcon from '../../components/BankIcon'
 
+interface MemberProfile {
+  phone: string
+  fullname?: string
+  credit: number
+  creditGame: number
+  bankCode?: string
+  bankNumber?: string
+  bankName?: string
+  turnover?: number
+  turnoverNeed?: number
+}
+
 const Withdrawal: React.FC = () => {
   const navigate = useNavigate()
-  const [balance, setBalance] = useState(0)
-  const [bankAccounts, setBankAccounts] = useState<any[]>([])
-  const [selectedBankId, setSelectedBankId] = useState<number | null>(null)
+  const [profile, setProfile] = useState<MemberProfile | null>(null)
   const [amount, setAmount] = useState<number | string>('')
   const [loading, setLoading] = useState(false)
 
@@ -22,19 +32,8 @@ const Withdrawal: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const [profileRes, banksRes] = await Promise.all([
-        profileAPI.getProfile(),
-        profileAPI.getBankAccounts()
-      ])
-
-      setBalance(profileRes.data.balance || 0)
-      setBankAccounts(banksRes.data.data || [])
-
-      // Auto select primary bank
-      const primaryBank = banksRes.data.data?.find((b: any) => b.isPrimary)
-      if (primaryBank) {
-        setSelectedBankId(primaryBank.id)
-      }
+      const profileRes = await profileAPI.getProfile()
+      setProfile(profileRes.data)
     } catch (error) {
       console.error('Load data error:', error)
       toast.error('โหลดข้อมูลไม่สำเร็จ')
@@ -44,12 +43,17 @@ const Withdrawal: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const withdrawAmount = Number(amount)
-
-    if (!selectedBankId) {
-      toast.error('กรุณาเลือกบัญชีธนาคาร')
+    if (!profile) {
+      toast.error('ไม่พบข้อมูลโปรไฟล์')
       return
     }
+
+    if (!profile.bankCode || !profile.bankNumber) {
+      toast.error('กรุณาเพิ่มบัญชีธนาคารในโปรไฟล์ก่อนถอนเงิน')
+      return
+    }
+
+    const withdrawAmount = Number(amount)
 
     if (!withdrawAmount || withdrawAmount < MIN_WITHDRAWAL) {
       toast.error(`ยอดถอนขั้นต่ำ ${MIN_WITHDRAWAL} บาท`)
@@ -61,7 +65,7 @@ const Withdrawal: React.FC = () => {
       return
     }
 
-    if (withdrawAmount > balance) {
+    if (withdrawAmount > profile.creditGame) {
       toast.error('ยอดเงินไม่เพียงพอ')
       return
     }
@@ -70,7 +74,6 @@ const Withdrawal: React.FC = () => {
 
     try {
       await withdrawalAPI.requestWithdrawal({
-        bankAccountId: selectedBankId,
         amount: withdrawAmount
       })
 
@@ -91,7 +94,15 @@ const Withdrawal: React.FC = () => {
     }).format(value)
   }
 
-  const selectedBank = bankAccounts.find(b => b.id === selectedBankId)
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-white">กำลังโหลด...</div>
+      </div>
+    )
+  }
+
+  const balance = profile.creditGame
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -101,51 +112,88 @@ const Withdrawal: React.FC = () => {
         <p className="text-white/80">กรอกข้อมูลเพื่อถอนเงินออกจากระบบ</p>
       </div>
 
+      {/* Member Info Card */}
+      <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+        <p className="text-white/60 text-sm mb-3">ข้อมูลสมาชิก</p>
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full flex items-center justify-center text-white font-bold text-2xl border-2 border-blue-500/50">
+            {profile.fullname ? profile.fullname.charAt(0).toUpperCase() : <FiUser />}
+          </div>
+          <div className="flex-1">
+            <p className="text-white font-bold text-lg">{profile.fullname || 'ไม่ระบุชื่อ'}</p>
+            <p className="text-white/60 text-sm">{profile.phone}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Balance Card */}
       <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-6">
-        <p className="text-white/80 mb-2">ยอดเงินคงเหลือ</p>
+        <p className="text-white/80 mb-2">ยอดเงินคงเหลือ (Game Credit)</p>
         <p className="text-4xl font-bold text-white">฿{formatCurrency(balance)}</p>
       </div>
 
+      {/* Turnover Warning */}
+      {profile.turnoverNeed && profile.turnoverNeed > 0 && (
+        <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-xl p-6">
+          <div className="flex items-start gap-3">
+            <FiAlertCircle className="text-yellow-400 flex-shrink-0 mt-0.5 w-5 h-5" />
+            <div className="flex-1">
+              <p className="text-yellow-400 font-bold mb-2">⚠️ คุณมีเงื่อนไขเทิร์นโอเวอร์</p>
+              <div className="space-y-1 text-sm text-white/80">
+                <div className="flex justify-between">
+                  <span>ทำเทิร์นแล้ว:</span>
+                  <span className="font-bold">{formatCurrency(profile.turnover || 0)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>ต้องทำให้ครบ:</span>
+                  <span className="font-bold text-yellow-400">{formatCurrency(profile.turnoverNeed)}</span>
+                </div>
+                <div className="flex justify-between border-t border-white/10 pt-2 mt-2">
+                  <span>เหลืออีก:</span>
+                  <span className="font-bold text-red-400">
+                    {formatCurrency(Math.max(0, profile.turnoverNeed - (profile.turnover || 0)))}
+                  </span>
+                </div>
+              </div>
+              {profile.turnover && profile.turnover >= profile.turnoverNeed ? (
+                <p className="text-green-400 text-sm mt-3 flex items-center gap-2">
+                  <FiCheck className="w-4 h-4" />
+                  ทำเทิร์นครบแล้ว สามารถถอนได้
+                </p>
+              ) : (
+                <p className="text-red-400 text-sm mt-3">
+                  ⛔ ยังทำเทิร์นไม่ครบ ต้องเล่นเกมส์/แทงหวยเพิ่มก่อนถึงถอนได้
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bank Account Info */}
+      {profile.bankCode && profile.bankNumber ? (
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
+          <p className="text-white/60 text-sm mb-3">บัญชีที่จะรับเงิน</p>
+          <div className="flex items-center gap-4">
+            <BankIcon bank={profile.bankCode} size="md" />
+            <div className="flex-1">
+              <p className="text-white font-medium">{profile.bankName || profile.bankCode}</p>
+              <p className="text-white/80 text-sm">{profile.bankNumber}</p>
+              <p className="text-white/60 text-sm">{profile.fullname || '-'}</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
+          <p className="text-red-400 text-sm flex items-center gap-2">
+            <FiAlertCircle />
+            กรุณาเพิ่มบัญชีธนาคารในโปรไฟล์ก่อนถอนเงิน
+          </p>
+        </div>
+      )}
+
       {/* Withdrawal Form */}
       <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6 space-y-6">
-        {/* Select Bank Account */}
-        <div>
-          <label className="block text-white/90 text-sm font-medium mb-3">เลือกบัญชีธนาคาร</label>
-          {bankAccounts.length === 0 ? (
-            <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
-              <p className="text-red-400 text-sm">
-                กรุณาเพิ่มบัญชีธนาคารก่อนถอนเงิน
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {bankAccounts.map(bank => (
-                <button
-                  key={bank.id}
-                  type="button"
-                  onClick={() => setSelectedBankId(bank.id)}
-                  className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all ${
-                    selectedBankId === bank.id
-                      ? 'bg-gradient-to-r from-blue-600/30 to-cyan-600/30 border-2 border-blue-500'
-                      : 'bg-white/5 border border-white/10 hover:bg-white/10'
-                  }`}
-                >
-                  <BankIcon bank={bank.bankName} size="md" />
-                  <div className="flex-1 text-left">
-                    <p className="text-white font-medium">{bank.bankName}</p>
-                    <p className="text-white/60 text-sm">{bank.accountNumber}</p>
-                    <p className="text-white/60 text-sm">{bank.accountName}</p>
-                  </div>
-                  {selectedBankId === bank.id && (
-                    <FiCheck className="text-blue-400" size={24} />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* Amount Input */}
         <div>
           <label className="block text-white/90 text-sm font-medium mb-3">จำนวนเงินที่ต้องการถอน</label>
@@ -207,17 +255,19 @@ const Withdrawal: React.FC = () => {
         </div>
 
         {/* Summary */}
-        {selectedBank && amount && Number(amount) >= MIN_WITHDRAWAL && (
+        {amount && Number(amount) >= MIN_WITHDRAWAL && (
           <div className="p-4 bg-white/5 border border-white/10 rounded-lg space-y-2">
             <p className="text-white/80 text-sm">สรุปการถอน</p>
             <div className="flex justify-between">
               <span className="text-white/60">จำนวนที่ถอน:</span>
               <span className="text-white font-bold">฿{formatCurrency(Number(amount))}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-white/60">โอนเข้าบัญชี:</span>
-              <span className="text-white">{selectedBank.bankName} - {selectedBank.accountNumber}</span>
-            </div>
+            {profile.bankCode && profile.bankNumber && (
+              <div className="flex justify-between">
+                <span className="text-white/60">โอนเข้าบัญชี:</span>
+                <span className="text-white">{profile.bankCode} - {profile.bankNumber}</span>
+              </div>
+            )}
             <div className="flex justify-between pt-2 border-t border-white/10">
               <span className="text-white/60">คงเหลือหลังถอน:</span>
               <span className="text-white font-bold">฿{formatCurrency(balance - Number(amount))}</span>
@@ -228,7 +278,7 @@ const Withdrawal: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={loading || !selectedBankId || !amount || Number(amount) < MIN_WITHDRAWAL || bankAccounts.length === 0}
+          disabled={loading || !amount || Number(amount) < MIN_WITHDRAWAL || !profile.bankCode || !profile.bankNumber}
           className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all font-medium text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
         >
           {loading ? (

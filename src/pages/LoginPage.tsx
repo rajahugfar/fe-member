@@ -113,14 +113,23 @@ const LoginPage = () => {
 
       // Auto login after successful registration
       const { user, accessToken, refreshToken } = response
-      
-      // Save to store
-      useMemberStore.getState().setAuth(user, accessToken, refreshToken)
+
+      // Save to localStorage
+      localStorage.setItem('memberToken', accessToken)
+      localStorage.setItem('memberId', user.id)
+      localStorage.setItem('memberProfile', JSON.stringify(user))
+      localStorage.setItem('isFirstLogin', 'true') // Flag for welcome modal
+
+      // Save to Zustand store
+      useMemberStore.setState({
+        member: user,
+        token: accessToken,
+        refreshToken: refreshToken,
+        isAuthenticated: true,
+      })
 
       // Navigate to member page
-      setTimeout(() => {
-        navigate('/member')
-      }, 500)
+      navigate('/member', { replace: true })
 
     } catch (err: any) {
       console.error('Register error:', err)
