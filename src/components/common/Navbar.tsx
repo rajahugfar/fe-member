@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { FaHome, FaGamepad, FaDice, FaGift, FaUser, FaWallet, FaSignOutAlt } from 'react-icons/fa'
+import { FaHome, FaGamepad, FaDice, FaGift, FaUser, FaWallet, FaSignOutAlt, FaHistory } from 'react-icons/fa'
 import { useMemberStore } from '@store/memberStore'
 import { formatCurrency } from '@utils/format'
 
@@ -115,6 +115,13 @@ const Navbar = () => {
                     >
                       <FaWallet className="inline mr-2" />
                       ประวัติการเงิน
+                    </Link>
+                    <Link
+                      to="/lottery/history"
+                      className="block px-4 py-3 hover:bg-white/10 transition-colors"
+                    >
+                      <FaHistory className="inline mr-2" />
+                      ประวัติโพย
                     </Link>
                     <button
                       onClick={handleLogout}

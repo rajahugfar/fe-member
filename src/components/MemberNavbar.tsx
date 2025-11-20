@@ -6,7 +6,8 @@ import {
   FaMoneyBillWave,
   FaCoins,
   FaChevronDown,
-  FaWallet
+  FaWallet,
+  FaHistory
 } from 'react-icons/fa'
 import { MdHistory } from 'react-icons/md'
 
@@ -104,6 +105,13 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         <FaUser className="mr-3 text-yellow-500" />
                         <span className="text-sm">{language === 'th' ? 'โปรไฟล์' : 'Profile'}</span>
                       </Link>
+                      <Link
+                      to="/member/lottery/history"
+                      className="block px-4 py-3 hover:bg-white/10 transition-colors"
+                    >
+                      <FaHistory className="inline mr-2" />
+                      ประวัติโพย
+                    </Link>
 
                       <Link
                         to="/member/deposit/history"

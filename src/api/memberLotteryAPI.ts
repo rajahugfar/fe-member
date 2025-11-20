@@ -169,6 +169,47 @@ export interface MyBet {
   cancelled_at?: string
 }
 
+// Saved Poy Template Interfaces
+export interface SavedPoyItem {
+  id: string
+  templateId: string
+  betType: string
+  number: string
+  amount: number
+  createdAt: string
+}
+
+export interface SavedPoyTemplate {
+  id: string
+  memberId: string
+  name: string
+  description?: string
+  totalItems: number
+  createdAt: string
+  updatedAt: string
+  items?: SavedPoyItem[]
+}
+
+export interface CreateTemplateRequest {
+  name: string
+  description?: string
+  items: {
+    betType: string
+    number: string
+    amount: number
+  }[]
+}
+
+export interface UpdateTemplateRequest {
+  name: string
+  description?: string
+  items: {
+    betType: string
+    number: string
+    amount: number
+  }[]
+}
+
 // ============================================
 // Member Lottery API
 // ============================================
@@ -220,6 +261,12 @@ export const memberLotteryAPI = {
   // Get lottery payout rates
   getLotteryRates: async (lotteryCode: string): Promise<LotteryRate[]> => {
     const response = await memberAPIClient.get(`/lottery/${lotteryCode}/rates`)
+    return response.data.data
+  },
+
+  // Get lottery rules/detail
+  getLotteryRules: async (lotteryCode: string): Promise<{ huayCode: string; huayName: string; detail: string }> => {
+    const response = await memberAPIClient.get(`/lottery/${lotteryCode}/rules`)
     return response.data.data
   },
 
@@ -282,6 +329,40 @@ export const memberLotteryAPI = {
   getPoyDetail: async (poyId: string): Promise<any> => {
     const response = await memberAPIClient.get(`/lottery/poy/${poyId}`)
     return response.data.data
+  },
+
+  // ============================================
+  // Saved Poy Templates
+  // ============================================
+
+  // Get all saved templates
+  getSavedTemplates: async (): Promise<SavedPoyTemplate[]> => {
+    const response = await memberAPIClient.get('/lottery/templates')
+    return response.data.data || []
+  },
+
+  // Get single template with items
+  getSavedTemplate: async (id: string): Promise<SavedPoyTemplate> => {
+    const response = await memberAPIClient.get(`/lottery/templates/${id}`)
+    return response.data.data
+  },
+
+  // Create new template
+  createSavedTemplate: async (data: CreateTemplateRequest): Promise<SavedPoyTemplate> => {
+    const response = await memberAPIClient.post('/lottery/templates', data)
+    return response.data.data
+  },
+
+  // Update template
+  updateSavedTemplate: async (id: string, data: UpdateTemplateRequest): Promise<SavedPoyTemplate> => {
+    const response = await memberAPIClient.put(`/lottery/templates/${id}`, data)
+    return response.data.data
+  },
+
+  // Delete template
+  deleteSavedTemplate: async (id: string): Promise<{ message: string }> => {
+    const response = await memberAPIClient.delete(`/lottery/templates/${id}`)
+    return response.data
   },
 }
 

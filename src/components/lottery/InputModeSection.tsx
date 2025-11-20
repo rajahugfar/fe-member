@@ -8,7 +8,7 @@ import { CartItem } from '@/hooks/useLotteryState'
 interface InputModeSectionProps {
   inputMode: 'keyboard' | 'grid'
   setInputMode: (mode: 'keyboard' | 'grid') => void
-  selectedBetType: string
+  selectedBetTypes: string[]
   numberInput: string
   setNumberInput: (input: string) => void
   onAddNumber: (number: string) => void
@@ -20,7 +20,7 @@ interface InputModeSectionProps {
 const InputModeSection: React.FC<InputModeSectionProps> = ({
   inputMode,
   setInputMode,
-  selectedBetType,
+  selectedBetTypes,
   numberInput,
   setNumberInput,
   onAddNumber,
@@ -28,7 +28,8 @@ const InputModeSection: React.FC<InputModeSectionProps> = ({
   searchQuery,
   setSearchQuery
 }) => {
-  const currentConfig = BET_TYPES[selectedBetType]
+  // Use first selected bet type for config (all selected should have same digit count)
+  const currentConfig = selectedBetTypes.length > 0 ? BET_TYPES[selectedBetTypes[0]] : BET_TYPES['teng_bon_3']
 
   return (
     <div className="backdrop-blur-md bg-white/10 rounded-2xl border-2 border-white/20 shadow-2xl overflow-hidden">
@@ -76,7 +77,7 @@ const InputModeSection: React.FC<InputModeSectionProps> = ({
             <GridMode
               key="grid"
               currentConfig={currentConfig}
-              selectedBetType={selectedBetType}
+              selectedBetTypes={selectedBetTypes}
               cart={cart}
               onAddNumber={onAddNumber}
               searchQuery={searchQuery}
@@ -248,7 +249,7 @@ const KeyboardMode: React.FC<KeyboardModeProps> = ({
  */
 interface GridModeProps {
   currentConfig: typeof BET_TYPES[keyof typeof BET_TYPES]
-  selectedBetType: string
+  selectedBetTypes: string[]
   cart: CartItem[]
   onAddNumber: (number: string) => void
   searchQuery: string
@@ -257,7 +258,7 @@ interface GridModeProps {
 
 const GridMode: React.FC<GridModeProps> = ({
   currentConfig,
-  selectedBetType,
+  selectedBetTypes,
   cart,
   onAddNumber,
   searchQuery,
@@ -295,8 +296,11 @@ const GridMode: React.FC<GridModeProps> = ({
 
   const displayNumbers = getFilteredNumbers()
 
+  // Check if number is in cart for any of the selected bet types
   const isInCart = (number: string) => {
-    return cart.some(item => item.number === number && item.bet_type === selectedBetType)
+    return selectedBetTypes.every(betType =>
+      cart.some(item => item.number === number && item.bet_type === betType)
+    )
   }
 
   return (

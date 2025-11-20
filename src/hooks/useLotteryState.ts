@@ -26,9 +26,10 @@ export interface CartItem {
  * Lottery State Interface
  */
 export interface LotteryState {
-  // Bet Selection
-  selectedBetType: string
-  setSelectedBetType: (type: string) => void
+  // Bet Selection (Multi-select)
+  selectedBetTypes: string[]
+  toggleBetType: (type: string) => void
+  setSelectedBetTypes: (types: string[]) => void
 
   // Input Mode
   inputMode: 'keyboard' | 'grid'
@@ -80,12 +81,20 @@ const STORAGE_KEY_INPUT_MODE = 'lottery_input_mode'
 export function useLotteryState(periodId?: string): LotteryState {
   // ==================== State ====================
 
-  // Bet Selection - Default to 3ตัวบน (teng_bon_3)
-  const [selectedBetType, setSelectedBetTypeState] = useState<string>(() => {
-    if (typeof window === 'undefined') return 'teng_bon_3'
+  // Bet Selection - Multi-select, default to [teng_bon_3]
+  const [selectedBetTypes, setSelectedBetTypesState] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return ['teng_bon_3']
     const stored = localStorage.getItem(STORAGE_KEY_BET_TYPE)
-    // Always default to teng_bon_3 if no stored value
-    return stored || 'teng_bon_3'
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        if (Array.isArray(parsed)) return parsed
+      } catch {
+        // If old format (string), convert to array
+        return [stored]
+      }
+    }
+    return ['teng_bon_3']
   })
 
   // Input Mode
@@ -131,20 +140,20 @@ export function useLotteryState(periodId?: string): LotteryState {
     }
   }, [cart, periodId])
 
-  // Sync bet type to localStorage
+  // Sync bet types to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_BET_TYPE, selectedBetType)
-  }, [selectedBetType])
+    localStorage.setItem(STORAGE_KEY_BET_TYPE, JSON.stringify(selectedBetTypes))
+  }, [selectedBetTypes])
 
   // Sync input mode to localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY_INPUT_MODE, inputMode)
   }, [inputMode])
 
-  // Clear number input when bet type changes
+  // Clear number input when bet types change
   useEffect(() => {
     setNumberInput('')
-  }, [selectedBetType])
+  }, [selectedBetTypes])
 
   // ==================== Cart Functions ====================
 
@@ -263,11 +272,30 @@ export function useLotteryState(periodId?: string): LotteryState {
   }, [lastAddNum])
 
   /**
-   * Set selected bet type with validation
+   * Toggle bet type selection (multi-select with paired types)
+   * - Can select multiple types
+   * - Must keep at least one selected
    */
-  const setSelectedBetType = useCallback((type: string) => {
-    setSelectedBetTypeState(type)
-    setShuffleEnabled(false) // Reset shuffle when changing bet type
+  const toggleBetType = useCallback((type: string) => {
+    setSelectedBetTypesState(prev => {
+      if (prev.includes(type)) {
+        // Remove if already selected (but keep at least one)
+        if (prev.length === 1) return prev
+        return prev.filter(t => t !== type)
+      } else {
+        // Add if not selected
+        return [...prev, type]
+      }
+    })
+    setShuffleEnabled(false)
+  }, [])
+
+  /**
+   * Set all selected bet types
+   */
+  const setSelectedBetTypes = useCallback((types: string[]) => {
+    setSelectedBetTypesState(types.length > 0 ? types : ['teng_bon_3'])
+    setShuffleEnabled(false)
   }, [])
 
   /**
@@ -281,9 +309,10 @@ export function useLotteryState(periodId?: string): LotteryState {
   // ==================== Return ====================
 
   return {
-    // Bet Selection
-    selectedBetType,
-    setSelectedBetType,
+    // Bet Selection (Multi-select)
+    selectedBetTypes,
+    toggleBetType,
+    setSelectedBetTypes,
 
     // Input Mode
     inputMode,
