@@ -80,7 +80,10 @@ const Affiliate: React.FC = () => {
   const [memberDetail, setMemberDetail] = useState<MemberDetailCommission[]>([])
   const [loadingDetail, setLoadingDetail] = useState(false)
 
-  const referralLink = linkData?.referralLink || `${window.location.origin}/register?ref=...`
+  // Always use current domain for referral link to avoid localhost issue
+  const referralLink = linkData?.referralCode
+    ? `${window.location.origin}/register/${linkData.referralCode}`
+    : `${window.location.origin}/register?ref=...`
 
   useEffect(() => {
     loadAffiliateData()
