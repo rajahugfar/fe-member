@@ -7,7 +7,8 @@ import {
   FaCoins,
   FaChevronDown,
   FaWallet,
-  FaHistory
+  FaHistory,
+  FaUserFriends
 } from 'react-icons/fa'
 import { MdHistory } from 'react-icons/md'
 
@@ -129,6 +130,15 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                       >
                         <MdHistory className="mr-3 text-blue-500 text-lg" />
                         <span className="text-sm">{language === 'th' ? 'ประวัติการถอน' : 'Withdrawal History'}</span>
+                      </Link>
+
+                      <Link
+                        to="/member/affiliate"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
+                      >
+                        <FaUserFriends className="mr-3 text-purple-500" />
+                        <span className="text-sm">{language === 'th' ? 'แนะนำเพื่อน' : 'Invite Friends'}</span>
                       </Link>
                     </div>
 

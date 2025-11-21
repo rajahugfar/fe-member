@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { useMemberStore } from '../store/memberStore'
 import { authAPI } from '../api/authAPI'
 import { toast } from 'react-hot-toast'
@@ -7,13 +7,14 @@ import { toast } from 'react-hot-toast'
 const LoginPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { referralCode: urlReferralCode } = useParams<{ referralCode?: string }>()
   const { login, isLoading } = useMemberStore()
   const [showPassword, setShowPassword] = useState(false)
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login')
 
   // Set active tab based on route
   useEffect(() => {
-    if (location.pathname === '/register') {
+    if (location.pathname.startsWith('/register')) {
       setActiveTab('register')
     } else {
       setActiveTab('login')
@@ -35,6 +36,13 @@ const LoginPage = () => {
     referralCode: ''
   })
   const [error, setError] = useState('')
+
+  // Set referral code from URL params
+  useEffect(() => {
+    if (urlReferralCode) {
+      setRegisterData(prev => ({ ...prev, referralCode: urlReferralCode }))
+    }
+  }, [urlReferralCode])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -232,6 +232,14 @@ function App() {
             </GuestRoute>
           }
         />
+        <Route
+          path="/register/:referralCode"
+          element={
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          }
+        />
 
         {/* Auth Routes (Old Design with Layout) */}
         <Route element={<AuthLayout />}>
