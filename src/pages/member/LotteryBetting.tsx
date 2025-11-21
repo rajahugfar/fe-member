@@ -688,6 +688,7 @@ const LotteryBetting: React.FC = () => {
               onUndoLast={lotteryState.undoLastAdd}
               onBulkPrice={() => setShowBulkPriceModal(true)}
               onSubmit={handleSubmit}
+              onSaveTemplate={() => setShowTemplatesModal(true)}
               submitting={submitting}
             />
           </div>
@@ -740,6 +741,7 @@ const LotteryBetting: React.FC = () => {
                       handleSubmit()
                       setShowMobileCart(false)
                     }}
+                    onSaveTemplate={() => setShowTemplatesModal(true)}
                     submitting={submitting}
                   />
                 </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FiShoppingCart, FiTrash2, FiEdit, FiCornerUpLeft } from 'react-icons/fi'
+import { FiShoppingCart, FiTrash2, FiEdit, FiCornerUpLeft, FiSave } from 'react-icons/fi'
 import { FaCheck } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CartItem } from '@/hooks/useLotteryState'
@@ -13,6 +13,7 @@ interface CartSidebarProps {
   onUndoLast: () => void
   onBulkPrice: () => void
   onSubmit: () => void
+  onSaveTemplate?: () => void
   submitting?: boolean
 }
 
@@ -24,6 +25,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   onUndoLast,
   onBulkPrice,
   onSubmit,
+  onSaveTemplate,
   submitting = false
 }) => {
   const totalAmount = cart.reduce((sum, item) => sum + item.amount, 0)
@@ -89,13 +91,25 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
         {cart.length > 0 && (
           <div className="flex items-center gap-0.5">
             <button
+              type="button"
               onClick={onUndoLast}
               className="text-yellow-400 hover:text-yellow-300 transition-colors p-1 hover:bg-yellow-500/20 rounded"
               title="ยกเลิกรายการสุดท้าย"
             >
               <FiCornerUpLeft className="text-sm" />
             </button>
+            {onSaveTemplate && (
+              <button
+                type="button"
+                onClick={onSaveTemplate}
+                className="text-green-400 hover:text-green-300 transition-colors p-1 hover:bg-green-500/20 rounded"
+                title="บันทึกโพย"
+              >
+                <FiSave className="text-sm" />
+              </button>
+            )}
             <button
+              type="button"
               onClick={onClearCart}
               className="text-red-400 hover:text-red-300 transition-colors p-1 hover:bg-red-500/20 rounded"
               title="ล้างทั้งหมด"
