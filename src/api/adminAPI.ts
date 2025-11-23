@@ -358,9 +358,18 @@ export const adminMemberAPI = {
       bankName?: string
       bankAccount?: string
       lineId?: string
+      affiliateRate?: number
     }
   ) => {
-    const response = await adminAPIClient.put(`/members/${memberId}`, data)
+    // Map frontend field names to backend field names
+    const payload = {
+      fullname: data.fullname,
+      bankCode: data.bankName,
+      bankNumber: data.bankAccount,
+      line: data.lineId,
+      affiliateRate: data.affiliateRate,
+    }
+    const response = await adminAPIClient.put(`/members/${memberId}`, payload)
     return response.data.data
   },
 

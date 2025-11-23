@@ -15,6 +15,7 @@ interface Member {
   status: 'active' | 'inactive' | 'banned'
   gameUsername?: string
   gamePassword?: string
+  affiliateRate?: number | null
 }
 
 interface EditMemberModalProps {
@@ -54,6 +55,7 @@ export default function EditMemberModal({ isOpen, member, onClose, onSuccess }: 
     gameUsername: '',
     gamePassword: '',
     remark: '',
+    affiliateRate: '' as string,
   })
 
   useEffect(() => {
@@ -69,6 +71,7 @@ export default function EditMemberModal({ isOpen, member, onClose, onSuccess }: 
         gameUsername: member.gameUsername || '',
         gamePassword: member.gamePassword || '',
         remark: '',
+        affiliateRate: member.affiliateRate != null ? String(member.affiliateRate) : '',
       })
     }
   }, [member])
@@ -104,6 +107,7 @@ export default function EditMemberModal({ isOpen, member, onClose, onSuccess }: 
         bankName: formData.bankCode,
         bankAccount: formData.bankNumber,
         lineId: formData.line || undefined,
+        affiliateRate: formData.affiliateRate ? parseFloat(formData.affiliateRate) : undefined,
       })
 
       // Update status if changed
@@ -276,6 +280,28 @@ export default function EditMemberModal({ isOpen, member, onClose, onSuccess }: 
                   </span>
                 </label>
               </div>
+            </div>
+
+            {/* Affiliate Rate */}
+            <div>
+              <label htmlFor="affiliateRate" className="block text-sm font-semibold text-gray-700 mb-2">
+                % คอมมิชชั่น Affiliate (รายบุคคล)
+              </label>
+              <input
+                type="number"
+                id="affiliateRate"
+                name="affiliateRate"
+                value={formData.affiliateRate}
+                onChange={handleChange}
+                placeholder="เว้นว่างเพื่อใช้ค่าเริ่มต้น"
+                step="0.01"
+                min="0"
+                max="100"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C4A962] focus:border-transparent"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                ถ้าไม่กำหนด จะใช้ค่าเริ่มต้นจากระบบ
+              </p>
             </div>
           </div>
 
