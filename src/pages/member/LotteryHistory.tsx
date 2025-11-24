@@ -60,11 +60,14 @@ const LotteryHistory: React.FC = () => {
     }
   }
 
-  // Filter poys by tab
+  // Filter poys by tab - use Thai timezone
   const todayPoys = poys.filter(poy => {
     const buyDate = new Date(poy.dateBuy || poy.createdAt)
     const today = new Date()
-    return buyDate.toDateString() === today.toDateString()
+    // Compare using Thai date string to handle timezone correctly
+    const buyDateThai = buyDate.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok' })
+    const todayThai = today.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok' })
+    return buyDateThai === todayThai
   })
 
   const pendingPoys = poys.filter(poy => poy.status === 1)
@@ -221,9 +224,9 @@ const LotteryHistory: React.FC = () => {
   }
 
   const subTabs = [
-    { key: 'today' as const, label: 'ซื้อวันนี้', icon: '📅', count: todayPoys.length, color: 'from-blue-500 to-cyan-500' },
-    { key: 'pending' as const, label: 'รอผลออก', icon: '⏳', count: pendingPoys.length, color: 'from-yellow-500 to-orange-500' },
-    { key: 'completed' as const, label: 'ออกผลแล้ว', icon: '🏆', count: completedPoys.length, color: 'from-green-500 to-emerald-500' },
+    { key: 'today' as const, label: 'ซื้อวันนี้', count: todayPoys.length },
+    { key: 'pending' as const, label: 'รอผลออก', count: pendingPoys.length },
+    { key: 'completed' as const, label: 'ออกผลแล้ว', count: completedPoys.length },
   ]
 
   return (
@@ -282,29 +285,28 @@ const LotteryHistory: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Sub Tabs */}
-          <div className="flex justify-center gap-3 mb-6 flex-wrap">
-            {subTabs.map((tab) => (
-              <motion.button
-                key={tab.key}
-                onClick={() => setActiveSubTab(tab.key)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`relative px-6 py-3 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 overflow-hidden ${
-                  activeSubTab === tab.key
-                    ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
-                    : 'bg-white/5 backdrop-blur-md text-gray-300 hover:bg-white/10 border border-white/10'
-                }`}
-              >
-                <span className="text-xl">{tab.icon}</span>
-                <span>{tab.label}</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                  activeSubTab === tab.key ? 'bg-white/20' : 'bg-white/10'
-                }`}>
-                  {tab.count}
-                </span>
-              </motion.button>
-            ))}
+          {/* Sub Tabs - Formal Style */}
+          <div className="bg-white/5 backdrop-blur-md rounded-xl p-1 mb-6 border border-white/10">
+            <div className="flex">
+              {subTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveSubTab(tab.key)}
+                  className={`flex-1 px-4 py-3 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+                    activeSubTab === tab.key
+                      ? 'bg-purple-600 text-white shadow-lg'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                    activeSubTab === tab.key ? 'bg-white/20' : 'bg-white/10'
+                  }`}>
+                    {tab.count}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Content */}
