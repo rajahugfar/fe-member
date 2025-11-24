@@ -79,6 +79,7 @@ const Affiliate: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<AffiliateMember | null>(null)
   const [memberDetail, setMemberDetail] = useState<MemberDetailCommission[]>([])
   const [loadingDetail, setLoadingDetail] = useState(false)
+  const [detailTab, setDetailTab] = useState<'lottery' | 'game'>('lottery')
 
   // Always use current domain for referral link to avoid localhost issue
   const referralLink = linkData?.referralCode
@@ -602,7 +603,7 @@ const Affiliate: React.FC = () => {
       {/* Member Detail Modal */}
       {showDetailModal && selectedMember && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 rounded-xl w-full max-w-2xl max-h-[80vh] overflow-hidden">
+          <div className="bg-gray-900 rounded-xl w-full max-w-3xl max-h-[80vh] overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <div>
                 <h3 className="text-lg font-bold text-white">รายละเอียดสมาชิก</h3>
@@ -619,33 +620,80 @@ const Affiliate: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-4 overflow-y-auto max-h-[60vh]">
+            {/* Tab Selector */}
+            <div className="p-4 border-b border-white/10">
+              <div className="bg-white/5 rounded-lg p-1 flex">
+                <button
+                  onClick={() => setDetailTab('lottery')}
+                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                    detailTab === 'lottery'
+                      ? 'bg-yellow-600 text-white'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  หวย
+                </button>
+                <button
+                  onClick={() => setDetailTab('game')}
+                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                    detailTab === 'game'
+                      ? 'bg-cyan-600 text-white'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  เกมส์
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 overflow-y-auto max-h-[50vh]">
               {loadingDetail ? (
                 <div className="text-center py-8 text-white/60">กำลังโหลด...</div>
               ) : memberDetail.length === 0 ? (
                 <div className="text-center py-8 text-white/60">ยังไม่มียอดแทง</div>
               ) : (
-                <div className="space-y-3">
-                  {memberDetail.map((detail) => (
-                    <div key={detail.date} className="bg-white/5 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-white font-medium">{formatDate(detail.date)}</span>
-                        <span className="text-green-400 font-bold">฿{formatCurrency(detail.totalCommission)}</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3 text-sm">
-                        <div className="bg-yellow-600/20 rounded p-2">
-                          <p className="text-yellow-400 text-xs mb-1">หวย</p>
-                          <p className="text-white">ยอดแทง: ฿{formatCurrency(detail.lotteryTurnover)}</p>
-                          <p className="text-green-400">คอม: ฿{formatCurrency(detail.lotteryCommission)}</p>
-                        </div>
-                        <div className="bg-cyan-600/20 rounded p-2">
-                          <p className="text-cyan-400 text-xs mb-1">เกมส์</p>
-                          <p className="text-white">ยอดแทง: ฿{formatCurrency(detail.gameTurnover)}</p>
-                          <p className="text-green-400">คอม: ฿{formatCurrency(detail.gameCommission)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left py-3 px-4 text-white/60 font-medium">วันที่</th>
+                        <th className="text-right py-3 px-4 text-white/60 font-medium">ยอดแทง</th>
+                        <th className="text-right py-3 px-4 text-white/60 font-medium">ค่าคอมมิชชั่น</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {memberDetail.map((detail) => {
+                        const turnover = detailTab === 'lottery' ? detail.lotteryTurnover : detail.gameTurnover
+                        const commission = detailTab === 'lottery' ? detail.lotteryCommission : detail.gameCommission
+
+                        // Skip if no data for this tab
+                        if (turnover === 0 && commission === 0) return null
+
+                        return (
+                          <tr key={detail.date} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="py-3 px-4 text-white">{formatDate(detail.date)}</td>
+                            <td className="py-3 px-4 text-right text-white">฿{formatCurrency(turnover)}</td>
+                            <td className="py-3 px-4 text-right text-green-400 font-medium">฿{formatCurrency(commission)}</td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t border-white/20 bg-white/5">
+                        <td className="py-3 px-4 text-white font-bold">รวม</td>
+                        <td className="py-3 px-4 text-right text-white font-bold">
+                          ฿{formatCurrency(
+                            memberDetail.reduce((sum, d) => sum + (detailTab === 'lottery' ? d.lotteryTurnover : d.gameTurnover), 0)
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-right text-green-400 font-bold">
+                          ฿{formatCurrency(
+                            memberDetail.reduce((sum, d) => sum + (detailTab === 'lottery' ? d.lotteryCommission : d.gameCommission), 0)
+                          )}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               )}
             </div>
