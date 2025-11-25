@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -53,6 +53,7 @@ type RegisterFormData = z.infer<typeof registerSchema>
 
 const RegisterPage = () => {
   const navigate = useNavigate()
+  const { referralCode: urlReferralCode } = useParams<{ referralCode?: string }>()
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useMemberStore()
 
@@ -60,9 +61,21 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    defaultValues: {
+      referralCode: urlReferralCode || '',
+    },
   })
+
+  // Set referral code from URL when component mounts or referralCode changes
+  useEffect(() => {
+    if (urlReferralCode) {
+      setValue('referralCode', urlReferralCode)
+      toast.success(`กำลังสมัครผ่านรหัสแนะนำ: ${urlReferralCode}`)
+    }
+  }, [urlReferralCode, setValue])
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
