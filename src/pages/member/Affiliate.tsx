@@ -53,17 +53,6 @@ interface MemberDetailCommission {
   totalCommission: number
 }
 
-interface MemberPoy {
-  id: string
-  poyNumber: string
-  stockName: string
-  totalBets: number
-  totalPrice: number
-  winPrice: number
-  status: number
-  createdAt: string
-}
-
 const Affiliate: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('overview')
   const [stats, setStats] = useState<AffiliateStats>({
@@ -89,9 +78,7 @@ const Affiliate: React.FC = () => {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [selectedMember, setSelectedMember] = useState<AffiliateMember | null>(null)
   const [memberDetail, setMemberDetail] = useState<MemberDetailCommission[]>([])
-  const [memberPoys, setMemberPoys] = useState<MemberPoy[]>([])
   const [loadingDetail, setLoadingDetail] = useState(false)
-  const [detailView, setDetailView] = useState<'commission' | 'poys'>('poys')
   const [detailTab, setDetailTab] = useState<'lottery' | 'game'>('lottery')
 
   // Always use current domain for referral link to avoid localhost issue
@@ -208,19 +195,9 @@ const Affiliate: React.FC = () => {
     setSelectedMember(member)
     setShowDetailModal(true)
     setLoadingDetail(true)
-    setDetailView('poys') // Default to poys view
 
     try {
-      // Load poy history for this member
-      const poyResponse = await axios.get(
-        `${API_BASE_URL}/api/v1/admin/members/${member.id}/poys`,
-        { headers: getAuthHeaders() }
-      )
-      if (poyResponse.data.success) {
-        setMemberPoys(poyResponse.data.data || [])
-      }
-
-      // Also load commission detail for backup
+      // Load commission detail (has turnover data grouped by date)
       const commResponse = await axios.get(
         `${API_BASE_URL}/api/v1/member/referral/members/${member.id}/detail`,
         { headers: getAuthHeaders() }
@@ -644,28 +621,28 @@ const Affiliate: React.FC = () => {
               </button>
             </div>
 
-            {/* View Selector */}
+            {/* Tab Selector */}
             <div className="p-4 border-b border-white/10">
               <div className="bg-white/5 rounded-lg p-1 flex">
                 <button
-                  onClick={() => setDetailView('poys')}
+                  onClick={() => setDetailTab('lottery')}
                   className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    detailView === 'poys'
-                      ? 'bg-purple-600 text-white'
+                    detailTab === 'lottery'
+                      ? 'bg-yellow-600 text-white'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  รายการโพย
+                  หวย
                 </button>
                 <button
-                  onClick={() => setDetailView('commission')}
+                  onClick={() => setDetailTab('game')}
                   className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    detailView === 'commission'
-                      ? 'bg-green-600 text-white'
+                    detailTab === 'game'
+                      ? 'bg-cyan-600 text-white'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  ค่าคอมมิชชั่น
+                  เกมส์
                 </button>
               </div>
             </div>
@@ -673,86 +650,12 @@ const Affiliate: React.FC = () => {
             <div className="p-4 overflow-y-auto max-h-[50vh]">
               {loadingDetail ? (
                 <div className="text-center py-8 text-white/60">กำลังโหลด...</div>
-              ) : detailView === 'poys' ? (
-                // Poy List View
-                memberPoys.length === 0 ? (
-                  <div className="text-center py-8 text-white/60">ยังไม่มีรายการแทง</div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-white/10">
-                          <th className="text-left py-3 px-4 text-white/60 font-medium">วันที่</th>
-                          <th className="text-left py-3 px-4 text-white/60 font-medium">เลขโพย</th>
-                          <th className="text-left py-3 px-4 text-white/60 font-medium">หวย</th>
-                          <th className="text-right py-3 px-4 text-white/60 font-medium">ยอดแทง</th>
-                          <th className="text-right py-3 px-4 text-white/60 font-medium">ยอดชนะ</th>
-                          <th className="text-center py-3 px-4 text-white/60 font-medium">สถานะ</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {memberPoys.map((poy) => (
-                          <tr key={poy.id} className="border-b border-white/5 hover:bg-white/5">
-                            <td className="py-3 px-4 text-white">{new Date(poy.createdAt).toLocaleDateString('th-TH')}</td>
-                            <td className="py-3 px-4 text-purple-400 font-mono">{poy.poyNumber}</td>
-                            <td className="py-3 px-4 text-white text-xs">{poy.stockName}</td>
-                            <td className="py-3 px-4 text-right text-white">฿{formatCurrency(poy.totalPrice)}</td>
-                            <td className="py-3 px-4 text-right text-green-400">฿{formatCurrency(poy.winPrice || 0)}</td>
-                            <td className="py-3 px-4 text-center">
-                              {poy.status === 0 && <span className="text-red-400 text-xs">ยกเลิก</span>}
-                              {poy.status === 1 && <span className="text-yellow-400 text-xs">รอผล</span>}
-                              {poy.status === 2 && <span className="text-green-400 text-xs">ออกผล</span>}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot>
-                        <tr className="border-t border-white/20 bg-white/5">
-                          <td colSpan={3} className="py-3 px-4 text-white font-bold">รวม ({memberPoys.length} โพย)</td>
-                          <td className="py-3 px-4 text-right text-white font-bold">
-                            ฿{formatCurrency(memberPoys.reduce((sum, p) => sum + p.totalPrice, 0))}
-                          </td>
-                          <td className="py-3 px-4 text-right text-green-400 font-bold">
-                            ฿{formatCurrency(memberPoys.reduce((sum, p) => sum + (p.winPrice || 0), 0))}
-                          </td>
-                          <td></td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                )
               ) : (
-                // Commission View (existing code)
+                // Turnover and Commission View
                 memberDetail.length === 0 ? (
                   <div className="text-center py-8 text-white/60">ยังไม่มีค่าคอมมิชชั่น</div>
                 ) : (
-                  <div>
-                    {/* Tab Selector for Commission */}
-                    <div className="mb-4">
-                      <div className="bg-white/5 rounded-lg p-1 flex w-1/2 mx-auto">
-                        <button
-                          onClick={() => setDetailTab('lottery')}
-                          className={`flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                            detailTab === 'lottery'
-                              ? 'bg-yellow-600 text-white'
-                              : 'text-white/60 hover:text-white'
-                          }`}
-                        >
-                          หวย
-                        </button>
-                        <button
-                          onClick={() => setDetailTab('game')}
-                          className={`flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                            detailTab === 'game'
-                              ? 'bg-cyan-600 text-white'
-                              : 'text-white/60 hover:text-white'
-                          }`}
-                        >
-                          เกมส์
-                        </button>
-                      </div>
-                    </div>
-                    <div className="overflow-x-auto">
+                  <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-white/10">
@@ -793,7 +696,6 @@ const Affiliate: React.FC = () => {
                           </tr>
                         </tfoot>
                       </table>
-                    </div>
                   </div>
                 )
               )}
