@@ -73,7 +73,6 @@ const RegisterPage = () => {
   useEffect(() => {
     if (urlReferralCode) {
       setValue('referralCode', urlReferralCode)
-      toast.success(`กำลังสมัครผ่านรหัสแนะนำ: ${urlReferralCode}`)
     }
   }, [urlReferralCode, setValue])
 
@@ -270,17 +269,33 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <label className="block text-white/90 text-sm font-medium mb-2">รหัสแนะนำ (ไม่บังคับ)</label>
+            <label className="block text-white/90 text-sm font-medium mb-2">
+              รหัสแนะนำ (ไม่บังคับ)
+              {urlReferralCode && (
+                <span className="ml-2 text-green-400 text-xs">
+                  ✓ กำลังสมัครผ่านรหัสแนะนำ
+                </span>
+              )}
+            </label>
             <div className="relative">
               <FaUserPlus className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
               <input
                 {...register('referralCode')}
                 type="text"
                 placeholder="รหัสแนะนำจากเพื่อน"
-                className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className={`w-full pl-12 pr-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${
+                  urlReferralCode ? 'border-green-400/50 bg-green-500/10' : 'border-white/20'
+                }`}
                 disabled={isLoading}
+                readOnly={!!urlReferralCode}
               />
             </div>
+            {urlReferralCode && (
+              <p className="text-green-300 text-xs mt-1 flex items-center gap-1">
+                <FaUserPlus className="text-green-400" />
+                คุณกำลังสมัครผ่านคำแนะนำของเพื่อน
+              </p>
+            )}
           </div>
         </div>
 
