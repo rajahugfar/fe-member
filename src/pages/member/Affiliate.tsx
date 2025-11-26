@@ -53,6 +53,17 @@ interface MemberDetailCommission {
   totalCommission: number
 }
 
+interface MemberPoy {
+  id: string
+  poyNumber: string | null
+  poyName: string | null
+  dateBuy: string
+  totalPrice: number
+  winPrice: number
+  status: number
+  createDate: string
+}
+
 const Affiliate: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('overview')
   const [stats, setStats] = useState<AffiliateStats>({
@@ -78,8 +89,10 @@ const Affiliate: React.FC = () => {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [selectedMember, setSelectedMember] = useState<AffiliateMember | null>(null)
   const [memberDetail, setMemberDetail] = useState<MemberDetailCommission[]>([])
+  const [memberPoys, setMemberPoys] = useState<MemberPoy[]>([])
   const [loadingDetail, setLoadingDetail] = useState(false)
   const [detailTab, setDetailTab] = useState<'lottery' | 'game'>('lottery')
+  const [detailView, setDetailView] = useState<'commission' | 'poys'>('commission')
 
   // Always use current domain for referral link to avoid localhost issue
   const referralLink = linkData?.referralCode
@@ -204,6 +217,15 @@ const Affiliate: React.FC = () => {
       )
       if (commResponse.data.success) {
         setMemberDetail(commResponse.data.data || [])
+      }
+
+      // Load poy list
+      const poysResponse = await axios.get(
+        `${API_BASE_URL}/api/v1/member/referral/members/${member.id}/poys`,
+        { headers: getAuthHeaders() }
+      )
+      if (poysResponse.data.success) {
+        setMemberPoys(poysResponse.data.data?.poys || [])
       }
     } catch (error) {
       console.error('Load member detail error:', error)
@@ -621,37 +643,63 @@ const Affiliate: React.FC = () => {
               </button>
             </div>
 
-            {/* Tab Selector */}
+            {/* View Toggle */}
             <div className="p-4 border-b border-white/10">
-              <div className="bg-white/5 rounded-lg p-1 flex">
+              <div className="bg-white/5 rounded-lg p-1 flex mb-3">
                 <button
-                  onClick={() => setDetailTab('lottery')}
+                  onClick={() => setDetailView('commission')}
                   className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    detailTab === 'lottery'
-                      ? 'bg-yellow-600 text-white'
+                    detailView === 'commission'
+                      ? 'bg-purple-600 text-white'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  หวย
+                  ค่าคอมมิชชั่น
                 </button>
                 <button
-                  onClick={() => setDetailTab('game')}
+                  onClick={() => setDetailView('poys')}
                   className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    detailTab === 'game'
-                      ? 'bg-cyan-600 text-white'
+                    detailView === 'poys'
+                      ? 'bg-purple-600 text-white'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  เกมส์
+                  รายการโพย
                 </button>
               </div>
+
+              {/* Tab Selector (only for commission view) */}
+              {detailView === 'commission' && (
+                <div className="bg-white/5 rounded-lg p-1 flex">
+                  <button
+                    onClick={() => setDetailTab('lottery')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      detailTab === 'lottery'
+                        ? 'bg-yellow-600 text-white'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                  >
+                    หวย
+                  </button>
+                  <button
+                    onClick={() => setDetailTab('game')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      detailTab === 'game'
+                        ? 'bg-cyan-600 text-white'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                  >
+                    เกมส์
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="p-4 overflow-y-auto max-h-[50vh]">
               {loadingDetail ? (
                 <div className="text-center py-8 text-white/60">กำลังโหลด...</div>
-              ) : (
-                // Turnover and Commission View
+              ) : detailView === 'commission' ? (
+                // Commission View
                 memberDetail.length === 0 ? (
                   <div className="text-center py-8 text-white/60">ยังไม่มีค่าคอมมิชชั่น</div>
                 ) : (
@@ -696,6 +744,58 @@ const Affiliate: React.FC = () => {
                           </tr>
                         </tfoot>
                       </table>
+                  </div>
+                )
+              ) : (
+                // Poys View
+                memberPoys.length === 0 ? (
+                  <div className="text-center py-8 text-white/60">ยังไม่มีรายการแทง</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-white/10">
+                          <th className="text-left py-3 px-4 text-white/60 font-medium">วันที่</th>
+                          <th className="text-left py-3 px-4 text-white/60 font-medium">เลขโพย</th>
+                          <th className="text-left py-3 px-4 text-white/60 font-medium">งวด</th>
+                          <th className="text-right py-3 px-4 text-white/60 font-medium">ยอดแทง</th>
+                          <th className="text-right py-3 px-4 text-white/60 font-medium">ยอดถูก</th>
+                          <th className="text-center py-3 px-4 text-white/60 font-medium">สถานะ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {memberPoys.map((poy) => (
+                          <tr key={poy.id} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="py-3 px-4 text-white">{formatDate(poy.dateBuy)}</td>
+                            <td className="py-3 px-4 text-white font-mono">{poy.poyNumber || '-'}</td>
+                            <td className="py-3 px-4 text-white">{poy.poyName || '-'}</td>
+                            <td className="py-3 px-4 text-right text-white">฿{formatCurrency(poy.totalPrice)}</td>
+                            <td className="py-3 px-4 text-right text-green-400">฿{formatCurrency(poy.winPrice)}</td>
+                            <td className="py-3 px-4 text-center">
+                              {poy.status === 0 ? (
+                                <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">ยกเลิก</span>
+                              ) : poy.status === 1 ? (
+                                <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">รอผล</span>
+                              ) : (
+                                <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">ประมวลแล้ว</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr className="border-t border-white/20 bg-white/5">
+                          <td colSpan={3} className="py-3 px-4 text-white font-bold">รวม</td>
+                          <td className="py-3 px-4 text-right text-white font-bold">
+                            ฿{formatCurrency(memberPoys.reduce((sum, p) => sum + p.totalPrice, 0))}
+                          </td>
+                          <td className="py-3 px-4 text-right text-green-400 font-bold">
+                            ฿{formatCurrency(memberPoys.reduce((sum, p) => sum + p.winPrice, 0))}
+                          </td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
+                    </table>
                   </div>
                 )
               )}
