@@ -279,7 +279,7 @@ const LoginPage = () => {
                   value={registerData.phone}
                   onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="เบอร์โทรศัพท์ (10 หลัก)"
+                  placeholder={t('auth:register.phone')}
                   pattern="0[0-9]{9}"
                   required
                 />
@@ -291,7 +291,7 @@ const LoginPage = () => {
                   value={registerData.password}
                   onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)"
+                  placeholder={t('auth:register.password')}
                   minLength={6}
                   required
                 />
@@ -310,7 +310,7 @@ const LoginPage = () => {
                   value={registerData.confirmPassword}
                   onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="ยืนยันรหัสผ่าน"
+                  placeholder={t('auth:register.confirmPassword')}
                   required
                 />
               </div>
@@ -321,7 +321,7 @@ const LoginPage = () => {
                   value={registerData.fullname}
                   onChange={(e) => setRegisterData({ ...registerData, fullname: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="ชื่อ-นามสกุล"
+                  placeholder={t('auth:register.fullName')}
                   minLength={3}
                   required
                 />
@@ -334,15 +334,15 @@ const LoginPage = () => {
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500 transition text-sm"
                   required
                 >
-                  <option value="">เลือกธนาคาร</option>
-                  <option value="KBANK">กสิกรไทย (KBANK)</option>
-                  <option value="SCB">ไทยพาณิชย์ (SCB)</option>
-                  <option value="BBL">กรุงเทพ (BBL)</option>
-                  <option value="KTB">กรุงไทย (KTB)</option>
-                  <option value="TMB">ทหารไทยธนชาต (TTB)</option>
-                  <option value="BAY">กรุงศรีอยุธยา (BAY)</option>
-                  <option value="GSB">ออมสิน (GSB)</option>
-                  <option value="BAAC">ธ.ก.ส. (BAAC)</option>
+                  <option value="">{t('auth:register.bankCode')}</option>
+                  <option value="KBANK">Kasikorn Bank (KBANK)</option>
+                  <option value="SCB">Siam Commercial Bank (SCB)</option>
+                  <option value="BBL">Bangkok Bank (BBL)</option>
+                  <option value="KTB">Krungthai Bank (KTB)</option>
+                  <option value="TMB">TMB Thanachart Bank (TTB)</option>
+                  <option value="BAY">Krungsri Bank (BAY)</option>
+                  <option value="GSB">Government Savings Bank (GSB)</option>
+                  <option value="BAAC">Bank for Agriculture (BAAC)</option>
                   <option value="TRUEWALLET">TrueMoney Wallet</option>
                 </select>
               </div>
@@ -353,7 +353,7 @@ const LoginPage = () => {
                   value={registerData.bankNumber}
                   onChange={(e) => setRegisterData({ ...registerData, bankNumber: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="เลขบัญชี (10-12 หลัก)"
+                  placeholder={t('auth:register.bankNumber')}
                   pattern="[0-9]{10,12}"
                   required
                 />
@@ -365,7 +365,7 @@ const LoginPage = () => {
                   value={registerData.line}
                   onChange={(e) => setRegisterData({ ...registerData, line: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="LINE ID (ไม่บังคับ)"
+                  placeholder={t('auth:register.lineId')}
                 />
               </div>
 
@@ -375,7 +375,7 @@ const LoginPage = () => {
                   value={registerData.referralCode}
                   onChange={(e) => setRegisterData({ ...registerData, referralCode: e.target.value })}
                   className="w-full px-4 py-2.5 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition text-sm"
-                  placeholder="รหัสแนะนำ (ถ้ามี)"
+                  placeholder={t('auth:register.referralCode')}
                 />
               </div>
 
