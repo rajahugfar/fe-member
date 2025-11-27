@@ -16,6 +16,7 @@ import {
 import { siteContentAPI } from '@api/siteContentAPI'
 import { gameProviderAPI, type GameProvider as DBGameProvider } from '@api/gameProviderAPI'
 import type { PromotionBanner, SiteSettingsMap } from '@/types/siteContent'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -190,17 +191,18 @@ const LandingPage = () => {
 
                 {/* Quick Action Buttons */}
                 <div className="flex items-center gap-2">
+                  <LanguageSwitcher variant="compact" />
                   <Link
                     to="/member/login"
                     className="relative px-6 py-3 bg-gradient-to-br from-green-600 to-green-800 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition-transform border-2 border-yellow-400 flex items-center gap-2"
                   >
-                    <FaUser /> เข้าสู่ระบบ
+                    <FaUser /> {t("auth:login.title")}
                   </Link>
                   <Link
                     to="/member/register"
                     className="relative px-6 py-3 bg-gradient-to-br from-yellow-500 to-yellow-600 text-green-900 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform border-2 border-yellow-300 flex items-center gap-2 animate-pulse"
                   >
-                    <FaUserPlus /> สมัครสมาชิก
+                    <FaUserPlus /> {t("auth:register.title")}
                   </Link>
                 </div>
               </div>

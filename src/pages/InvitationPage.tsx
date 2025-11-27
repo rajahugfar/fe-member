@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useMemberStore } from '@/store/memberStore'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 const InvitationPage = () => {
   const { t } = useTranslation()
@@ -93,6 +94,7 @@ const InvitationPage = () => {
 
             {/* Menu */}
             <div className="flex items-center gap-4">
+              <LanguageSwitcher variant="compact" />
               <Link to="/invitation" className="flex flex-col items-center text-yellow-400">
                 <img src="/images/sacasino/icons/ic-menu-invitation.png" alt="ชวนเพื่อน" className="w-8 h-8" />
                 <span className="text-xs mt-1">ชวนเพื่อน</span>

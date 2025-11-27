@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useMemberStore } from '../../store/memberStore'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 
 const Login = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { login, isLoading } = useMemberStore()
   const [showPassword, setShowPassword] = useState(false)
@@ -73,6 +76,11 @@ const Login = () => {
       <div className="relative z-10 w-full max-w-md animate-fadeIn">
         {/* Modal Content */}
         <div className="bg-[#1a1f26] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden">
+          {/* Language Switcher */}
+          <div className="absolute top-4 left-4 z-50">
+            <LanguageSwitcher variant="compact" />
+          </div>
+
           {/* Close Button */}
           <button
             onClick={() => navigate('/')}

@@ -4,6 +4,7 @@ import { useMemberStore } from '../store/memberStore'
 import { authAPI } from '../api/authAPI'
 import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 const LoginPage = () => {
   const { t } = useTranslation()
@@ -161,6 +162,11 @@ const LoginPage = () => {
       <div className="relative z-10 w-full max-w-md animate-fadeIn">
         {/* Modal Content */}
         <div className="bg-[#1a1f26] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden">
+          {/* Language Switcher */}
+          <div className="absolute top-4 left-4 z-50">
+            <LanguageSwitcher variant="compact" />
+          </div>
+
           {/* Close Button */}
           <button
             onClick={() => navigate('/')}

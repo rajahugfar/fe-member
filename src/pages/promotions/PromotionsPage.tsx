@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { FiGift, FiPercent, FiDollarSign, FiTrendingUp } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 interface Promotion {
   id: string
@@ -125,6 +126,7 @@ const PromotionsPage = () => {
 
             {/* Menu */}
             <div className="flex items-center gap-4">
+              <LanguageSwitcher variant="compact" />
               <Link to="/invitation" className="flex flex-col items-center text-gray-400 hover:text-white transition">
                 <img src="/images/sacasino/icons/ic-menu-invitation.png" alt="ชวนเพื่อน" className="w-8 h-8" />
                 <span className="text-xs mt-1">ชวนเพื่อน</span>

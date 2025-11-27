@@ -6,6 +6,7 @@ import { GameProvider } from '@/api/gameProviderAPI'
 import { publicGameAPI, Game } from '@/api/publicGameAPI'
 import { siteContentAPI } from '@/api/siteContentAPI'
 import { getImageUrl } from '@/api/client'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { useTranslation } from 'react-i18next'
@@ -270,6 +271,7 @@ const SacasinoHomePage = () => {
 
             {/* Support & Auth */}
             <div className="flex items-center gap-2">
+              <LanguageSwitcher variant="compact" />
               <a href="https://t.me/support" target="_blank" rel="noopener noreferrer">
                 <img src="/images/sacasino/icons/ic-telegram-support.png" alt="Telegram" className="h-10" />
               </a>
