@@ -14,9 +14,17 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   const { i18n } = useTranslation()
   const currentLang = i18n.language
 
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang)
-    localStorage.setItem('i18nextLng', lang)
+  const changeLanguage = async (lang: string) => {
+    console.log('Changing language to:', lang)
+    try {
+      await i18n.changeLanguage(lang)
+      localStorage.setItem('i18nextLng', lang)
+      console.log('Language changed successfully to:', lang)
+      // Force reload to apply new language
+      window.location.reload()
+    } catch (error) {
+      console.error('Failed to change language:', error)
+    }
   }
 
   if (variant === 'compact') {
