@@ -5,9 +5,11 @@
     "all": "All",
     "slot": "Slots",
     "casino": "Casino",
+    "liveCasino": "Live Casino",
     "fishing": "Fishing",
     "sport": "Sports",
     "poker": "Poker",
+    "gameCard": "Card Games",
     "baccarat": "Baccarat",
     "roulette": "Roulette",
     "other": "Other"

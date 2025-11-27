@@ -35,6 +35,7 @@ import { useMemberStore } from '@store/memberStore'
 import { toast } from 'react-hot-toast'
 import MemberChat from '@/components/chat/MemberChat'
 import MemberNavbar from '@/components/MemberNavbar'
+import { useTranslation } from 'react-i18next'
 
 // Use the imported PromotionBanner type from siteContentAPI
 type SiteSettingsMap = {
@@ -42,6 +43,7 @@ type SiteSettingsMap = {
 }
 
 const MemberIndex = () => {
+  const { t } = useTranslation(['navigation', 'game', 'common'])
   const navigate = useNavigate()
   const { logout, member } = useMemberStore()
   const [profile, setProfile] = useState<any>(null)
@@ -316,12 +318,12 @@ const MemberIndex = () => {
   // Categories - ต้องตรงกับ category ใน database
   const categories = [
     { id: 'Lottery', name: t("navigation:menu.lottery"), icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
-    { id: 'all', name: 'ทั้งหมด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
+    { id: 'all', name: t("game:categories.all"), icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
     { id: 'Slot', name: t("game:categories.slot"), icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
-    { id: 'Live Casino', name: 'คาสิโนสด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
-    { id: 'Game Card', name: 'เกมไพ่', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
-    { id: 'Sport', name: 'กีฬา', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
-    { id: 'Poker', name: 'โป๊กเกอร์', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Live Casino', name: t("game:categories.liveCasino"), icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
+    { id: 'Game Card', name: t("game:categories.gameCard"), icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Sport', name: t("game:categories.sport"), icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Poker', name: t("game:categories.poker"), icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
   ]
 
   // Action buttons configuration

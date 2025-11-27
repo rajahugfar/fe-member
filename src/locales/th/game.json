@@ -5,9 +5,11 @@
     "all": "ทั้งหมด",
     "slot": "สล็อต",
     "casino": "คาสิโน",
+    "liveCasino": "คาสิโนสด",
     "fishing": "ยิงปลา",
     "sport": "กีฬา",
     "poker": "โป๊กเกอร์",
+    "gameCard": "เกมไพ่",
     "baccarat": "บาคาร่า",
     "roulette": "รูเล็ต",
     "other": "อื่นๆ"
