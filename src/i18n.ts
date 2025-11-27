@@ -57,7 +57,7 @@ i18n
     defaultNS: 'common',
     ns: ['common', 'navigation', 'member', 'lottery', 'transaction', 'promotion', 'game', 'auth', 'affiliate'],
     fallbackLng: 'th',
-    lng: 'th', // Default language
+    // Don't set lng - let LanguageDetector handle it from localStorage
 
     interpolation: {
       escapeValue: false, // React already escapes values
