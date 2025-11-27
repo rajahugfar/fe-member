@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiGlobe } from 'react-icons/fi'
+import toast from 'react-hot-toast'
 
 interface LanguageSwitcherProps {
   className?: string
@@ -12,18 +13,37 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   variant = 'default'
 }) => {
   const { i18n } = useTranslation()
-  const currentLang = i18n.language
+  // Use i18n.language directly, not state
+  const currentLang = i18n.language || localStorage.getItem('i18nextLng') || 'th'
 
   const changeLanguage = async (lang: string) => {
-    console.log('Changing language to:', lang)
+    if (lang === currentLang) return
+
+    console.log('Changing language from', currentLang, 'to:', lang)
     try {
       await i18n.changeLanguage(lang)
       localStorage.setItem('i18nextLng', lang)
+
+      // Show success message
+      toast.success(lang === 'th' ? 'เปลี่ยนเป็นภาษาไทยแล้ว ✓' : 'Changed to English ✓', {
+        duration: 1500,
+        position: 'top-center',
+        style: {
+          background: '#10b981',
+          color: '#fff',
+          fontWeight: 'bold',
+        },
+      })
+
       console.log('Language changed successfully to:', lang)
-      // Force reload to apply new language
-      window.location.reload()
+
+      // Reload page to apply changes completely
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
     } catch (error) {
       console.error('Failed to change language:', error)
+      toast.error('Failed to change language')
     }
   }
 
