@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 const LoginPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['auth', 'common'])
   const navigate = useNavigate()
   const location = useLocation()
   const { referralCode: urlReferralCode } = useParams<{ referralCode?: string }>()
@@ -75,7 +75,7 @@ const LoginPage = () => {
         navigate('/member', { replace: true })
       }, 500)
     } catch (err) {
-      setError('เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบเบอร์โทรและรหัสผ่าน')
+      setError(t('auth:login.invalidCredentials'))
     }
   }
 
@@ -85,19 +85,19 @@ const LoginPage = () => {
 
     // Validate password match
     if (registerData.password !== registerData.confirmPassword) {
-      setError('รหัสผ่านไม่ตรงกัน')
+      setError(t('auth:register.passwordMismatch'))
       return
     }
 
     // Validate phone number
     if (!/^0[0-9]{9}$/.test(registerData.phone)) {
-      setError('เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องเป็น 10 หลัก)')
+      setError(t('auth:register.invalidPhone'))
       return
     }
 
     // Validate password length
     if (registerData.password.length < 6) {
-      setError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
+      setError(t('auth:register.passwordTooShort'))
       return
     }
 
@@ -120,7 +120,7 @@ const LoginPage = () => {
       })
 
       // Show success message
-      toast.success('สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...')
+      toast.success(t('auth:register.registerSuccess'))
 
       // Auto login after successful registration
       const { user, accessToken, refreshToken } = response
@@ -144,7 +144,7 @@ const LoginPage = () => {
 
     } catch (err: any) {
       console.error('Register error:', err)
-      const errorMessage = err.response?.data?.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'
+      const errorMessage = err.response?.data?.message || t('auth:register.registerFailed')
       setError(errorMessage)
       toast.error(errorMessage)
     }
@@ -162,11 +162,6 @@ const LoginPage = () => {
       <div className="relative z-10 w-full max-w-md animate-fadeIn">
         {/* Modal Content */}
         <div className="bg-[#1a1f26] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden">
-          {/* Language Switcher */}
-          <div className="absolute top-4 left-4 z-50">
-            <LanguageSwitcher variant="compact" />
-          </div>
-
           {/* Close Button */}
           <button
             onClick={() => navigate('/')}
@@ -187,7 +182,7 @@ const LoginPage = () => {
                   : 'text-gray-400 hover:text-white bg-[#0f1419]'
               }`}
             >
-              สมัครสมาชิก
+              {t('auth:register.title')}
               {activeTab === 'register' && (
                 <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded">NEW</span>
               )}
@@ -200,8 +195,13 @@ const LoginPage = () => {
                   : 'text-gray-400 hover:text-white bg-[#0f1419]'
               }`}
             >
-              เข้าสู่ระบบ
+              {t('auth:login.title')}
             </button>
+          </div>
+
+          {/* Language Switcher - below tabs */}
+          <div className="flex justify-center py-3 bg-[#0f1419] border-b border-gray-800">
+            <LanguageSwitcher variant="compact" />
           </div>
 
           {/* Form Container */}
@@ -250,7 +250,7 @@ const LoginPage = () => {
                 disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#10b981] to-[#059669] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50"
               >
-                {isLoading ? 'กำลังเข้าสู่ระบบ...' : t("auth:login.title")}
+                {isLoading ? t('auth:login.loginButton') + '...' : t("auth:login.loginButton")}
               </button>
 
               <div className="text-center">
@@ -258,7 +258,7 @@ const LoginPage = () => {
                   type="button"
                   className="text-sm text-yellow-500 hover:text-yellow-400 transition"
                 >
-                  ลืมรหัสผ่าน?
+                  {t('auth:login.forgotPassword')}
                 </button>
               </div>
             </form>
@@ -384,7 +384,7 @@ const LoginPage = () => {
                 disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#fbbf24] to-[#f59e0b] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 mt-2"
               >
-                {isLoading ? 'กำลังสมัครสมาชิก...' : t("auth:register.title")}
+                {isLoading ? t('auth:register.registerButton') + '...' : t("auth:register.registerButton")}
               </button>
             </form>
           )}
