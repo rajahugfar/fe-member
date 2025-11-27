@@ -12,6 +12,7 @@ import promotionTh from './locales/th/promotion.json'
 import gameTh from './locales/th/game.json'
 import authTh from './locales/th/auth.json'
 import affiliateTh from './locales/th/affiliate.json'
+import landingTh from './locales/th/landing.json'
 
 // Import English translations
 import commonEn from './locales/en/common.json'
@@ -23,6 +24,7 @@ import promotionEn from './locales/en/promotion.json'
 import gameEn from './locales/en/game.json'
 import authEn from './locales/en/auth.json'
 import affiliateEn from './locales/en/affiliate.json'
+import landingEn from './locales/en/landing.json'
 
 const resources = {
   th: {
@@ -35,6 +37,7 @@ const resources = {
     game: gameTh,
     auth: authTh,
     affiliate: affiliateTh,
+    landing: landingTh,
   },
   en: {
     common: commonEn,
@@ -46,6 +49,7 @@ const resources = {
     game: gameEn,
     auth: authEn,
     affiliate: affiliateEn,
+    landing: landingEn,
   },
 }
 
@@ -55,8 +59,10 @@ i18n
   .init({
     resources,
     defaultNS: 'common',
-    ns: ['common', 'navigation', 'member', 'lottery', 'transaction', 'promotion', 'game', 'auth', 'affiliate'],
+    ns: ['common', 'navigation', 'member', 'lottery', 'transaction', 'promotion', 'game', 'auth', 'affiliate', 'landing'],
     fallbackLng: 'th',
+    supportedLngs: ['th', 'en'],
+    load: 'languageOnly', // This ensures we only get 'th' or 'en', not 'th-TH' or 'en-US'
     // Don't set lng - let LanguageDetector handle it from localStorage
 
     interpolation: {

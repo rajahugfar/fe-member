@@ -24,7 +24,7 @@ import 'swiper/css/effect-fade'
 import { useTranslation } from 'react-i18next'
 
 const LandingPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['landing', 'navigation', 'auth'])
   const navigate = useNavigate()
   const [providers, setProviders] = useState<DBGameProvider[]>([])
   const [promotions, setPromotions] = useState<PromotionBanner[]>([])
@@ -85,14 +85,14 @@ const LandingPage = () => {
   }
 
   const gameCategories = [
-    { name: 'แทงมวย', image: '/images/btn-cat-mun.webp', link: '/games?category=boxing' },
-    { name: 'แทงบอล', image: '/images/btn-cat-sport.webp', link: '/games?category=football' },
-    { name: 'บาคาร่า', image: '/images/btn-cat-card.webp', link: '/games?category=baccarat' },
-    { name: 'เกมยิงปลา', image: '/images/btn-cat-fishhunter.webp', link: '/games?category=fishing' },
-    { name: 'ไบคเคอรี่', image: '/images/btn-cat-poker.webp', link: '/games?category=other' },
-    { name: 'สล็อตออนไลน์', image: '/images/btn-cat-slot.webp', link: '/games?category=slots' },
-    { name: 'ไก่ชน', image: '/images/btn-cat-chicken-fighter.webp', link: '/games?category=cockfight' },
-    { name: 'หวยออนไลน์', image: '/images/btn-cat-lotto.webp', link: '/lottery' },
+    { name: t('landing:gameCategories.boxing'), image: '/images/btn-cat-mun.webp', link: '/games?category=boxing' },
+    { name: t('landing:gameCategories.football'), image: '/images/btn-cat-sport.webp', link: '/games?category=football' },
+    { name: t('landing:gameCategories.baccarat'), image: '/images/btn-cat-card.webp', link: '/games?category=baccarat' },
+    { name: t('landing:gameCategories.fishing'), image: '/images/btn-cat-fishhunter.webp', link: '/games?category=fishing' },
+    { name: t('landing:gameCategories.bicycle'), image: '/images/btn-cat-poker.webp', link: '/games?category=other' },
+    { name: t('landing:gameCategories.slots'), image: '/images/btn-cat-slot.webp', link: '/games?category=slots' },
+    { name: t('landing:gameCategories.cockfight'), image: '/images/btn-cat-chicken-fighter.webp', link: '/games?category=cockfight' },
+    { name: t('landing:gameCategories.lottery'), image: '/images/btn-cat-lotto.webp', link: '/lottery' },
   ]
 
   // รูปโปรโมชั่นตัวอย่าง (ถ้าไม่มีจาก API)
@@ -114,24 +114,24 @@ const LandingPage = () => {
 
   const faqs = [
     {
-      question: `${settings.site_name || 'PERMCHOK'} เป็นเว็บคาสิโนออนไลน์ที่ไหนเชื่อถือหรือไม่?`,
-      answer: 'เว็บคาสิโนออนไลน์ของเรามีมาตรฐานสากล ได้รับใบอนุญาตถูกต้องตามกฎหมาย มีระบบรักษาความปลอดภัยสูง'
+      question: t('landing:faq.questions.trustworthy.question', { siteName: settings.site_name || 'PERMCHOK' }),
+      answer: t('landing:faq.questions.trustworthy.answer')
     },
     {
-      question: `${settings.site_name || 'PERMCHOK'} มีเกมอะไรให้เล่นบ้าง?`,
-      answer: 'มีเกมให้เลือกเล่นมากมาย ทั้งสล็อต บาคาร่า รูเล็ต ไฮโล เสือมังกร ยิงปลา และอื่นๆอีกมากมาย'
+      question: t('landing:faq.questions.games.question', { siteName: settings.site_name || 'PERMCHOK' }),
+      answer: t('landing:faq.questions.games.answer')
     },
     {
-      question: `ระบบฝาก-ถอนของ ${settings.site_name || 'PERMCHOK'} ใช้เวลานานแค่ไหน?`,
-      answer: 'ระบบอัตโนมัติ รวดเร็วภายใน 30 วินาที ไม่มีขั้นต่ำ'
+      question: t('landing:faq.questions.transaction.question', { siteName: settings.site_name || 'PERMCHOK' }),
+      answer: t('landing:faq.questions.transaction.answer')
     },
     {
-      question: `${settings.site_name || 'PERMCHOK'} มีโปรโมชั่นอะไรบ้าง?`,
-      answer: 'มีโปรโมชั่นมากมาย โบนัสต้อนรับ คืนยอดเสีย ฝากครั้งแรก และโปรพิเศษอื่นๆอีกมากมาย'
+      question: t('landing:faq.questions.promotions.question', { siteName: settings.site_name || 'PERMCHOK' }),
+      answer: t('landing:faq.questions.promotions.answer')
     },
     {
-      question: `สามารถติดต่อทีมงาน ${settings.site_name || 'PERMCHOK'} ได้ช่องทางไหน?`,
-      answer: 'สามารถติดต่อได้ตลอด 24 ชั่วโมง ผ่าน Line, Telegram, Facebook หรือแชทสด'
+      question: t('landing:faq.questions.contact.question', { siteName: settings.site_name || 'PERMCHOK' }),
+      answer: t('landing:faq.questions.contact.answer')
     }
   ]
 
@@ -184,7 +184,7 @@ const LandingPage = () => {
                       {settings.site_name || 'PERMCHOK'}
                     </h1>
                     <p className="text-yellow-200 text-sm font-semibold drop-shadow-lg">
-                      คาสิโนออนไลน์ อันดับ 1
+                      {t('landing:header.subtitle')}
                     </p>
                   </div>
                 </Link>
@@ -219,21 +219,21 @@ const LandingPage = () => {
                 to="/member/profile"
                 className="relative hover:scale-105 transition-transform"
               >
-                <img src="/images/btn-play-profile.webp" alt="บัญชี" className="w-full h-auto" />
+                <img src="/images/btn-play-profile.webp" alt={t('landing:menu.profile')} className="w-full h-auto" />
               </Link>
 
               <Link
                 to="/member/deposit"
                 className="relative hover:scale-105 transition-transform"
               >
-                <img src="/images/btn-play-topup.webp" alt="ฝากถอน" className="w-full h-auto" />
+                <img src="/images/btn-play-topup.webp" alt={t('landing:menu.deposit')} className="w-full h-auto" />
               </Link>
 
               <Link
                 to="/member/register"
                 className="relative hover:scale-105 transition-transform"
               >
-                <img src="/images/btn-play-register.webp" alt="สมัคร" className="w-full h-auto" />
+                <img src="/images/btn-play-register.webp" alt={t('landing:menu.register')} className="w-full h-auto" />
               </Link>
 
               <a
@@ -242,7 +242,7 @@ const LandingPage = () => {
                 rel="noopener noreferrer"
                 className="relative hover:scale-105 transition-transform"
               >
-                <img src="/images/btn-play-contact.webp" alt="ติดต่อ" className="w-full h-auto" />
+                <img src="/images/btn-play-contact.webp" alt={t('landing:menu.contact')} className="w-full h-auto" />
               </a>
             </div>
           </div>
@@ -294,7 +294,7 @@ const LandingPage = () => {
                   rel="noopener noreferrer"
                   className="relative hover:scale-105 transition-transform"
                 >
-                  <img src="/images/btn-news.webp" alt="บทความ" className="w-full h-auto" />
+                  <img src="/images/btn-news.webp" alt={t('landing:menu.news')} className="w-full h-auto" />
                 </a>
 
                 <a
@@ -303,7 +303,7 @@ const LandingPage = () => {
                   rel="noopener noreferrer"
                   className="relative hover:scale-105 transition-transform"
                 >
-                  <img src="/images/btn-subcontact.webp" alt="ข่าวสาร" className="w-full h-auto" />
+                  <img src="/images/btn-subcontact.webp" alt={t('landing:menu.updates')} className="w-full h-auto" />
                 </a>
               </div>
             </div>
@@ -339,7 +339,7 @@ const LandingPage = () => {
         {/* Game Providers Section */}
         <section className="container mx-auto px-4 py-12">
           <div className="text-center mb-10">
-            <img src="/images/title-section-games.webp" alt="รายการเกม" className="mx-auto h-16 drop-shadow-[0_0_20px_rgba(202,138,4,0.6)]" />
+            <img src="/images/title-section-games.webp" alt={t('landing:sections.gameProviders')} className="mx-auto h-16 drop-shadow-[0_0_20px_rgba(202,138,4,0.6)]" />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -371,7 +371,7 @@ const LandingPage = () => {
         <section className="container mx-auto px-4 py-8">
           <div className="text-center mb-8">
             <h2 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-2">
-              กิจกรรม
+              {t('landing:sections.promotions')}
             </h2>
           </div>
 
@@ -406,20 +406,20 @@ const LandingPage = () => {
             {/* SEO Text */}
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-green-400 mb-4">
-                {settings.site_name || 'PERMCHOK'} คาสิโนออนไลน์ เล่นง่าย จ่ายจริง การันตีความมั่นคง
+                {t('landing:seo.title', { siteName: settings.site_name || 'PERMCHOK' })}
               </h2>
               <p className="text-gray-300 leading-relaxed mb-4">
-                {settings.site_description || 'เว็บคาสิโนออนไลน์อันดับหนึ่งของประเทศไทย มาตรฐานสากล ระบบปลอดภัย ฝาก-ถอนรวดเร็ว พร้อมให้บริการตลอด 24 ชั่วโมง'}
+                {settings.site_description || t('landing:seo.description')}
               </p>
               <p className="text-gray-300 leading-relaxed">
-                มีเกมให้เลือกเล่นหลากหลาย ทั้ง <span className="text-green-400 font-bold">บาคาร่า สล็อต รูเล็ต ไฮโล</span> และเกมคาสิโนสดอื่นๆอีกมากมาย จากค่ายชั้นนำระดับโลก พร้อมโปรโมชั่นมากมาย โบนัสต้อนรับ คืนยอดเสีย ระบบอัตโนมัติรวดเร็วทันใจ
+                {t('landing:seo.contentPlain')}
               </p>
             </div>
 
             {/* FAQ Section */}
             <div>
               <h3 className="text-2xl font-bold text-green-400 mb-6">
-                FAQ คำถามที่พบบ่อยเกี่ยวกับ {settings.site_name || 'PERMCHOK'}
+                {t('landing:faq.title', { siteName: settings.site_name || 'PERMCHOK' })}
               </h3>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
@@ -473,7 +473,7 @@ const LandingPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               {/* Certifications */}
               <div>
-                <h3 className="text-green-400 font-bold text-lg mb-4">Certifications</h3>
+                <h3 className="text-green-400 font-bold text-lg mb-4">{t('landing:footer.certifications')}</h3>
                 <div className="flex gap-3 flex-wrap">
                   <img src="/images/certificates/4.webp" alt="Cert 1" className="w-12 h-12 object-contain" />
                   <img src="/images/certificates/5.webp" alt="Cert 2" className="w-12 h-12 object-contain" />
@@ -485,7 +485,7 @@ const LandingPage = () => {
 
               {/* Responsible Gaming */}
               <div>
-                <h3 className="text-green-400 font-bold text-lg mb-4">Responsible Gaming</h3>
+                <h3 className="text-green-400 font-bold text-lg mb-4">{t('landing:footer.responsibleGaming')}</h3>
                 <div className="flex gap-3 flex-wrap">
                   <img src="/images/certificates/9.webp" alt="Gaming 1" className="w-12 h-12 object-contain" />
                   <img src="/images/certificates/10.webp" alt="Gaming 2" className="w-12 h-12 object-contain" />
@@ -495,7 +495,7 @@ const LandingPage = () => {
 
               {/* Payment Methods */}
               <div>
-                <h3 className="text-green-400 font-bold text-lg mb-4">Payment methods</h3>
+                <h3 className="text-green-400 font-bold text-lg mb-4">{t('landing:footer.paymentMethods')}</h3>
                 <div className="grid grid-cols-6 gap-2">
                   <img src="/images/certificates/12.webp" alt="Pay 1" className="w-8 h-8 object-contain" />
                   <img src="/images/certificates/13.webp" alt="Pay 2" className="w-8 h-8 object-contain" />
@@ -510,7 +510,7 @@ const LandingPage = () => {
 
             {/* Copyright */}
             <div className="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
-              © {new Date().getFullYear()} {settings.site_name || 'PERMCHOK'}. All rights reserved.
+              {t('landing:footer.copyright', { year: new Date().getFullYear(), siteName: settings.site_name || 'PERMCHOK' })}
             </div>
           </div>
         </footer>
@@ -556,14 +556,14 @@ const LandingPage = () => {
                   </button>
                   <FaGamepad className="text-5xl text-black mx-auto mb-3" />
                   <h2 className="text-2xl font-bold text-black text-center">
-                    เข้าสู่ระบบเพื่อเล่นเกม
+                    {t('landing:popup.loginRequired.title')}
                   </h2>
                 </div>
 
                 {/* Body */}
                 <div className="p-8 text-center">
                   <p className="text-gray-300 text-lg mb-8">
-                    กรุณาเข้าสู่ระบบหรือสมัครสมาชิก<br />เพื่อเข้าเล่นเกมส์
+                    {t('landing:popup.loginRequired.message')}<br />{t('landing:popup.loginRequired.submessage')}
                   </p>
 
                   {/* Action Buttons */}
@@ -573,7 +573,7 @@ const LandingPage = () => {
                       className="w-full py-4 px-6 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(202,138,4,0.4)] hover:shadow-[0_0_30px_rgba(202,138,4,0.6)] transform hover:scale-105"
                     >
                       <FaUser className="inline-block mr-2" />
-                      เข้าสู่ระบบ
+                      {t('landing:popup.loginRequired.loginButton')}
                     </button>
 
                     <button
@@ -581,14 +581,14 @@ const LandingPage = () => {
                       className="w-full py-4 px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-xl transition-all duration-300 border-2 border-gray-600 hover:border-gray-500 transform hover:scale-105"
                     >
                       <FaUserPlus className="inline-block mr-2" />
-                      สมัครสมาชิก
+                      {t('landing:popup.loginRequired.registerButton')}
                     </button>
 
                     <button
                       onClick={() => setShowLoginPopup(false)}
                       className="w-full py-3 px-6 text-gray-400 hover:text-white transition-colors"
                     >
-                      ยกเลิก
+                      {t('landing:popup.loginRequired.cancelButton')}
                     </button>
                   </div>
                 </div>

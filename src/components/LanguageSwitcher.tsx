@@ -14,7 +14,9 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 }) => {
   const { i18n } = useTranslation()
   // Use i18n.language directly, not state
-  const currentLang = i18n.language || localStorage.getItem('i18nextLng') || 'th'
+  // Normalize language to 'th' or 'en' only
+  const rawLang = i18n.language || localStorage.getItem('i18nextLng') || 'th'
+  const currentLang = rawLang.startsWith('en') ? 'en' : 'th'
 
   const changeLanguage = async (lang: string) => {
     if (lang === currentLang) return
