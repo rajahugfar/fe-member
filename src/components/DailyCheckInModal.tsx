@@ -21,6 +21,7 @@ interface CollectReward {
 }
 
 const DailyCheckInModal = ({ isOpen, onClose }: DailyCheckInModalProps) => {
+  const { t } = useTranslation()
   const [checkInDays, setCheckInDays] = useState<CheckInDay[]>([])
   const [collectRewards, setCollectRewards] = useState<CollectReward[]>([
     { days: 3, maxReward: 5, status: 'locked' },

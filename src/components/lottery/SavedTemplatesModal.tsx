@@ -36,6 +36,7 @@ export const SavedTemplatesModal = ({
   onLoadTemplate,
   currentBets = [],
 }: SavedTemplatesModalProps) => {
+  const { t } = useTranslation()
   const [templates, setTemplates] = useState<SavedPoyTemplate[]>([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)

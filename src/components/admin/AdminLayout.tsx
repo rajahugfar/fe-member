@@ -34,6 +34,7 @@ interface MenuItem {
 }
 
 export default function AdminLayout() {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const { admin, logout } = useAdminStore()

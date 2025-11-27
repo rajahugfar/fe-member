@@ -22,6 +22,8 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ promotions, socialLine, socialTelegram }: HeroSectionProps) => {
+  const { t } = useTranslation()
+
   // Default promotions if none provided
   const defaultPromotions: Promotion[] = [
     { id: '1', image: '/images/sacasino/banners/6ac8f2cc45f6b89e2266496f03a8f270.jpg', title: 'โปรโมชั่น 1' },

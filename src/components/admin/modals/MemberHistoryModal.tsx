@@ -26,6 +26,7 @@ interface MemberHistoryModalProps {
 }
 
 export default function MemberHistoryModal({ isOpen, member, onClose }: MemberHistoryModalProps) {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filter, setFilter] = useState<'all' | 'deposit' | 'withdrawal'>('all')

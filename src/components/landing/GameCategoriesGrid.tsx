@@ -13,6 +13,8 @@ interface GameCategoriesGridProps {
 }
 
 const GameCategoriesGrid = ({ categories, onCategoryClick }: GameCategoriesGridProps) => {
+  const { t } = useTranslation()
+
   // Default categories matching sacasino.tech
   const defaultCategories: GameCategory[] = [
     { name: 'สล็อต', image: '/images/sacasino/categories/menu-slot.png', link: '/games?category=slots' },
