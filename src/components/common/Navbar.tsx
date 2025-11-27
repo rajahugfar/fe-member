@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@components/LanguageSwitcher'
 
 const Navbar = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['navigation', 'auth', 'member'])
   const navigate = useNavigate()
   const { member, isAuthenticated, logout, loadProfile } = useMemberStore()
 
@@ -113,28 +113,28 @@ const Navbar = () => {
                       className="block px-4 py-3 hover:bg-white/10 transition-colors"
                     >
                       <FaUser className="inline mr-2" />
-                      โปรไฟล์
+                      {t('navigation:menu.profile')}
                     </Link>
                     <Link
                       to="/transactions"
                       className="block px-4 py-3 hover:bg-white/10 transition-colors"
                     >
                       <FaWallet className="inline mr-2" />
-                      ประวัติการเงิน
+                      {t('navigation:menu.transactions')}
                     </Link>
                     <Link
                       to="/lottery/history"
                       className="block px-4 py-3 hover:bg-white/10 transition-colors"
                     >
                       <FaHistory className="inline mr-2" />
-                      ประวัติโพย
+                      {t('navigation:menu.lotteryHistory')}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-3 hover:bg-white/10 transition-colors text-red-400"
                     >
                       <FaSignOutAlt className="inline mr-2" />
-                      ออกจากระบบ
+                      {t('auth:logout.title')}
                     </button>
                   </div>
                 </div>
@@ -142,10 +142,10 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/login" className="btn btn-secondary text-sm">
-                  เข้าสู่ระบบ
+                  {t('auth:login.title')}
                 </Link>
                 <Link to="/register" className="btn btn-primary text-sm">
-                  สมัครสมาชิก
+                  {t('auth:register.title')}
                 </Link>
               </>
             )}

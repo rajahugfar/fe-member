@@ -8,11 +8,12 @@
     "withdraw": "Withdraw",
     "promotions": "Promotions",
     "profile": "Profile",
-    "transactions": "Transactions",
+    "transactions": "Transaction History",
     "history": "History",
     "affiliate": "Referral",
     "luckyWheel": "Lucky Wheel",
     "ranking": "Ranking",
+    "lotteryHistory": "Lottery History",
     "logout": "Logout"
   },
   "submenu": {

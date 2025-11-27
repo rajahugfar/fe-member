@@ -8,6 +8,8 @@ interface HeaderProps {
 }
 
 const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
+  const { t } = useTranslation(['landing', 'auth'])
+
   return (
     <header className="relative">
       {/* Top decoration bar - gold gradient */}
@@ -27,7 +29,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
               <div className="relative">
                 {/* Glow effect */}
                 <div className="absolute inset-0 bg-green-500 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
-                
+
                 {/* Logo image */}
                 <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl">
                   <img
@@ -48,7 +50,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
                   {siteName}
                 </h1>
                 <p className="text-yellow-200 text-sm font-semibold drop-shadow-lg">
-                  คาสิโนออนไลน์ อันดับ 1
+                  {t('landing:header.subtitle')}
                 </p>
               </div>
             </Link>
@@ -64,7 +66,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
                   boxShadow: '0 4px 15px rgba(34, 197, 94, 0.4)',
                 }}
               >
-                <FaUser /> เข้าสู่ระบบ
+                <FaUser /> {t('auth:login.title')}
               </Link>
               <Link
                 to="/member/register"
@@ -75,7 +77,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
                   boxShadow: '0 4px 15px rgba(251, 191, 36, 0.5)',
                 }}
               >
-                <FaUserPlus /> สมัครสมาชิก
+                <FaUserPlus /> {t('auth:register.title')}
               </Link>
             </div>
           </div>
@@ -94,7 +96,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
           >
             <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-4 text-center shadow-lg border-2 border-blue-400 group-hover:shadow-glow-green">
               <FaUser className="text-3xl text-white mx-auto mb-2" />
-              <span className="text-white font-bold">บัญชี</span>
+              <span className="text-white font-bold">{t('landing:menu.profile')}</span>
             </div>
           </Link>
 
@@ -104,7 +106,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
           >
             <div className="bg-gradient-to-br from-green-600 to-green-800 rounded-xl p-4 text-center shadow-lg border-2 border-green-400 group-hover:shadow-glow-green">
               <FaCoins className="text-3xl text-white mx-auto mb-2" />
-              <span className="text-white font-bold">ฝากถอน</span>
+              <span className="text-white font-bold">{t('landing:menu.deposit')}</span>
             </div>
           </Link>
 
@@ -114,7 +116,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
           >
             <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-4 text-center shadow-lg border-2 border-yellow-300 group-hover:shadow-glow-yellow">
               <FaUserPlus className="text-3xl text-green-900 mx-auto mb-2" />
-              <span className="text-green-900 font-bold">สมัคร</span>
+              <span className="text-green-900 font-bold">{t('landing:menu.register')}</span>
             </div>
           </Link>
 
@@ -126,7 +128,7 @@ const Header = ({ siteName = 'SACASINO', contactLine }: HeaderProps) => {
           >
             <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-xl p-4 text-center shadow-lg border-2 border-green-300 group-hover:shadow-glow-green">
               <FaLine className="text-3xl text-white mx-auto mb-2" />
-              <span className="text-white font-bold">ติดต่อ</span>
+              <span className="text-white font-bold">{t('landing:menu.contact')}</span>
             </div>
           </a>
         </div>

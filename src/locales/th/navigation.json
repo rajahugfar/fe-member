@@ -8,11 +8,12 @@
     "withdraw": "ถอนเงิน",
     "promotions": "โปรโมชั่น",
     "profile": "โปรไฟล์",
-    "transactions": "ธุรกรรม",
+    "transactions": "ประวัติการเงิน",
     "history": "ประวัติ",
     "affiliate": "แนะนำเพื่อน",
     "luckyWheel": "วงล้อนำโชค",
     "ranking": "อันดับ",
+    "lotteryHistory": "ประวัติโพย",
     "logout": "ออกจากระบบ"
   },
   "submenu": {

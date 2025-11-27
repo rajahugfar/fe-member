@@ -13,18 +13,39 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   variant = 'default'
 }) => {
   const { i18n } = useTranslation()
+
   // Use i18n.language directly, not state
   // Normalize language to 'th' or 'en' only
   const rawLang = i18n.language || localStorage.getItem('i18nextLng') || 'th'
   const currentLang = rawLang.startsWith('en') ? 'en' : 'th'
 
-  const changeLanguage = async (lang: string) => {
-    if (lang === currentLang) return
+  // Debug logging on component mount
+  console.log('=== LanguageSwitcher Mount ===')
+  console.log('i18n.language:', i18n.language)
+  console.log('localStorage.getItem(i18nextLng):', localStorage.getItem('i18nextLng'))
+  console.log('rawLang:', rawLang)
+  console.log('currentLang:', currentLang)
 
-    console.log('Changing language from', currentLang, 'to:', lang)
+  const changeLanguage = async (lang: string) => {
+    console.log('=== LANGUAGE CHANGE DEBUG ===')
+    console.log('Current lang:', currentLang)
+    console.log('Target lang:', lang)
+    console.log('localStorage BEFORE:', localStorage.getItem('i18nextLng'))
+
+    if (lang === currentLang) {
+      console.log('Same language, skipping')
+      return
+    }
+
     try {
+      // Change i18n language
       await i18n.changeLanguage(lang)
+      console.log('i18n.changeLanguage called')
+
+      // Explicitly save to localStorage
       localStorage.setItem('i18nextLng', lang)
+      console.log('localStorage.setItem called with:', lang)
+      console.log('localStorage AFTER:', localStorage.getItem('i18nextLng'))
 
       // Show success message
       toast.success(lang === 'th' ? 'เปลี่ยนเป็นภาษาไทยแล้ว ✓' : 'Changed to English ✓', {
@@ -37,10 +58,11 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         },
       })
 
-      console.log('Language changed successfully to:', lang)
+      console.log('Toast shown, will reload in 300ms')
 
       // Reload page to apply changes completely
       setTimeout(() => {
+        console.log('Reloading page now...')
         window.location.reload()
       }, 300)
     } catch (error) {
