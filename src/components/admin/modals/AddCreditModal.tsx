@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { FiX, FiUpload } from 'react-icons/fi'
 import { adminCreditAPI } from '@/api/adminAPI'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface Member {
   id: string

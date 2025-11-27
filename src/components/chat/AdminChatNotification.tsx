@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { adminChatAPI, type ChatRoomWithDetails } from '@/api/chatAPI'
 import { FaComments, FaTimes } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 export default function AdminChatNotification() {
   const [rooms, setRooms] = useState<ChatRoomWithDetails[]>([])

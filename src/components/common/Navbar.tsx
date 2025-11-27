@@ -3,8 +3,11 @@ import { useEffect } from 'react'
 import { FaHome, FaGamepad, FaDice, FaGift, FaUser, FaWallet, FaSignOutAlt, FaHistory } from 'react-icons/fa'
 import { useMemberStore } from '@store/memberStore'
 import { formatCurrency } from '@utils/format'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '@components/LanguageSwitcher'
 
 const Navbar = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { member, isAuthenticated, logout, loadProfile } = useMemberStore()
 
@@ -46,33 +49,36 @@ const Navbar = () => {
               className="flex items-center space-x-2 text-gray-300 hover:text-primary-500 transition-colors"
             >
               <FaHome />
-              <span>หน้าแรก</span>
+              <span>{t("navigation:menu.home")}</span>
             </Link>
             <Link
               to="/lottery"
               className="flex items-center space-x-2 text-gray-300 hover:text-primary-500 transition-colors"
             >
               <FaDice />
-              <span>หวย</span>
+              <span>{t("navigation:menu.lottery")}</span>
             </Link>
             <Link
               to="/games"
               className="flex items-center space-x-2 text-gray-300 hover:text-primary-500 transition-colors"
             >
               <FaGamepad />
-              <span>เกมส์</span>
+              <span>{t("navigation:menu.games")}</span>
             </Link>
             <Link
               to="/promotions"
               className="flex items-center space-x-2 text-gray-300 hover:text-primary-500 transition-colors"
             >
               <FaGift />
-              <span>โปรโมชั่น</span>
+              <span>{t("navigation:menu.promotions")}</span>
             </Link>
           </div>
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Language Switcher */}
+            <LanguageSwitcher variant="compact" />
+
             {isAuthenticated && member ? (
               <>
                 {/* Balance Display */}
@@ -90,7 +96,7 @@ const Navbar = () => {
                   to="/deposit"
                   className="btn btn-primary text-sm"
                 >
-                  ฝากเงิน
+                  {t("navigation:menu.deposit")}
                 </Link>
 
                 {/* User Dropdown */}

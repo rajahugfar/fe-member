@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FiGift, FiPercent, FiDollarSign, FiTrendingUp } from 'react-icons/fi'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface Promotion {
   id: string
@@ -22,6 +23,7 @@ interface Promotion {
 }
 
 const PromotionsPage = () => {
+  const { t } = useTranslation()
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null)
@@ -78,7 +80,7 @@ const PromotionsPage = () => {
         toast.error(data.message || 'ไม่สามารถรับโปรโมชั่นได้')
       }
     } catch (error) {
-      toast.error('เกิดข้อผิดพลาด')
+      toast.error(t("common:messages.error"))
     }
   }
 
@@ -128,8 +130,8 @@ const PromotionsPage = () => {
                 <span className="text-xs mt-1">ชวนเพื่อน</span>
               </Link>
               <Link to="/promotions" className="flex flex-col items-center text-yellow-400">
-                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt="โปรโมชั่น" className="w-8 h-8" />
-                <span className="text-xs mt-1">โปรโมชั่น</span>
+                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt={t("navigation:menu.promotions")} className="w-8 h-8" />
+                <span className="text-xs mt-1">{t("navigation:menu.promotions")}</span>
               </Link>
               <Link to="/" className="flex flex-col items-center text-gray-400 hover:text-white transition">
                 <img src="/images/sacasino/icons/ic-menu-home.png" alt="หน้าหลัก" className="w-8 h-8" />

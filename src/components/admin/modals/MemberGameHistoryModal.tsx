@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { FiX, FiRefreshCw } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 import { adminMemberAPI } from '@/api/adminAPI'
+import { useTranslation } from 'react-i18next'
 
 interface Member {
   id: string

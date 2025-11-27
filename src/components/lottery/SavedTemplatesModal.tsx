@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, Save, Trash2, FileText, Plus } from 'lucide-react'
 import { memberLotteryAPI, SavedPoyTemplate, SavedPoyItem } from '../../api/memberLotteryAPI'
+import { useTranslation } from 'react-i18next'
 
 // Mapping bet types to Thai names
 const betTypeNames: Record<string, string> = {
@@ -208,7 +209,7 @@ export const SavedTemplatesModal = ({
                       className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-sm flex items-center justify-center gap-1"
                     >
                       <Save className="w-4 h-4" />
-                      {saving ? 'กำลังบันทึก...' : 'บันทึก'}
+                      {saving ? 'กำลังบันทึก...' : t("common:buttons.save") }
                     </button>
                     <button
                       onClick={() => setShowSaveForm(false)}
@@ -232,7 +233,7 @@ export const SavedTemplatesModal = ({
 
           {/* Templates list */}
           {loading ? (
-            <div className="text-center text-gray-400 py-8">กำลังโหลด...</div>
+            <div className="text-center text-gray-400 py-8">{t("common:messages.loading")}</div>
           ) : templates.length === 0 ? (
             <div className="text-center text-gray-400 py-8">
               ยังไม่มีโพยที่บันทึกไว้

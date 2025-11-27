@@ -21,8 +21,10 @@ import type { PromotionBanner, SiteSettingsMap } from '../types/siteContent'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
+import { useTranslation } from 'react-i18next'
 
 const SacasinoLandingPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [providers, setProviders] = useState<DBGameProvider[]>([])
   const [promotions, setPromotions] = useState<PromotionBanner[]>([])
@@ -92,13 +94,13 @@ const SacasinoLandingPage = () => {
 
   // Game categories matching sacasino.tech
   const gameCategories = [
-    { name: 'สล็อต', image: '/images/sacasino/categories/menu-slot.png', link: '/games?category=slots' },
+    { name: t("game:categories.slot"), image: '/images/sacasino/categories/menu-slot.png', link: '/games?category=slots' },
     { name: 'บาคาร่า', image: '/images/sacasino/categories/menu-baccarat.png', link: '/games?category=baccarat' },
     { name: 'รูเล็ต', image: '/images/sacasino/categories/menu-roulette.png', link: '/games?category=roulette' },
     { name: 'ไฮโล', image: '/images/sacasino/categories/menu-hilo.png', link: '/games?category=hilo' },
     { name: 'เสือมังกร', image: '/images/sacasino/categories/menu-dragon-tiger.png', link: '/games?category=dragon-tiger' },
     { name: 'แบล็กแจ็ก', image: '/images/sacasino/categories/menu-blackjack.png', link: '/games?category=blackjack' },
-    { name: 'หวย', image: '/images/sacasino/categories/menu-lotto.png', link: '/lottery' },
+    { name: t("navigation:menu.lottery"), image: '/images/sacasino/categories/menu-lotto.png', link: '/lottery' },
     { name: 'กีฬา', image: '/images/sacasino/categories/menu-sport.png', link: '/games?category=sports' },
   ]
 
@@ -401,7 +403,7 @@ const SacasinoLandingPage = () => {
                 >
                   <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl p-6 text-center shadow-lg border-2 border-purple-400 group-hover:shadow-glow-green">
                     <FaGamepad className="text-4xl text-white mx-auto mb-3" />
-                    <h3 className="text-xl font-bold text-white">โปรโมชั่น</h3>
+                    <h3 className="text-xl font-bold text-white">{t("navigation:menu.promotions")}</h3>
                     <p className="text-purple-200 text-sm mt-2">รับโบนัสพิเศษ</p>
                   </div>
                 </Link>

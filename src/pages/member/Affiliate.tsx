@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiUsers, FiDollarSign, FiLink, FiCopy, FiCheck, FiTrendingUp, FiAward, FiCalendar, FiChevronLeft, FiChevronRight, FiEye, FiX } from 'react-icons/fi'
 import { toast } from 'react-hot-toast'
 import axios from 'axios'
@@ -65,6 +66,7 @@ interface MemberPoy {
 }
 
 const Affiliate: React.FC = () => {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<TabType>('overview')
   const [stats, setStats] = useState<AffiliateStats>({
     totalMembers: 0,
@@ -149,7 +151,7 @@ const Affiliate: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Load affiliate error:', error)
-      toast.error(error.response?.data?.message || 'โหลดข้อมูลไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t("common:messages.error"))
     } finally {
       setLoading(false)
     }
@@ -300,7 +302,7 @@ const Affiliate: React.FC = () => {
     { id: 'overview' as TabType, label: 'ภาพรวม', icon: <FiTrendingUp /> },
     { id: 'members' as TabType, label: 'สมาชิก', icon: <FiUsers /> },
     { id: 'revenue' as TabType, label: 'รายได้', icon: <FiDollarSign /> },
-    { id: 'withdraw' as TabType, label: 'ถอนเงิน', icon: <FiAward /> },
+    { id: 'withdraw' as TabType, label: t("navigation:menu.withdraw"), icon: <FiAward /> },
   ]
 
   return (
@@ -361,7 +363,7 @@ const Affiliate: React.FC = () => {
                 }`}
               >
                 {copied ? <FiCheck size={20} /> : <FiCopy size={20} />}
-                {copied ? 'คัดลอกแล้ว' : 'คัดลอก'}
+                {copied ? 'คัดลอกแล้ว' : t("common:buttons.copy") }
               </button>
             </div>
 
@@ -411,11 +413,11 @@ const Affiliate: React.FC = () => {
             <h3 className="text-lg font-bold text-white mb-4">รายได้แยกตามประเภท</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-4">
-                <p className="text-white/60 text-sm mb-1">หวย</p>
+                <p className="text-white/60 text-sm mb-1">{t("navigation:menu.lottery")}</p>
                 <p className="text-xl font-bold text-yellow-400">฿{formatCurrency(stats.lotteryCommission)}</p>
               </div>
               <div className="bg-cyan-600/20 border border-cyan-500/30 rounded-lg p-4">
-                <p className="text-white/60 text-sm mb-1">เกมส์</p>
+                <p className="text-white/60 text-sm mb-1">{t("navigation:menu.games")}</p>
                 <p className="text-xl font-bold text-cyan-400">฿{formatCurrency(stats.gameCommission)}</p>
               </div>
             </div>
@@ -453,7 +455,7 @@ const Affiliate: React.FC = () => {
                     <tr className="border-b border-white/10">
                       <th className="text-left text-white/70 font-medium py-3 px-2">ลำดับ</th>
                       <th className="text-left text-white/70 font-medium py-3 px-2">เบอร์โทร</th>
-                      <th className="text-left text-white/70 font-medium py-3 px-2">ชื่อ-นามสกุล</th>
+                      <th className="text-left text-white/70 font-medium py-3 px-2">{t("member:profile.fullName")}</th>
                       <th className="text-left text-white/70 font-medium py-3 px-2">วันที่สมัคร</th>
                       <th className="text-right text-white/70 font-medium py-3 px-2">ยอดแทงรวม</th>
                       <th className="text-right text-white/70 font-medium py-3 px-2">คอมมิชชั่น</th>
@@ -697,7 +699,7 @@ const Affiliate: React.FC = () => {
 
             <div className="p-4 overflow-y-auto max-h-[50vh]">
               {loadingDetail ? (
-                <div className="text-center py-8 text-white/60">กำลังโหลด...</div>
+                <div className="text-center py-8 text-white/60">{t("common:messages.loading")}</div>
               ) : detailView === 'commission' ? (
                 // Commission View
                 memberDetail.length === 0 ? (
@@ -773,7 +775,7 @@ const Affiliate: React.FC = () => {
                             <td className="py-3 px-4 text-right text-green-400">฿{formatCurrency(poy.winPrice)}</td>
                             <td className="py-3 px-4 text-center">
                               {poy.status === 0 ? (
-                                <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">ยกเลิก</span>
+                                <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">{t("common:buttons.cancel")}</span>
                               ) : poy.status === 1 ? (
                                 <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">รอผล</span>
                               ) : (

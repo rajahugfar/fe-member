@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -121,6 +122,7 @@ const isPremiumLottery = (huayCode: string) => {
 }
 
 const MemberLottery: React.FC = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<TabType>('list')
   const [periods, setPeriods] = useState<OpenPeriod[]>([])
@@ -152,7 +154,7 @@ const MemberLottery: React.FC = () => {
 
   const tabs = [
     { key: 'list' as TabType, label: 'รายการหวย', icon: FiCalendar },
-    { key: 'results' as TabType, label: 'ผลหวย', icon: FiTrendingUp },
+    { key: 'results' as TabType, label: t("lottery:results"), icon: FiTrendingUp },
     { key: 'history' as TabType, label: 'โพยหวย', icon: FiFileText },
   ]
 
@@ -236,7 +238,7 @@ const MemberLottery: React.FC = () => {
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="inline-block animate-spin rounded-full h-10 w-10 border-3 border-yellow-400/50 border-t-yellow-400"></div>
-                    <p className="text-gray-400 mt-3 text-sm">กำลังโหลด...</p>
+                    <p className="text-gray-400 mt-3 text-sm">{t("common:messages.loading")}</p>
                   </div>
                 ) : (
                   <div className="space-y-8">
@@ -782,7 +784,7 @@ const LotteryMyBets: React.FC = () => {
                           disabled={cancellingId === poy.id}
                           className="px-4 py-1.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-50"
                         >
-                          {cancellingId === poy.id ? 'กำลังยกเลิก...' : 'ยกเลิกโพย'}
+                          {cancellingId === poy.id ? 'กำลังยกเลิก...' : t("lottery:cancelBet") }
                         </button>
                       </div>
                     </div>

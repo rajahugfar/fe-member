@@ -1,6 +1,8 @@
 import { FaFacebook, FaLine, FaPhone } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 const Footer = () => {
+  const { t } = useTranslation()
   return (
     <footer className="bg-dark-800 border-t border-dark-700 mt-auto">
       <div className="container mx-auto px-4 py-8">

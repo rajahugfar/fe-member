@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiFilter, FiDownload, FiArrowDown, FiArrowUp, FiGrid, FiDollarSign } from 'react-icons/fi'
 import { transactionAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 
 const TRANSACTION_TYPES = [
   { value: '', label: 'ทั้งหมด' },
-  { value: 'DEPOSIT', label: 'ฝากเงิน' },
-  { value: 'WITHDRAWAL', label: 'ถอนเงิน' },
+  { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
+  { value: 'WITHDRAWAL', label: t("navigation:menu.withdraw") },
   { value: 'BET', label: 'แทง' },
-  { value: 'WIN', label: 'ถูกรางวัล' },
+  { value: 'WIN', label: t("member:dashboard.todayWin") },
   { value: 'BONUS', label: 'โบนัส' },
   { value: 'TRANSFER', label: 'โอน' },
 ]
 
 const TransactionHistory: React.FC = () => {
+  const { t } = useTranslation()
   const [transactions, setTransactions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -51,7 +53,7 @@ const TransactionHistory: React.FC = () => {
       setSummary({ totalIn, totalOut, netProfit: totalIn - totalOut })
     } catch (error) {
       console.error('Load transactions error:', error)
-      toast.error('โหลดข้อมูลไม่สำเร็จ')
+      toast.error(t("common:messages.error"))
     } finally {
       setLoading(false)
     }
@@ -92,10 +94,10 @@ const TransactionHistory: React.FC = () => {
 
   const getTypeLabel = (type: string) => {
     const labels: any = {
-      DEPOSIT: 'ฝากเงิน',
-      WITHDRAWAL: 'ถอนเงิน',
+      DEPOSIT: t("navigation:menu.deposit"),
+      WITHDRAWAL: t("navigation:menu.withdraw"),
       BET: 'แทงหวย/เกม',
-      WIN: 'ถูกรางวัล',
+      WIN: t("member:dashboard.todayWin"),
       BONUS: 'โบนัส',
       TRANSFER_IN: 'โอนเข้า',
       TRANSFER_OUT: 'โอนออก',
@@ -124,7 +126,7 @@ const TransactionHistory: React.FC = () => {
           <p className="text-2xl font-bold text-white">-฿{formatCurrency(summary.totalOut)}</p>
         </div>
         <div className={`bg-gradient-to-r ${summary.netProfit >= 0 ? 'from-blue-600/20 to-cyan-600/20 border-blue-500/30' : 'from-orange-600/20 to-red-600/20 border-orange-500/30'} border rounded-xl p-4`}>
-          <p className={`${summary.netProfit >= 0 ? 'text-blue-400' : 'text-orange-400'} text-sm mb-1`}>กำไร/ขาดทุน</p>
+          <p className={`${summary.netProfit >= 0 ? 'text-blue-400' : 'text-orange-400'} text-sm mb-1`}>{t("member:dashboard.todayProfit")}</p>
           <p className={`text-2xl font-bold ${summary.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {summary.netProfit >= 0 ? '+' : ''}฿{formatCurrency(summary.netProfit)}
           </p>
@@ -168,9 +170,9 @@ const TransactionHistory: React.FC = () => {
               className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="" className="bg-gray-800">ทั้งหมด</option>
-              <option value="SUCCESS" className="bg-gray-800">สำเร็จ</option>
-              <option value="PENDING" className="bg-gray-800">รอดำเนินการ</option>
-              <option value="FAILED" className="bg-gray-800">ไม่สำเร็จ</option>
+              <option value="SUCCESS" className="bg-gray-800">{t("common:status.success")}</option>
+              <option value="PENDING" className="bg-gray-800">{t("common:status.pending")}</option>
+              <option value="FAILED" className="bg-gray-800">{t("common:status.failed")}</option>
             </select>
           </div>
 

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiClock, FiCheckCircle, FiXCircle, FiFilter } from 'react-icons/fi'
 import { withdrawalAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 import BankIcon from '../../components/BankIcon'
 
 const WithdrawalHistory: React.FC = () => {
+  const { t } = useTranslation()
   const [withdrawals, setWithdrawals] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -32,7 +34,7 @@ const WithdrawalHistory: React.FC = () => {
       setPagination(prev => ({ ...prev, total: withdrawalData.length }))
     } catch (error) {
       console.error('Load withdrawals error:', error)
-      toast.error('โหลดข้อมูลไม่สำเร็จ')
+      toast.error(t("common:messages.error"))
     } finally {
       setLoading(false)
     }
@@ -58,10 +60,10 @@ const WithdrawalHistory: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const config: any = {
-      PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'รอดำเนินการ', icon: FiClock },
-      SUCCESS: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: 'สำเร็จ', icon: FiCheckCircle },
-      REJECTED: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'ถูกปฏิเสธ', icon: FiXCircle },
-      CANCELLED: { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: 'ยกเลิก', icon: FiXCircle },
+      PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: t("common:status.pending"), icon: FiClock },
+      SUCCESS: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: t("common:status.success"), icon: FiCheckCircle },
+      REJECTED: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: t("common:status.rejected"), icon: FiXCircle },
+      CANCELLED: { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: t("common:buttons.cancel"), icon: FiXCircle },
     }
 
     const conf = config[status] || config.PENDING
@@ -99,9 +101,9 @@ const WithdrawalHistory: React.FC = () => {
               className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="" className="bg-gray-800">ทั้งหมด</option>
-              <option value="PENDING" className="bg-gray-800">รอดำเนินการ</option>
-              <option value="SUCCESS" className="bg-gray-800">สำเร็จ</option>
-              <option value="REJECTED" className="bg-gray-800">ถูกปฏิเสธ</option>
+              <option value="PENDING" className="bg-gray-800">{t("common:status.pending")}</option>
+              <option value="SUCCESS" className="bg-gray-800">{t("common:status.success")}</option>
+              <option value="REJECTED" className="bg-gray-800">{t("common:status.rejected")}</option>
             </select>
           </div>
 
@@ -134,7 +136,7 @@ const WithdrawalHistory: React.FC = () => {
               <tr>
                 <th className="px-6 py-4 text-left text-white font-medium">วันที่/เวลา</th>
                 <th className="px-6 py-4 text-left text-white font-medium">จำนวน</th>
-                <th className="px-6 py-4 text-left text-white font-medium">บัญชีธนาคาร</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("member:profile.bankAccount")}</th>
                 <th className="px-6 py-4 text-left text-white font-medium">สถานะ</th>
                 <th className="px-6 py-4 text-left text-white font-medium">หมายเหตุ</th>
               </tr>

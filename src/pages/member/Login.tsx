@@ -85,7 +85,7 @@ const Login = () => {
 
           {/* Form Container */}
           <div className="p-8">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">เข้าสู่ระบบ</h2>
+            <h2 className="text-2xl font-bold text-white mb-6 text-center">{t("auth:login.title")}</h2>
             
             <form onSubmit={handleLogin} className="space-y-5">
               {error && (
@@ -100,7 +100,7 @@ const Login = () => {
                   value={loginData.phone}
                   onChange={(e) => setLoginData({ ...loginData, phone: e.target.value })}
                   className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
-                  placeholder="เบอร์โทรศัพท์"
+                  placeholder={t("member:profile.phone")}
                   maxLength={10}
                   required
                 />
@@ -112,7 +112,7 @@ const Login = () => {
                   value={loginData.password}
                   onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                   className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
-                  placeholder="รหัสผ่าน"
+                  placeholder={t("auth:login.password")}
                   required
                 />
                 <button
@@ -147,7 +147,7 @@ const Login = () => {
                 disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#10b981] to-[#059669] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50"
               >
-                {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+                {isLoading ? 'กำลังเข้าสู่ระบบ...' : t("auth:login.title") }
               </button>
 
               <div className="text-center">

@@ -4,6 +4,7 @@ import { FaCheck } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CartItem } from '@/hooks/useLotteryState'
 import { BET_TYPES, formatNumber } from '@/utils/lotteryHelpers'
+import { useTranslation } from 'react-i18next'
 
 interface CartSidebarProps {
   cart: CartItem[]
@@ -28,6 +29,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   onSaveTemplate,
   submitting = false
 }) => {
+  const { t } = useTranslation()
   const totalAmount = cart.reduce((sum, item) => sum + item.amount, 0)
   const totalPotentialWin = cart.reduce((sum, item) => sum + item.potential_win, 0)
 
@@ -224,7 +226,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                         <button
                           onClick={() => onRemoveItem(item.id)}
                           className="flex-shrink-0 text-red-400 hover:text-red-300 p-1 hover:bg-red-500/20 rounded transition-all"
-                          title="ลบ"
+                          title={t("common:buttons.delete")}
                         >
                           <FiTrash2 className="text-xs" />
                         </button>

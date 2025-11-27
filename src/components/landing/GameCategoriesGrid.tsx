@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
 interface GameCategory {
   name: string
@@ -20,7 +21,7 @@ const GameCategoriesGrid = ({ categories, onCategoryClick }: GameCategoriesGridP
     { name: 'ไฮโล', image: '/images/sacasino/categories/menu-hilo.png', link: '/games?category=hilo' },
     { name: 'เสือมังกร', image: '/images/sacasino/categories/menu-dragon-tiger.png', link: '/games?category=dragon-tiger' },
     { name: 'แบล็กแจ็ก', image: '/images/sacasino/categories/menu-blackjack.png', link: '/games?category=blackjack' },
-    { name: 'หวย', image: '/images/sacasino/categories/menu-lotto.png', link: '/lottery' },
+    { name: t("navigation:menu.lottery"), image: '/images/sacasino/categories/menu-lotto.png', link: '/lottery' },
     { name: 'กีฬา', image: '/images/sacasino/categories/menu-sport.png', link: '/games?category=sports' },
   ]
 

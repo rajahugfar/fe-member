@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAdminStore } from '@/store/adminStore'
 import AdminChatNotification from '@/components/chat/AdminChatNotification'
@@ -109,7 +110,7 @@ export default function AdminLayout() {
       icon: <FiImage className="w-5 h-5" />,
       children: [
         { name: 'รูปภาพ', path: '/admin/site-images', icon: null },
-        { name: 'โปรโมชั่น', path: '/admin/promotions', icon: null },
+        { name: t("navigation:menu.promotions"), path: '/admin/promotions', icon: null },
         { name: 'ค่ายเกม', path: '/admin/game-providers', icon: null },
         { name: 'ตั้งค่าเว็บไซต์', path: '/admin/settings', icon: null },
       ],
@@ -289,14 +290,14 @@ export default function AdminLayout() {
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-error/10 hover:bg-error/20 text-error rounded-lg transition-all"
               >
                 <FiLogOut className="w-4 h-4" />
-                <span>ออกจากระบบ</span>
+                <span>{t("navigation:menu.logout")}</span>
               </button>
             </div>
           ) : (
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center p-3 bg-error/10 hover:bg-error/20 text-error rounded-lg transition-all"
-              title="ออกจากระบบ"
+              title={t("navigation:menu.logout")}
             >
               <FiLogOut className="w-5 h-5" />
             </button>

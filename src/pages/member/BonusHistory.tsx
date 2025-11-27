@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiGift, FiClock, FiCheckCircle, FiXCircle, FiFilter } from 'react-icons/fi'
 import { promotionAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 
 const BonusHistory: React.FC = () => {
+  const { t } = useTranslation()
   const [bonuses, setBonuses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -29,7 +31,7 @@ const BonusHistory: React.FC = () => {
       setPagination(prev => ({ ...prev, total: response.data.total || 0 }))
     } catch (error) {
       console.error('Load bonuses error:', error)
-      toast.error('โหลดข้อมูลไม่สำเร็จ')
+      toast.error(t("common:messages.error"))
     } finally {
       setLoading(false)
     }
@@ -56,9 +58,9 @@ const BonusHistory: React.FC = () => {
   const getStatusBadge = (status: string) => {
     const config: any = {
       PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'รอรับ', icon: FiClock },
-      CLAIMED: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: 'รับแล้ว', icon: FiCheckCircle },
+      CLAIMED: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: t("promotion:claimed_status"), icon: FiCheckCircle },
       EXPIRED: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'หมดอายุ', icon: FiXCircle },
-      CANCELLED: { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: 'ยกเลิก', icon: FiXCircle },
+      CANCELLED: { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: t("common:buttons.cancel"), icon: FiXCircle },
     }
 
     const conf = config[status] || config.PENDING
@@ -76,7 +78,7 @@ const BonusHistory: React.FC = () => {
     const types: any = {
       DEPOSIT: 'โบนัสฝากเงิน',
       CASHBACK: 'คืนยอดเสีย',
-      REFERRAL: 'แนะนำเพื่อน',
+      REFERRAL: t("navigation:menu.affiliate"),
       SPECIAL: 'โบนัสพิเศษ',
       WELCOME: 'โบนัสต้อนรับ',
     }
@@ -90,7 +92,7 @@ const BonusHistory: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-white">ประวัติโบนัส</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">{t("transaction:bonusHistory")}</h1>
       </div>
 
       {/* Filters */}
@@ -110,7 +112,7 @@ const BonusHistory: React.FC = () => {
             >
               <option value="" className="bg-gray-800">ทั้งหมด</option>
               <option value="PENDING" className="bg-gray-800">รอรับ</option>
-              <option value="CLAIMED" className="bg-gray-800">รับแล้ว</option>
+              <option value="CLAIMED" className="bg-gray-800">{t("promotion:claimed_status")}</option>
               <option value="EXPIRED" className="bg-gray-800">หมดอายุ</option>
             </select>
           </div>
@@ -144,7 +146,7 @@ const BonusHistory: React.FC = () => {
             <thead className="bg-white/5">
               <tr>
                 <th className="px-6 py-4 text-left text-white font-medium">วันที่</th>
-                <th className="px-6 py-4 text-left text-white font-medium">โปรโมชั่น</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("navigation:menu.promotions")}</th>
                 <th className="px-6 py-4 text-left text-white font-medium">ประเภท</th>
                 <th className="px-6 py-4 text-right text-white font-medium">จำนวน</th>
                 <th className="px-6 py-4 text-left text-white font-medium">สถานะ</th>

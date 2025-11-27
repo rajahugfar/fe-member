@@ -3,8 +3,10 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { useMemberStore } from '../store/memberStore'
 import { authAPI } from '../api/authAPI'
 import { toast } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 const LoginPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { referralCode: urlReferralCode } = useParams<{ referralCode?: string }>()
@@ -213,7 +215,7 @@ const LoginPage = () => {
                   value={loginData.phone}
                   onChange={(e) => setLoginData({ ...loginData, phone: e.target.value })}
                   className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
-                  placeholder="เบอร์โทรศัพท์"
+                  placeholder={t("auth:login.username")}
                   maxLength={10}
                   required
                 />
@@ -225,7 +227,7 @@ const LoginPage = () => {
                   value={loginData.password}
                   onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                   className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
-                  placeholder="รหัสผ่าน"
+                  placeholder={t("auth:login.password")}
                   required
                 />
                 <button
@@ -242,7 +244,7 @@ const LoginPage = () => {
                 disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#10b981] to-[#059669] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50"
               >
-                {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+                {isLoading ? 'กำลังเข้าสู่ระบบ...' : t("auth:login.title")}
               </button>
 
               <div className="text-center">
@@ -376,7 +378,7 @@ const LoginPage = () => {
                 disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-b from-[#fbbf24] to-[#f59e0b] text-white font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 mt-2"
               >
-                {isLoading ? 'กำลังสมัครสมาชิก...' : 'สมัครสมาชิก'}
+                {isLoading ? 'กำลังสมัครสมาชิก...' : t("auth:register.title")}
               </button>
             </form>
           )}

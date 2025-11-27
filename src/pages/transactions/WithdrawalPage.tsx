@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { withdrawalAPI, type Withdrawal, type WithdrawalBalance } from '@/api/withdrawalAPI'
 import toast from 'react-hot-toast'
 import { formatCurrency, formatDate } from '@/utils/format'
+import { useTranslation } from 'react-i18next'
 
 const WithdrawalPage = () => {
+  const { t } = useTranslation()
   const [balance, setBalance] = useState<WithdrawalBalance | null>(null)
   const [amount, setAmount] = useState('')
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([])
@@ -82,7 +84,7 @@ const WithdrawalPage = () => {
       PENDING: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', label: 'รออนุมัติ' },
       APPROVED: { bg: 'bg-green-500/20', text: 'text-green-400', label: 'อนุมัติแล้ว' },
       REJECTED: { bg: 'bg-red-500/20', text: 'text-red-400', label: 'ปฏิเสธ' },
-      CANCELLED: { bg: 'bg-gray-500/20', text: 'text-gray-400', label: 'ยกเลิก' },
+      CANCELLED: { bg: 'bg-gray-500/20', text: 'text-gray-400', label: t("common:buttons.cancel") },
     }
 
     const badge = badges[status] || badges.PENDING
@@ -95,7 +97,7 @@ const WithdrawalPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold mb-6">ถอนเงิน</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("navigation:menu.withdraw")}</h1>
 
       {/* Balance Card */}
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-6 text-white">
@@ -159,7 +161,7 @@ const WithdrawalPage = () => {
         <h2 className="text-xl font-semibold mb-4">ประวัติการถอนเงิน</h2>
 
         {loading ? (
-          <div className="text-center py-8 text-gray-400">กำลังโหลด...</div>
+          <div className="text-center py-8 text-gray-400">{t("common:messages.loading")}</div>
         ) : withdrawals.length === 0 ? (
           <div className="text-center py-8 text-gray-400">ไม่มีประวัติการถอนเงิน</div>
         ) : (

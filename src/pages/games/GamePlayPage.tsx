@@ -1,4 +1,5 @@
 const GamePlayPage = () => {
+  const { t } = useTranslation()
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">เล่นเกมส์</h1>

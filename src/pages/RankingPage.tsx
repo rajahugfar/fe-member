@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { rankingAPI, RankingPlayer } from '@/api/rankingAPI'
+import { useTranslation } from 'react-i18next'
 
 const RankingPage = () => {
+  const { t } = useTranslation()
   const { type = 'win', round } = useParams<{ type?: string; round?: string }>()
   const navigate = useNavigate()
   const [rankings, setRankings] = useState<RankingPlayer[]>([])
@@ -110,8 +112,8 @@ const RankingPage = () => {
                 <span className="text-xs mt-1">ชวนเพื่อน</span>
               </Link>
               <Link to="/promotions" className="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt="โปรโมชั่น" className="w-8 h-8" />
-                <span className="text-xs mt-1">โปรโมชั่น</span>
+                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt={t("navigation:menu.promotions")} className="w-8 h-8" />
+                <span className="text-xs mt-1">{t("navigation:menu.promotions")}</span>
               </Link>
             </div>
 

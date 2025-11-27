@@ -6,6 +6,7 @@ import { FaGamepad, FaLine, FaTelegram } from 'react-icons/fa'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
+import { useTranslation } from 'react-i18next'
 
 interface Promotion {
   id: string
@@ -76,7 +77,7 @@ const HeroSection = ({ promotions, socialLine, socialTelegram }: HeroSectionProp
             >
               <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl p-6 text-center shadow-lg border-2 border-purple-400 group-hover:shadow-glow-green">
                 <FaGamepad className="text-4xl text-white mx-auto mb-3" />
-                <h3 className="text-xl font-bold text-white">โปรโมชั่น</h3>
+                <h3 className="text-xl font-bold text-white">{t("navigation:menu.promotions")}</h3>
                 <p className="text-purple-200 text-sm mt-2">รับโบนัสพิเศษ</p>
               </div>
             </Link>

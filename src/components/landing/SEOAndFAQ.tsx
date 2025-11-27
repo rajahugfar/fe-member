@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { FaChevronDown } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 interface FAQ {
   question: string

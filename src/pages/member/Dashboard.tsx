@@ -174,7 +174,7 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-2 md:gap-3 bg-admin-dark/50 rounded-lg px-3 md:px-4 py-2 md:py-3 border border-gold-500/20">
             <FaCoins className="text-gold-500" size={20} />
             <div>
-              <p className="text-brown-400 text-xs">ยอดเงินคงเหลือ</p>
+              <p className="text-brown-400 text-xs">{t("member:credit.balance")}</p>
               <p className="text-lg md:text-xl font-bold text-gold-500">
                 ฿{formatCurrency(member?.credit || 0)}
               </p>
@@ -219,7 +219,7 @@ const Dashboard: React.FC = () => {
               <FiDollarSign className="text-white" size={24} />
             </div>
             <div>
-              <span className="text-white font-bold text-sm md:text-base block">ฝากเงิน</span>
+              <span className="text-white font-bold text-sm md:text-base block">{t("navigation:menu.deposit")}</span>
               <span className="text-brown-400 text-xs">เติมเครดิต</span>
             </div>
           </div>
@@ -234,7 +234,7 @@ const Dashboard: React.FC = () => {
               <FiTrendingUp className="text-white" size={24} />
             </div>
             <div>
-              <span className="text-white font-bold text-sm md:text-base block">ถอนเงิน</span>
+              <span className="text-white font-bold text-sm md:text-base block">{t("navigation:menu.withdraw")}</span>
               <span className="text-brown-400 text-xs">รับรางวัล</span>
             </div>
           </div>
@@ -249,7 +249,7 @@ const Dashboard: React.FC = () => {
               <GiCrystalBall className="text-white" size={24} />
             </div>
             <div>
-              <span className="text-white font-bold text-sm md:text-base block">แทงหวย</span>
+              <span className="text-white font-bold text-sm md:text-base block">{t("lottery:betting")}</span>
               <span className="text-brown-400 text-xs">ทำนายโชค</span>
             </div>
           </div>
@@ -265,7 +265,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               <span className="text-white font-bold text-sm md:text-base block">เล่นเกม</span>
-              <span className="text-brown-400 text-xs">คาสิโน</span>
+              <span className="text-brown-400 text-xs">{t("game:categories.casino")}</span>
             </div>
           </div>
         </Link>
@@ -324,7 +324,7 @@ const Dashboard: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 bg-purple-600/30 hover:bg-purple-600/50 border border-purple-400/30 rounded-xl text-purple-200 hover:text-white transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
           >
             <FiRefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
-            <span className="font-medium">รีเฟรช</span>
+            <span className="font-medium">{t("common:buttons.refresh")}</span>
           </button>
         </div>
 
@@ -335,7 +335,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-emerald-300 mb-3">
               <GiTwoCoins size={20} />
-              <span className="text-sm font-bold">ฝากวันนี้</span>
+              <span className="text-sm font-bold">{t("member:dashboard.todayDeposit")}</span>
             </div>
             <p className="text-3xl font-black text-white drop-shadow-lg">
               ฿{formatCurrency(summary.todayDeposit)}
@@ -348,7 +348,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-blue-300 mb-3">
               <FiZap size={20} />
-              <span className="text-sm font-bold">ถอนวันนี้</span>
+              <span className="text-sm font-bold">{t("member:dashboard.todayWithdrawal")}</span>
             </div>
             <p className="text-3xl font-black text-white drop-shadow-lg">
               ฿{formatCurrency(summary.todayWithdrawal)}
@@ -361,7 +361,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-purple-300 mb-3">
               <FiGrid size={20} />
-              <span className="text-sm font-bold">แทงหวย</span>
+              <span className="text-sm font-bold">{t("lottery:betting")}</span>
             </div>
             <p className="text-3xl font-black text-white drop-shadow-lg">
               ฿{formatCurrency(summary.todayBet)}
@@ -374,7 +374,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-amber-300 mb-3">
               <FiAward size={20} />
-              <span className="text-sm font-bold">ถูกรางวัล</span>
+              <span className="text-sm font-bold">{t("member:dashboard.todayWin")}</span>
             </div>
             <p className="text-3xl font-black text-white drop-shadow-lg">
               ฿{formatCurrency(summary.todayWin)}
@@ -387,7 +387,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-pink-300 mb-3">
               <GiDiamonds size={20} />
-              <span className="text-sm font-bold">กำไร/ขาดทุน</span>
+              <span className="text-sm font-bold">{t("member:dashboard.todayProfit")}</span>
             </div>
             <p className={`text-3xl font-black drop-shadow-lg ${summary.todayProfit >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
               {summary.todayProfit >= 0 ? '+' : ''}฿{formatCurrency(summary.todayProfit)}
@@ -419,7 +419,7 @@ const Dashboard: React.FC = () => {
             {recentTransactions.length === 0 ? (
               <div className="text-center py-12">
                 <GiCrystalBall className="mx-auto text-indigo-400/30 mb-3" size={48} />
-                <p className="text-white/60 font-medium">ยังไม่มีรายการ</p>
+                <p className="text-white/60 font-medium">{t("common:messages.noData")}</p>
               </div>
             ) : (
               recentTransactions.map((transaction) => (
@@ -476,7 +476,7 @@ const Dashboard: React.FC = () => {
             {activeLotteries.length === 0 ? (
               <div className="text-center py-12">
                 <GiCrystalBall className="mx-auto text-purple-400/30 mb-3 animate-bounce" size={48} style={{ animationDuration: '3s' }} />
-                <p className="text-white/60 font-medium">ไม่มีหวยที่เปิดรับ</p>
+                <p className="text-white/60 font-medium">{t("common:messages.noData")}</p>
               </div>
             ) : (
               activeLotteries.map((lottery) => (
@@ -496,7 +496,7 @@ const Dashboard: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-right bg-black/30 rounded-xl px-4 py-2 border border-yellow-400/20">
-                      <p className="text-xs text-yellow-300 mb-1 font-bold">ปิดรับ</p>
+                      <p className="text-xs text-yellow-300 mb-1 font-bold">{t("lottery:closed")}</p>
                       <p className="text-sm text-yellow-400 font-black">
                         {formatDate(lottery.closeTime)}
                       </p>

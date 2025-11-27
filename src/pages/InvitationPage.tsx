@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useMemberStore } from '@/store/memberStore'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 const InvitationPage = () => {
+  const { t } = useTranslation()
   const { member } = useMemberStore()
   const [referralCode, setReferralCode] = useState('')
   const [referralLink, setReferralLink] = useState('')
@@ -67,9 +69,9 @@ const InvitationPage = () => {
   }
 
   const commissionRates = [
-    { type: 'คาสิโน', rate: '0.3%', max: '5000 /วัน' },
-    { type: 'สล็อต', rate: '0.5%', max: '5000 /วัน' },
-    { type: 'หวย', rate: '3%', max: '5000 /วัน' },
+    { type: t("game:categories.casino"), rate: '0.3%', max: '5000 /วัน' },
+    { type: t("game:categories.slot"), rate: '0.5%', max: '5000 /วัน' },
+    { type: t("navigation:menu.lottery"), rate: '3%', max: '5000 /วัน' },
     { type: '1234 คริปโต', rate: '0.3%', max: '5000 /วัน' },
     { type: 'กีฬา', rate: '1%', max: '2000 /วัน' }
   ]
@@ -96,8 +98,8 @@ const InvitationPage = () => {
                 <span className="text-xs mt-1">ชวนเพื่อน</span>
               </Link>
               <Link to="/promotions" className="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt="โปรโมชั่น" className="w-8 h-8" />
-                <span className="text-xs mt-1">โปรโมชั่น</span>
+                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt={t("navigation:menu.promotions")} className="w-8 h-8" />
+                <span className="text-xs mt-1">{t("navigation:menu.promotions")}</span>
               </Link>
             </div>
 
@@ -229,7 +231,7 @@ const InvitationPage = () => {
                 onClick={handleCopyLink}
                 className="px-6 py-3 bg-gradient-to-b from-yellow-400 to-yellow-600 text-white font-bold rounded-lg hover:opacity-90 transition"
               >
-                {copied ? 'คัดลอกแล้ว!' : 'คัดลอก'}
+                {copied ? 'คัดลอกแล้ว!' : t("common:buttons.copy")}
               </button>
             </div>
           </div>

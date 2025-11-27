@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { memberLotteryAPI } from '@api/memberLotteryAPI'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
@@ -31,6 +32,7 @@ interface Poy {
 }
 
 const LotteryHistory: React.FC = () => {
+  const { t } = useTranslation()
   const [poys, setPoys] = useState<Poy[]>([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -130,7 +132,7 @@ const LotteryHistory: React.FC = () => {
     const headers = [
       'เลขโพย',
       'วันที่',
-      'หวย',
+      t("navigation:menu.lottery"),
       'จำนวนเลข',
       'ยอดเดิมพัน',
       'ยอดถูกรางวัล',
@@ -414,7 +416,7 @@ const LotteryHistory: React.FC = () => {
                                 disabled={cancellingId === poy.id}
                                 className="px-4 py-1.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-50"
                               >
-                                {cancellingId === poy.id ? 'กำลังยกเลิก...' : 'ยกเลิกโพย'}
+                                {cancellingId === poy.id ? 'กำลังยกเลิก...' : t("lottery:cancelBet") }
                               </button>
                             </div>
                           </div>

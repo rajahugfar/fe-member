@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FiGift, FiTrendingUp, FiCheckCircle, FiClock, FiX } from 'react-icons/fi'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface ActivePromotion {
   id: number
@@ -17,6 +18,7 @@ interface ActivePromotion {
 }
 
 const ActivePromotionsCard = () => {
+  const { t } = useTranslation()
   const [promotions, setPromotions] = useState<ActivePromotion[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedPromo, setSelectedPromo] = useState<ActivePromotion | null>(null)
@@ -65,7 +67,7 @@ const ActivePromotionsCard = () => {
         toast.success('ยกเลิกโปรโมชั่นเรียบร้อยแล้ว')
         fetchActivePromotions()
       } else {
-        toast.error(data.message || 'เกิดข้อผิดพลาด')
+        toast.error(data.message || {t("common:messages.error"))
       }
     } catch (error) {
       toast.error('เกิดข้อผิดพลาดในการยกเลิกโปรโมชั่น')
@@ -260,7 +262,7 @@ const PromotionLogsModal = ({ promotionId, promotionName, onClose }: LogsModalPr
       claimed: { color: 'bg-green-100 text-green-800', text: 'รับโปรโมชั่น' },
       turnover_updated: { color: 'bg-blue-100 text-blue-800', text: 'อัพเดทเทิร์น' },
       completed: { color: 'bg-purple-100 text-purple-800', text: 'ทำเทิร์นครบ' },
-      cancelled: { color: 'bg-red-100 text-red-800', text: 'ยกเลิก' },
+      cancelled: { color: 'bg-red-100 text-red-800', text: t("common:buttons.cancel") },
       expired: { color: 'bg-gray-100 text-gray-800', text: 'หมดอายุ' }
     }
     

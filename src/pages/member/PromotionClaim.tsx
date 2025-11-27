@@ -132,7 +132,7 @@ const PromotionClaim = () => {
       }
     } catch (error) {
       console.error('Error claiming promotion:', error)
-      toast.error('เกิดข้อผิดพลาด')
+      toast.error(t("common:messages.error"))
     } finally {
       setClaiming(false)
     }
@@ -367,7 +367,7 @@ const PromotionClaim = () => {
                         className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
                       >
                         <FiX />
-                        <span>ยกเลิก</span>
+                        <span>{t("common:buttons.cancel")}</span>
                       </button>
                     </div>
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { FiTrendingUp, FiAlertCircle, FiUser, FiCheck } from 'react-icons/fi'
 import { withdrawalAPI, profileAPI } from '../../api/memberAPI'
@@ -18,6 +19,7 @@ interface MemberProfile {
 }
 
 const Withdrawal: React.FC = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [profile, setProfile] = useState<MemberProfile | null>(null)
   const [amount, setAmount] = useState<number | string>('')
@@ -36,7 +38,7 @@ const Withdrawal: React.FC = () => {
       setProfile(profileRes.data.data) // Fix: API returns data in response.data.data
     } catch (error) {
       console.error('Load data error:', error)
-      toast.error('โหลดข้อมูลไม่สำเร็จ')
+      toast.error(t("common:messages.error"))
     }
   }
 
@@ -97,7 +99,7 @@ const Withdrawal: React.FC = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-white">กำลังโหลด...</div>
+        <div className="text-white">{t("common:messages.loading")}</div>
       </div>
     )
   }
@@ -108,7 +110,7 @@ const Withdrawal: React.FC = () => {
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">ถอนเงิน</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{t("navigation:menu.withdraw")}</h1>
         <p className="text-white/80">กรอกข้อมูลเพื่อถอนเงินออกจากระบบ</p>
       </div>
 
@@ -152,7 +154,7 @@ const Withdrawal: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left: Balance */}
           <div>
-            <p className="text-white/80 mb-2">ยอดเงินคงเหลือ</p>
+            <p className="text-white/80 mb-2">{t("member:credit.balance")}</p>
             <p className="text-4xl font-bold text-white">฿{formatCurrency(balance)}</p>
           </div>
 

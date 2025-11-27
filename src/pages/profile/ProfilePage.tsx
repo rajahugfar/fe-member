@@ -1,7 +1,8 @@
 const ProfilePage = () => {
+  const { t } = useTranslation()
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">โปรไฟล์</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("navigation:menu.profile")}</h1>
       <p className="text-gray-400">Profile page - Under development</p>
     </div>
   )

@@ -4,8 +4,10 @@ import { motion } from 'framer-motion'
 import { FaGamepad, FaDice, FaGift, FaStar } from 'react-icons/fa'
 import { siteContentAPI } from '@api/siteContentAPI'
 import type { GameProvider as SiteGameProvider, PromotionBanner, SiteSettingsMap } from '@/types/siteContent'
+import { useTranslation } from 'react-i18next'
 
 const HomePage = () => {
+  const { t } = useTranslation()
   const [providers, setProviders] = useState<SiteGameProvider[]>([])
   const [promotions, setPromotions] = useState<PromotionBanner[]>([])
   const [settings, setSettings] = useState<SiteSettingsMap>({})
@@ -60,7 +62,7 @@ const HomePage = () => {
       {/* Promotions Carousel */}
       {promotions.length > 0 && (
         <section>
-          <h2 className="text-3xl font-bold mb-6">โปรโมชั่นพิเศษ</h2>
+          <h2 className="text-3xl font-bold mb-6">{t("promotion:title")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {promotions.map((promo, index) => (
               <motion.div
@@ -110,7 +112,7 @@ const HomePage = () => {
             <div className="text-5xl mb-4 text-primary-500">
               <FaDice className="mx-auto" />
             </div>
-            <h3 className="text-xl font-bold mb-2">แทงหวย</h3>
+            <h3 className="text-xl font-bold mb-2">{t("lottery:betting")}</h3>
             <p className="text-gray-400">
               หวยไทย หวยลาว หวยฮานอย จ่ายสูงสุด บาทละ 900
             </p>
@@ -140,7 +142,7 @@ const HomePage = () => {
             <div className="text-5xl mb-4 text-primary-500">
               <FaGift className="mx-auto" />
             </div>
-            <h3 className="text-xl font-bold mb-2">โปรโมชั่น</h3>
+            <h3 className="text-xl font-bold mb-2">{t("navigation:menu.promotions")}</h3>
             <p className="text-gray-400">
               โบนัสต้อนรับ คืนยอดเสีย โปรโมชั่นมากมาย
             </p>

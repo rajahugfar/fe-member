@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FiX, FiCalendar, FiGift } from 'react-icons/fi'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface DailyCheckInModalProps {
   isOpen: boolean
@@ -113,7 +114,7 @@ const DailyCheckInModal = ({ isOpen, onClose }: DailyCheckInModalProps) => {
         }, 2000)
       } else {
         const error = await response.json()
-        toast.error(error.message || 'เกิดข้อผิดพลาด')
+        toast.error(error.message || {t("common:messages.error"))
       }
     } catch (error) {
       console.error('Check-in error:', error)

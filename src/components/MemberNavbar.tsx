@@ -11,6 +11,7 @@ import {
   FaUserFriends
 } from 'react-icons/fa'
 import { MdHistory } from 'react-icons/md'
+import { useTranslation } from 'react-i18next'
 
 interface MemberNavbarProps {
   profile: any
@@ -19,6 +20,7 @@ interface MemberNavbarProps {
 }
 
 const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
+  const { t } = useTranslation()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [language, setLanguage] = useState<'th' | 'en'>('th')
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -104,7 +106,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
                       >
                         <FaUser className="mr-3 text-yellow-500" />
-                        <span className="text-sm">{language === 'th' ? 'โปรไฟล์' : 'Profile'}</span>
+                        <span className="text-sm">{t("navigation:menu.profile")}</span>
                       </Link>
                       <Link
                       to="/member/lottery/history"
@@ -179,7 +181,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         className="w-full flex items-center px-4 py-2.5 text-red-400 hover:bg-red-500/10 transition-colors duration-200"
                       >
                         <FaSignOutAlt className="mr-3" />
-                        <span className="text-sm">{language === 'th' ? 'ออกจากระบบ' : 'Logout'}</span>
+                        <span className="text-sm">{t("navigation:menu.logout")}</span>
                       </button>
                     </div>
                   </div>
@@ -192,7 +194,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                 className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white px-3 md:px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
               >
                 <FaMoneyBillWave />
-                <span className="hidden md:inline">{language === 'th' ? 'ฝากเงิน' : 'Deposit'}</span>
+                <span className="hidden md:inline">{t("navigation:menu.deposit")}</span>
               </Link>
 
               {/* Withdraw Button */}
@@ -201,7 +203,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                 className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-3 md:px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
               >
                 <FaWallet />
-                <span className="hidden md:inline">{language === 'th' ? 'ถอนเงิน' : 'Withdraw'}</span>
+                <span className="hidden md:inline">{t("navigation:menu.withdraw")}</span>
               </Link>
 
               {/* Logout Button */}
@@ -211,7 +213,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                 className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 md:px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
               >
                 <FaSignOutAlt />
-                <span className="hidden md:inline">{language === 'th' ? 'ออกจากระบบ' : 'Logout'}</span>
+                <span className="hidden md:inline">{t("navigation:menu.logout")}</span>
               </button>
             </div>
           )}

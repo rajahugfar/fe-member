@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { adminChatAPI, type ChatRoomWithDetails } from '@api/chatAPI'
 import { FaComments, FaTimes } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 const AdminChatNotification = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [rooms, setRooms] = useState<ChatRoomWithDetails[]>([])
   const [showNotification, setShowNotification] = useState(false)

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { FiX, FiRefreshCw } from 'react-icons/fi'
 import { adminMemberAPI } from '@/api/adminAPI'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface Member {
   id: string
@@ -77,11 +78,11 @@ export default function MemberHistoryModal({ isOpen, member, onClose }: MemberHi
       cancelled: 'bg-gray-100 text-gray-800 border-gray-200',
     }
     const labels: Record<string, string> = {
-      pending: 'รอดำเนินการ',
+      pending: t("common:status.pending"),
       approved: 'อนุมัติ',
-      success: 'สำเร็จ',
+      success: t("common:status.success"),
       rejected: 'ปฏิเสธ',
-      cancelled: 'ยกเลิก',
+      cancelled: t("common:buttons.cancel"),
     }
     return (
       <span className={`px-2 py-1 text-xs font-semibold rounded border ${badges[status] || 'bg-gray-100 text-gray-800'}`}>
@@ -93,13 +94,13 @@ export default function MemberHistoryModal({ isOpen, member, onClose }: MemberHi
   const getTypeInfo = (type: string) => {
     if (type === 'deposit') {
       return {
-        label: 'ฝากเงิน',
+        label: t("navigation:menu.deposit"),
         color: 'text-green-600',
         sign: '+',
       }
     }
     return {
-      label: 'ถอนเงิน',
+      label: t("navigation:menu.withdraw"),
       color: 'text-red-600',
       sign: '-',
     }

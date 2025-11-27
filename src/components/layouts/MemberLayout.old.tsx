@@ -18,6 +18,7 @@ import {
 import { profileAPI, notificationAPI } from '../../api/memberAPI'
 import { useMemberStore } from '../../store/memberStore'
 import { toast } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface MenuItem {
   path: string
@@ -27,6 +28,7 @@ interface MenuItem {
 }
 
 const MemberLayout: React.FC = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { member, isAuthenticated: storeAuth, logout } = useMemberStore()
@@ -40,13 +42,13 @@ const MemberLayout: React.FC = () => {
 
   const menuItems: MenuItem[] = [
     { path: '/member/dashboard', icon: FiHome, label: 'หน้าหลัก' },
-    { path: '/member/deposit', icon: FiDollarSign, label: 'ฝากเงิน' },
-    { path: '/member/withdrawal', icon: FiTrendingUp, label: 'ถอนเงิน' },
-    { path: '/member/games', icon: FiGrid, label: 'เกมส์' },
-    { path: '/member/lottery', icon: FiGrid, label: 'หวย' },
-    { path: '/member/promotions', icon: FiGift, label: 'โปรโมชั่น' },
+    { path: '/member/deposit', icon: FiDollarSign, label: t("navigation:menu.deposit") },
+    { path: '/member/withdrawal', icon: FiTrendingUp, label: t("navigation:menu.withdraw") },
+    { path: '/member/games', icon: FiGrid, label: t("navigation:menu.games") },
+    { path: '/member/lottery', icon: FiGrid, label: t("navigation:menu.lottery") },
+    { path: '/member/promotions', icon: FiGift, label: t("navigation:menu.promotions") },
     { path: '/member/transactions', icon: FiClock, label: 'ประวัติ' },
-    { path: '/member/profile', icon: FiUser, label: 'โปรไฟล์' },
+    { path: '/member/profile', icon: FiUser, label: t("navigation:menu.profile") },
   ]
 
   useEffect(() => {
@@ -125,7 +127,7 @@ const MemberLayout: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center">
         <div className="text-center">
           <FiRefreshCw className="w-12 h-12 animate-spin text-purple-400 mx-auto mb-4" />
-          <p className="text-white text-lg">กำลังโหลด...</p>
+          <p className="text-white text-lg">{t("common:messages.loading")}</p>
         </div>
       </div>
     )
@@ -157,7 +159,7 @@ const MemberLayout: React.FC = () => {
             {/* Center: Balance Display */}
             <div className="flex items-center gap-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl px-4 py-2">
               <div className="text-right">
-                <p className="text-xs text-white/60">ยอดเงินคงเหลือ</p>
+                <p className="text-xs text-white/60">{t("member:credit.balance")}</p>
                 <p className="text-lg font-bold text-white">
                   ฿{formatBalance(balance)}
                 </p>
@@ -211,7 +213,7 @@ const MemberLayout: React.FC = () => {
                         onClick={() => setProfileMenuOpen(false)}
                       >
                         <FiUser size={16} />
-                        <span>โปรไฟล์</span>
+                        <span>{t("navigation:menu.profile")}</span>
                       </Link>
                       <Link
                         to="/member/profile"
@@ -226,7 +228,7 @@ const MemberLayout: React.FC = () => {
                         className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition-colors"
                       >
                         <FiLogOut size={16} />
-                        <span>ออกจากระบบ</span>
+                        <span>{t("navigation:menu.logout")}</span>
                       </button>
                     </div>
                   </>
@@ -319,8 +321,8 @@ const MemberLayout: React.FC = () => {
           {[
             { path: '/member/dashboard', icon: FiHome, label: 'หน้าหลัก' },
             { path: '/member/deposit', icon: FiDollarSign, label: 'ฝาก' },
-            { path: '/member/games', icon: FiGrid, label: 'เกมส์' },
-            { path: '/member/lottery', icon: FiGrid, label: 'หวย' },
+            { path: '/member/games', icon: FiGrid, label: t("navigation:menu.games") },
+            { path: '/member/lottery', icon: FiGrid, label: t("navigation:menu.lottery") },
             { path: '/member/profile', icon: FiUser, label: 'ฉัน' },
           ].map((item) => {
             const Icon = item.icon

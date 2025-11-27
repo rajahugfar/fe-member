@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { memberLotteryAPI, OpenPeriod, LotteryRate, HuayConfig } from '@api/memberLotteryAPI'
 import { memberLotteryResultsAPI, LotteryResultItem } from '@api/memberLotteryResultsAPI'
@@ -33,6 +34,7 @@ import {
 import SavedTemplatesModal from '@/components/lottery/SavedTemplatesModal'
 
 const LotteryBetting: React.FC = () => {
+  const { t } = useTranslation()
   const { periodId } = useParams<{ periodId: string }>()
   const navigate = useNavigate()
   const { logout, member } = useMemberStore()
@@ -178,7 +180,7 @@ const LotteryBetting: React.FC = () => {
       }
     } catch (error) {
       console.error('Load error:', error)
-      toast.error('โหลดข้อมูลไม่สำเร็จ')
+      toast.error(t("common:messages.error"))
     } finally {
       setLoading(false)
     }
@@ -468,7 +470,7 @@ const LotteryBetting: React.FC = () => {
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-yellow-400 border-r-4 border-r-transparent mx-auto mb-4"></div>
-          <p className="text-white text-xl font-semibold">กำลังโหลด...</p>
+          <p className="text-white text-xl font-semibold">{t("common:messages.loading")}</p>
         </div>
       </div>
     )
@@ -503,7 +505,7 @@ const LotteryBetting: React.FC = () => {
 
             {lotteryResult ? (
               <div className="space-y-4">
-                <h2 className="text-xl font-bold text-center text-yellow-400 mb-4">ผลหวย</h2>
+                <h2 className="text-xl font-bold text-center text-yellow-400 mb-4">{t("lottery:results")}</h2>
 
                 <div className="grid grid-cols-2 gap-4">
                   {lotteryResult.result3Up && (
@@ -857,9 +859,8 @@ const LotteryBetting: React.FC = () => {
                           'tode_3': '3ตัวโต๊ด',
                           'teng_bon_2': '2ตัวบน',
                           'teng_lang_2': '2ตัวล่าง',
-                          'teng_bon_1': 'วิ่งบน',
-                          'teng_lang_1': 'วิ่งล่าง'
-                        }
+                          'teng_bon_1': t("lottery:betTypes.teng_bon_1"),
+                          'teng_lang_1': t("lottery:betTypes.teng_lang_1") }
 
                         // Sort order: 4 digit -> 3 digit -> 2 digit -> 1 digit
                         const sortOrder: { [key: string]: number } = {

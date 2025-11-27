@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { memberLotteryResultsAPI, LotteryResultItem } from '@api/memberLotteryResultsAPI'
 import toast from 'react-hot-toast'
 import { FiRefreshCw, FiCalendar, FiAward } from 'react-icons/fi'
 
 const LotteryResults: React.FC = () => {
+  const { t } = useTranslation()
   const [results, setResults] = useState<LotteryResultItem[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0])
@@ -224,7 +226,7 @@ const LotteryResults: React.FC = () => {
 
                       {/* 2 ตัวบน */}
                       <div className="text-center">
-                        <div className="text-green-400 text-xs font-semibold mb-2 uppercase tracking-wider">2 ตัวบน</div>
+                        <div className="text-green-400 text-xs font-semibold mb-2 uppercase tracking-wider">{t("lottery:betTypes.teng_bon_2")}</div>
                         {lottery.result2Up ? (
                           <div className="bg-gradient-to-br from-green-500/30 to-emerald-500/30 backdrop-blur-sm border-2 border-green-500/50 rounded-lg p-3 shadow-md">
                             <div className="text-2xl font-black text-green-400 tracking-wide">
@@ -240,7 +242,7 @@ const LotteryResults: React.FC = () => {
 
                       {/* 2 ตัวล่าง */}
                       <div className="text-center">
-                        <div className="text-teal-400 text-xs font-semibold mb-2 uppercase tracking-wider">2 ตัวล่าง</div>
+                        <div className="text-teal-400 text-xs font-semibold mb-2 uppercase tracking-wider">{t("lottery:betTypes.teng_lang_2")}</div>
                         {lottery.result2Low ? (
                           <div className="bg-gradient-to-br from-teal-500/30 to-cyan-500/30 backdrop-blur-sm border-2 border-teal-500/50 rounded-lg p-3 shadow-md">
                             <div className="text-2xl font-black text-teal-400 tracking-wide">

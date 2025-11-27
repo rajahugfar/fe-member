@@ -3,8 +3,10 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaSearch, FaFilter, FaTimes, FaUser, FaUserPlus, FaGamepad } from 'react-icons/fa'
 import { gameProviderAPI, type GameProvider } from '@api/gameProviderAPI'
+import { useTranslation } from 'react-i18next'
 
 const GamesPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [providers, setProviders] = useState<GameProvider[]>([])
@@ -17,11 +19,11 @@ const GamesPage = () => {
 
   const categories = [
     { id: 'all', name: 'ทั้งหมด', value: '' },
-    { id: 'slot', name: 'สล็อต', value: 'slot' },
+    { id: 'slot', name: t("game:categories.slot"), value: 'slot' },
     { id: 'live', name: 'คาสิโนสด', value: 'live' },
     { id: 'sport', name: 'กีฬา', value: 'sport' },
     { id: 'card', name: 'ไพ่', value: 'card' },
-    { id: 'lottery', name: 'หวย', value: 'lottery' },
+    { id: 'lottery', name: t("navigation:menu.lottery"), value: 'lottery' },
   ]
 
   useEffect(() => {
@@ -236,7 +238,7 @@ const GamesPage = () => {
 
                   {/* Hover Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
-                    <span className="text-white font-bold text-sm">เล่นเลย</span>
+                    <span className="text-white font-bold text-sm">{t("game:playNow")}</span>
                   </div>
                 </a>
               </motion.div>

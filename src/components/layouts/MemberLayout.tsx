@@ -9,8 +9,10 @@ import { toast } from 'react-hot-toast'
 import MemberChat from '@/components/chat/MemberChat'
 import { siteContentAPI } from '@api/siteContentAPI'
 import MemberNavbar from '@/components/MemberNavbar'
+import { useTranslation } from 'react-i18next'
 
 const MemberLayout: React.FC = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { logout, member, loadProfile } = useMemberStore()
   const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@permchok')
@@ -86,7 +88,7 @@ const MemberLayout: React.FC = () => {
         <Link
           to="/member/promotions"
           className="w-14 h-14 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform duration-300"
-          title="โปรโมชั่น"
+          title={t("navigation:menu.promotions")}
         >
           <FaTrophy className="text-2xl" />
         </Link>

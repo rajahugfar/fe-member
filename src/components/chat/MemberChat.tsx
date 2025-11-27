@@ -4,8 +4,10 @@ import { chatAPI, ChatMessage } from '@/api/chatAPI'
 import { toast } from 'react-hot-toast'
 import { useMemberStore } from '@/store/memberStore'
 import ImageModal from './ImageModal'
+import { useTranslation } from 'react-i18next'
 
 const MemberChat: React.FC = () => {
+  const { t } = useTranslation()
   const { member } = useMemberStore()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])

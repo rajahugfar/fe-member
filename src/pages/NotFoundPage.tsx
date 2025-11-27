@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import { FaHome } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 const NotFoundPage = () => {
+  const { t } = useTranslation()
   return (
     <div className="min-h-screen flex items-center justify-center bg-pattern">
       <div className="text-center">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiArrowLeft, FiFileText, FiCalendar, FiClock, FiAward } from 'react-icons/fi'
@@ -38,6 +39,7 @@ interface PoyDetail {
 }
 
 const LotteryPoyDetail: React.FC = () => {
+  const { t } = useTranslation()
   const { poyId } = useParams<{ poyId: string }>()
   const navigate = useNavigate()
   const [poy, setPoy] = useState<PoyDetail | null>(null)
@@ -71,8 +73,8 @@ const LotteryPoyDetail: React.FC = () => {
       'tode_3': '3 ตัวโต๊ด',
       'teng_bon_2': '2 ตัวบน',
       'teng_lang_2': '2 ตัวล่าง',
-      'teng_bon_1': 'วิ่งบน',
-      'teng_lang_1': 'วิ่งล่าง',
+      'teng_bon_1': t("lottery:betTypes.teng_bon_1"),
+      'teng_lang_1': t("lottery:betTypes.teng_lang_1"),
       'tode_4': '4 ตัวโต๊ด',
       'teng_bon_4': '4 ตัวบน'
     }
@@ -106,13 +108,13 @@ const LotteryPoyDetail: React.FC = () => {
 
   const getItemStatus = (item: PoyItem, status: number) => {
     if (status === 0) {
-      return { label: 'ยกเลิก', style: 'bg-red-500/20 text-red-300 border-red-400/30' }
+      return { label: t("common:buttons.cancel"), style: 'bg-red-500/20 text-red-300 border-red-400/30' }
     }
     if (status === 1) {
       return { label: 'รอออกผล', style: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' }
     }
     if (item.isWin) {
-      return { label: 'ถูกรางวัล', style: 'bg-green-500/20 text-green-300 border-green-400/30' }
+      return { label: t("member:dashboard.todayWin"), style: 'bg-green-500/20 text-green-300 border-green-400/30' }
     }
     return { label: 'ไม่ถูกรางวัล', style: 'bg-gray-500/20 text-gray-400 border-gray-400/30' }
   }
@@ -280,7 +282,7 @@ const LotteryPoyDetail: React.FC = () => {
                   )}
                   {poy.result2Down && (
                     <div className="text-center">
-                      <p className="text-gray-400 text-sm mb-2">2 ตัวล่าง</p>
+                      <p className="text-gray-400 text-sm mb-2">{t("lottery:betTypes.teng_lang_2")}</p>
                       <p className="text-3xl font-bold text-blue-400">{poy.result2Down}</p>
                     </div>
                   )}

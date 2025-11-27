@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiSearch, FiPlay, FiChevronRight } from 'react-icons/fi'
@@ -16,6 +17,7 @@ const ACTION_BUTTONS = [
 ]
 
 const AMBGameList: React.FC = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { provider } = useParams<{ provider: string }>()
   const { logout, member } = useMemberStore()
@@ -164,7 +166,7 @@ const AMBGameList: React.FC = () => {
                   className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                 >
                   <FaMoneyBillWave />
-                  <span className="hidden md:inline">ฝากเงิน</span>
+                  <span className="hidden md:inline">{t("navigation:menu.deposit")}</span>
                 </Link>
 
                 {/* Withdraw Button */}
@@ -173,7 +175,7 @@ const AMBGameList: React.FC = () => {
                   className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                 >
                   <FaCoins />
-                  <span className="hidden md:inline">ถอนเงิน</span>
+                  <span className="hidden md:inline">{t("navigation:menu.withdraw")}</span>
                 </Link>
 
                 <button
@@ -181,7 +183,7 @@ const AMBGameList: React.FC = () => {
                   className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                 >
                   <FaSignOutAlt />
-                  <span className="hidden md:inline">ออกจากระบบ</span>
+                  <span className="hidden md:inline">{t("navigation:menu.logout")}</span>
                 </button>
               </div>
             )}
@@ -204,7 +206,7 @@ const AMBGameList: React.FC = () => {
                 หน้าแรก
               </button>
               <FiChevronRight className="text-gray-600" />
-              <span className="text-white font-bold">เกมส์</span>
+              <span className="text-white font-bold">{t("navigation:menu.games")}</span>
               {provider && (
                 <>
                   <FiChevronRight className="text-gray-600" />

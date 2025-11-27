@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaUser, FaUserPlus, FaLine, FaCoins } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 interface HeaderProps {
   siteName?: string

@@ -9,6 +9,7 @@ import { FiMessageCircle } from 'react-icons/fi'
 import { authAPI } from '@api/authAPI'
 import { useMemberStore } from '../../store/memberStore'
 import type { RegisterData } from '@/types/auth'
+import { useTranslation } from 'react-i18next'
 
 const THAI_BANKS = [
   { value: '', label: 'เลือกธนาคาร' },
@@ -52,6 +53,7 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>
 
 const RegisterPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { referralCode: urlReferralCode } = useParams<{ referralCode?: string }>()
   const [isLoading, setIsLoading] = useState(false)
@@ -131,7 +133,7 @@ const RegisterPage = () => {
                 <span className="text-3xl font-bold text-white">P</span>
               </div>
               <h1 className="text-3xl font-bold text-white mb-2">เพิ่มโชค</h1>
-              <p className="text-white/70 text-sm">สมัครสมาชิก</p>
+              <p className="text-white/70 text-sm">{t("auth:register.title")}</p>
             </div>
           </div>
 
@@ -313,7 +315,7 @@ const RegisterPage = () => {
           ) : (
             <>
               <FaUserPlus />
-              <span>สมัครสมาชิก</span>
+              <span>{t("auth:register.title")}</span>
             </>
           )}
         </button>

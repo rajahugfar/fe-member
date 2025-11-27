@@ -1,6 +1,7 @@
 import React from 'react'
 import { useMemberStore } from '@/store/memberStore'
 import { FaWallet } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 interface CreditDisplayProps {
   className?: string
@@ -13,6 +14,7 @@ const CreditDisplay: React.FC<CreditDisplayProps> = ({
   showIcon = true,
   size = 'md'
 }) => {
+  const { t } = useTranslation()
   const { member } = useMemberStore()
 
   const formatCurrency = (amount: number) => {

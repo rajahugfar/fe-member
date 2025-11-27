@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { FiX, FiDownload } from 'react-icons/fi'
+import { useTranslation } from 'react-i18next'
 
 interface ImageModalProps {
   imageUrl: string
@@ -24,6 +25,7 @@ export default function ImageModal({ imageUrl, onClose }: ImageModalProps) {
   }, [onClose])
 
   const handleDownload = () => {
+  const { t } = useTranslation()
     const link = document.createElement('a')
     link.href = `http://localhost:3000${imageUrl}`
     link.download = imageUrl.split('/').pop() || 'image.jpg'

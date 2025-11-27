@@ -1,6 +1,8 @@
 import { Outlet } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const AuthLayout = () => {
+  const { t } = useTranslation()
   return (
     <div className="min-h-screen flex items-center justify-center bg-pattern p-4">
       <div className="w-full max-w-md">

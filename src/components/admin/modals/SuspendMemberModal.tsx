@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { FiX, FiAlertTriangle, FiCheckCircle } from 'react-icons/fi'
 import { adminMemberAPI } from '@/api/adminAPI'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface Member {
   id: string
@@ -58,6 +59,7 @@ export default function SuspendMemberModal({ isOpen, member, onClose, onSuccess 
   }
 
   const handleClose = () => {
+  const { t } = useTranslation()
     if (!loading) {
       setReason('')
       setSelectedStatus('active')

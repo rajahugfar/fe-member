@@ -20,8 +20,10 @@ import type { PromotionBanner, SiteSettingsMap } from '@/types/siteContent'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
+import { useTranslation } from 'react-i18next'
 
 const LandingPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [providers, setProviders] = useState<DBGameProvider[]>([])
   const [promotions, setPromotions] = useState<PromotionBanner[]>([])
@@ -281,7 +283,7 @@ const LandingPage = () => {
                   to="/member/promotions"
                   className="relative hover:scale-105 transition-transform"
                 >
-                  <img src="/images/btn-promotion.webp" alt="โปรโมชั่น" className="w-full h-auto" />
+                  <img src="/images/btn-promotion.webp" alt={t("navigation:menu.promotions")} className="w-full h-auto" />
                 </Link>
 
                 <a

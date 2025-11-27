@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiUser, FiPhone, FiMessageCircle, FiCreditCard, FiLock, FiShield, FiEdit2, FiTrash2, FiPlus, FiCheck, FiX } from 'react-icons/fi'
 import { useMemberStore } from '../../store/memberStore'
 import { profileAPI } from '../../api/memberAPI'
@@ -20,6 +21,7 @@ const THAI_BANKS = [
 type Tab = 'personal' | 'bank' | 'password' | 'security'
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation()
   const { member, loadProfile: refreshProfile, updateProfile: updateMemberProfile } = useMemberStore()
   const [activeTab, setActiveTab] = useState<Tab>('personal')
   const [bankAccounts, setBankAccounts] = useState<any[]>([])
@@ -213,9 +215,9 @@ const Profile: React.FC = () => {
       <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-2">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {[
-            { id: 'personal', icon: FiUser, label: 'ข้อมูลส่วนตัว' },
-            { id: 'bank', icon: FiCreditCard, label: 'บัญชีธนาคาร' },
-            { id: 'password', icon: FiLock, label: 'เปลี่ยนรหัสผ่าน' },
+            { id: 'personal', icon: FiUser, label: t("member:profile.personalInfo") },
+            { id: 'bank', icon: FiCreditCard, label: t("member:profile.bankAccount") },
+            { id: 'password', icon: FiLock, label: t("member:profile.changePassword") },
             { id: 'security', icon: FiShield, label: 'ความปลอดภัย' },
           ].map(tab => {
             const Icon = tab.icon
@@ -243,14 +245,14 @@ const Profile: React.FC = () => {
         {activeTab === 'personal' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">ข้อมูลส่วนตัว</h2>
+              <h2 className="text-xl font-bold text-white">{t("member:profile.personalInfo")}</h2>
               {!editMode ? (
                 <button
                   onClick={() => setEditMode(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
                   <FiEdit2 size={16} />
-                  <span>แก้ไข</span>
+                  <span>{t("common:buttons.edit")}</span>
                 </button>
               ) : (
                 <div className="flex gap-2">
@@ -259,7 +261,7 @@ const Profile: React.FC = () => {
                     className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                   >
                     <FiCheck size={16} />
-                    <span>บันทึก</span>
+                    <span>{t("common:buttons.save")}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -269,7 +271,7 @@ const Profile: React.FC = () => {
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                   >
                     <FiX size={16} />
-                    <span>ยกเลิก</span>
+                    <span>{t("common:buttons.cancel")}</span>
                   </button>
                 </div>
               )}
@@ -277,7 +279,7 @@ const Profile: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-white/80 text-sm mb-2">เบอร์โทรศัพท์</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.phone")}</label>
                 <div className="flex items-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg">
                   <FiPhone className="text-white/60" />
                   <span className="text-white">{member?.phone}</span>
@@ -286,7 +288,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-white/80 text-sm mb-2">ชื่อ-นามสกุล</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.fullName")}</label>
                 {editMode ? (
                   <input
                     type="text"
@@ -334,7 +336,7 @@ const Profile: React.FC = () => {
         {activeTab === 'bank' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">บัญชีธนาคาร</h2>
+              <h2 className="text-xl font-bold text-white">{t("member:profile.bankAccount")}</h2>
               <p className="text-white/60 text-sm">บัญชีสำหรับถอนเงิน</p>
             </div>
 
@@ -380,11 +382,11 @@ const Profile: React.FC = () => {
         {/* Change Password Tab */}
         {activeTab === 'password' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-white">เปลี่ยนรหัสผ่าน</h2>
+            <h2 className="text-xl font-bold text-white">{t("member:profile.changePassword")}</h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-white/80 text-sm mb-2">รหัสผ่านปัจจุบัน</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.currentPassword")}</label>
                 <input
                   type="password"
                   value={passwordForm.currentPassword}
@@ -395,7 +397,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-white/80 text-sm mb-2">รหัสผ่านใหม่</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.newPassword")}</label>
                 <input
                   type="password"
                   value={passwordForm.newPassword}
@@ -406,7 +408,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-white/80 text-sm mb-2">ยืนยันรหัสผ่านใหม่</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.confirmPassword")}</label>
                 <input
                   type="password"
                   value={passwordForm.confirmPassword}
@@ -462,7 +464,7 @@ const Profile: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-white/80 text-sm mb-2">ธนาคาร</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.bankName")}</label>
                 <select
                   value={bankForm.bankName}
                   onChange={(e) => setBankForm({ ...bankForm, bankName: e.target.value })}
@@ -478,7 +480,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-white/80 text-sm mb-2">เลขที่บัญชี</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.accountNumber")}</label>
                 <input
                   type="text"
                   value={bankForm.accountNumber}
@@ -489,7 +491,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-white/80 text-sm mb-2">ชื่อบัญชี</label>
+                <label className="block text-white/80 text-sm mb-2">{t("member:profile.accountName")}</label>
                 <input
                   type="text"
                   value={bankForm.accountName}

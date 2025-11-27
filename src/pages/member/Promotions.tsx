@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiGift, FiCheck, FiInfo } from 'react-icons/fi'
 import { promotionAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 
 const CATEGORIES = [
   { value: '', label: 'ทั้งหมด' },
-  { value: 'DEPOSIT', label: 'ฝากเงิน' },
+  { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
   { value: 'CASHBACK', label: 'คืนยอดเสีย' },
-  { value: 'REFERRAL', label: 'แนะนำเพื่อน' },
+  { value: 'REFERRAL', label: t("navigation:menu.affiliate") },
   { value: 'SPECIAL', label: 'พิเศษ' },
 ]
 
 const Promotions: React.FC = () => {
+  const { t } = useTranslation()
   const [promotions, setPromotions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState('')
@@ -52,7 +54,7 @@ const Promotions: React.FC = () => {
     setClaiming(true)
     try {
       await promotionAPI.claimPromotion(selectedPromo.id, promoCode || undefined)
-      toast.success('รับโปรโมชั่นสำเร็จ')
+      toast.success(t("promotion:claimSuccess"))
       setSelectedPromo(null)
       setPromoCode('')
       loadPromotions()
@@ -68,7 +70,7 @@ const Promotions: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-600 to-yellow-600 rounded-2xl p-6 shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">โปรโมชั่น</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{t("navigation:menu.promotions")}</h1>
         <p className="text-white/80">รับสิทธิพิเศษและโบนัสมากมาย</p>
       </div>
 
@@ -251,7 +253,7 @@ const Promotions: React.FC = () => {
                   ) : (
                     <>
                       <FiCheck />
-                      <span>รับโปรโมชั่น</span>
+                      <span>{t("promotion:claim")}</span>
                     </>
                   )}
                 </button>

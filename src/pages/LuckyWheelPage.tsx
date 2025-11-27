@@ -4,8 +4,10 @@ import { useMemberStore } from '@/store/memberStore'
 import toast from 'react-hot-toast'
 import { FiGift, FiRotateCw, FiTrendingUp } from 'react-icons/fi'
 import { luckyWheelAPI, Prize, SpinHistory } from '@/api/luckyWheelAPI'
+import { useTranslation } from 'react-i18next'
 
 const LuckyWheelPage = () => {
+  const { t } = useTranslation()
   const { member } = useMemberStore()
   const [isSpinning, setIsSpinning] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -109,7 +111,7 @@ const LuckyWheelPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0f1419] to-[#1a1f2e] flex items-center justify-center">
-        <div className="text-white text-xl">กำลังโหลด...</div>
+        <div className="text-white text-xl">{t("common:messages.loading")}</div>
       </div>
     )
   }

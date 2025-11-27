@@ -8,8 +8,10 @@ import { siteContentAPI } from '@/api/siteContentAPI'
 import { getImageUrl } from '@/api/client'
 import 'swiper/css'
 import 'swiper/css/pagination'
+import { useTranslation } from 'react-i18next'
 
 const SacasinoHomePage = () => {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState('all')
   const [providers, setProviders] = useState<GameProvider[]>([])
   const [games, setGames] = useState<Game[]>([])
@@ -121,10 +123,10 @@ const SacasinoHomePage = () => {
   const getCategoryDisplayName = (category: string): string => {
     const names: Record<string, string> = {
       'all': 'เกมทั้งหมด',
-      'Slot': 'สล็อต',
+      'Slot': t("game:categories.slot"),
       'Live Casino': 'คาสิโนสด',
       'Game Card': 'เกมไพ่',
-      'Lottery': 'หวย',
+      'Lottery': t("navigation:menu.lottery"),
       'Sport': 'กีฬา',
       'Poker': 'โป๊กเกอร์',
     }
@@ -146,10 +148,10 @@ const SacasinoHomePage = () => {
   // Categories
   const categories = [
     { id: 'all', name: 'ทั้งหมด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
-    { id: 'Slot', name: 'สล็อต', icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
+    { id: 'Slot', name: t("game:categories.slot"), icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
     { id: 'Live Casino', name: 'คาสิโนสด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
     { id: 'Game Card', name: 'เกมไพ่', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
-    { id: 'Lottery', name: 'หวย', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Lottery', name: t("navigation:menu.lottery"), icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
     { id: 'Sport', name: 'กีฬา', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
     { id: 'Poker', name: 'โป๊กเกอร์', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
   ]
@@ -261,8 +263,8 @@ const SacasinoHomePage = () => {
                 <span className="text-xs mt-1">ชวนเพื่อน</span>
               </Link>
               <Link to="/promotions" className="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt="โปรโมชั่น" className="w-8 h-8" />
-                <span className="text-xs mt-1">โปรโมชั่น</span>
+                <img src="/images/sacasino/icons/ic-menu-promotion.png" alt={t("navigation:menu.promotions")} className="w-8 h-8" />
+                <span className="text-xs mt-1">{t("navigation:menu.promotions")}</span>
               </Link>
             </div>
 

@@ -315,9 +315,9 @@ const MemberIndex = () => {
 
   // Categories - ต้องตรงกับ category ใน database
   const categories = [
-    { id: 'Lottery', name: 'หวย', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
+    { id: 'Lottery', name: t("navigation:menu.lottery"), icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
     { id: 'all', name: 'ทั้งหมด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
-    { id: 'Slot', name: 'สล็อต', icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
+    { id: 'Slot', name: t("game:categories.slot"), icon: '/images/sacasino/categories/menu-icon-category-slot.png', iconHover: '/images/sacasino/categories/menu-icon-category-slot-hover.png' },
     { id: 'Live Casino', name: 'คาสิโนสด', icon: '/images/sacasino/categories/menu-icon-category-baccarat.png', iconHover: '/images/sacasino/categories/menu-icon-category-baccarat-hover.png' },
     { id: 'Game Card', name: 'เกมไพ่', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
     { id: 'Sport', name: 'กีฬา', icon: '/images/sacasino/categories/menu-icon-category-blackjack.png', iconHover: '/images/sacasino/categories/menu-icon-category-blackjack-hover.png' },
@@ -335,7 +335,7 @@ const MemberIndex = () => {
     },
     {
       id: 'withdraw',
-      name: 'ถอนเงิน',
+      name: t("navigation:menu.withdraw"),
       icon: <FaMoneyBillWave className="text-2xl" />,
       link: '/member/withdraw',
       bg: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
@@ -349,14 +349,14 @@ const MemberIndex = () => {
     },
     {
       id: 'lottery-results',
-      name: 'ผลหวย',
+      name: t("lottery:results"),
       icon: <FaGamepad className="text-2xl" />,
       link: '/member/lottery/results',
       bg: 'bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700'
     },
     {
       id: 'promotions',
-      name: 'โปรโมชั่น',
+      name: t("navigation:menu.promotions"),
       icon: <FaGift className="text-2xl" />,
       link: '/member/promotions',
       bg: 'bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700'
@@ -373,9 +373,9 @@ const MemberIndex = () => {
   // Game categories
   const gameCategories = [
     { id: 'all', name: 'ทั้งหมด', icon: <FaGamepad /> },
-    { id: 'slot', name: 'สล็อต', icon: <FaDice /> },
+    { id: 'slot', name: t("game:categories.slot"), icon: <FaDice /> },
     { id: 'live', name: 'คาสิโนสด', icon: <FaGamepad /> },
-    { id: 'lottery', name: 'หวย', icon: <FaDice /> },
+    { id: 'lottery', name: t("navigation:menu.lottery"), icon: <FaDice /> },
     { id: 'sport', name: 'กีฬา', icon: <FaFootballBall /> },
     { id: 'poker', name: 'โป๊กเกอร์', icon: <FaGamepad /> },
   ]

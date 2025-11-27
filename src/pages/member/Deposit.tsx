@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { FiDollarSign, FiCreditCard, FiUpload, FiCamera, FiCheck, FiArrowRight, FiCopy, FiZap, FiX } from 'react-icons/fi'
 import { GiTwoCoins, GiSparkles, GiDiamonds, GiMagicSwirl, GiCrystalBall } from 'react-icons/gi'
@@ -21,6 +22,7 @@ interface CompanyBank {
 }
 
 const Deposit: React.FC = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [step, setStep] = useState(0) // เริ่มที่ step 0 เพื่อเลือกวิธีการฝาก
   const [depositMethod, setDepositMethod] = useState<'transfer' | 'qr' | ''>('') // วิธีการฝาก
@@ -289,9 +291,9 @@ const Deposit: React.FC = () => {
           {[
             { num: 0, label: 'วิธีฝาก', icon: GiMagicSwirl },
             { num: 1, label: 'จำนวน', icon: GiTwoCoins },
-            { num: 2, label: 'ธนาคาร', icon: GiCrystalBall },
+            { num: 2, label: t("member:profile.bankName"), icon: GiCrystalBall },
             { num: 3, label: 'สลิป', icon: GiDiamonds },
-            { num: 4, label: 'ยืนยัน', icon: GiSparkles }
+            { num: 4, label: t("common:buttons.submit"), icon: GiSparkles }
           ].map(({ num, label, icon: Icon }, index) => (
             <React.Fragment key={num}>
               <div className="flex flex-col items-center gap-2">
