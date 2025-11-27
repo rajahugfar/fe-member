@@ -4,18 +4,18 @@ import { FiFilter, FiDownload, FiArrowDown, FiArrowUp, FiGrid, FiDollarSign } fr
 import { transactionAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 
-const TRANSACTION_TYPES = [
-  { value: '', label: 'ทั้งหมด' },
-  { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
-  { value: 'WITHDRAWAL', label: t("navigation:menu.withdraw") },
-  { value: 'BET', label: 'แทง' },
-  { value: 'WIN', label: t("member:dashboard.todayWin") },
-  { value: 'BONUS', label: 'โบนัส' },
-  { value: 'TRANSFER', label: 'โอน' },
-]
-
 const TransactionHistory: React.FC = () => {
   const { t } = useTranslation()
+
+  const TRANSACTION_TYPES = [
+    { value: '', label: 'ทั้งหมด' },
+    { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
+    { value: 'WITHDRAWAL', label: t("navigation:menu.withdraw") },
+    { value: 'BET', label: 'แทง' },
+    { value: 'WIN', label: t("member:dashboard.todayWin") },
+    { value: 'BONUS', label: 'โบนัส' },
+    { value: 'TRANSFER', label: 'โอน' },
+  ]
   const [transactions, setTransactions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({

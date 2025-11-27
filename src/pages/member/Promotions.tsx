@@ -4,16 +4,16 @@ import { FiGift, FiCheck, FiInfo } from 'react-icons/fi'
 import { promotionAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 
-const CATEGORIES = [
-  { value: '', label: 'ทั้งหมด' },
-  { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
-  { value: 'CASHBACK', label: 'คืนยอดเสีย' },
-  { value: 'REFERRAL', label: t("navigation:menu.affiliate") },
-  { value: 'SPECIAL', label: 'พิเศษ' },
-]
-
 const Promotions: React.FC = () => {
   const { t } = useTranslation()
+
+  const CATEGORIES = [
+    { value: '', label: 'ทั้งหมด' },
+    { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
+    { value: 'CASHBACK', label: 'คืนยอดเสีย' },
+    { value: 'REFERRAL', label: t("navigation:menu.affiliate") },
+    { value: 'SPECIAL', label: 'พิเศษ' },
+  ]
   const [promotions, setPromotions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState('')
