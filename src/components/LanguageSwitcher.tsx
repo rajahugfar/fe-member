@@ -21,23 +21,23 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 
   if (variant === 'compact') {
     return (
-      <div className={`flex items-center gap-1 ${className}`}>
+      <div className={`flex items-center gap-1 bg-gray-800/50 rounded-lg p-1 ${className}`}>
         <button
           onClick={() => changeLanguage('th')}
-          className={`px-2 py-1 text-sm font-medium rounded transition-colors ${
+          className={`px-3 py-1.5 text-sm font-bold rounded transition-all ${
             currentLang === 'th'
-              ? 'bg-purple-600 text-white'
-              : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              ? 'bg-yellow-500 text-gray-900 shadow-lg'
+              : 'text-gray-300 hover:text-white hover:bg-gray-700'
           }`}
         >
           TH
         </button>
         <button
           onClick={() => changeLanguage('en')}
-          className={`px-2 py-1 text-sm font-medium rounded transition-colors ${
+          className={`px-3 py-1.5 text-sm font-bold rounded transition-all ${
             currentLang === 'en'
-              ? 'bg-purple-600 text-white'
-              : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              ? 'bg-yellow-500 text-gray-900 shadow-lg'
+              : 'text-gray-300 hover:text-white hover:bg-gray-700'
           }`}
         >
           EN
