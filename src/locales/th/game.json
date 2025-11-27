@@ -1,0 +1,32 @@
+{
+  "title": "เกมส์",
+  "lobby": "ล็อบบี้เกม",
+  "categories": {
+    "all": "ทั้งหมด",
+    "slot": "สล็อต",
+    "casino": "คาสิโน",
+    "fishing": "ยิงปลา",
+    "sport": "กีฬา",
+    "poker": "โป๊กเกอร์",
+    "baccarat": "บาคาร่า",
+    "roulette": "รูเล็ต",
+    "other": "อื่นๆ"
+  },
+  "providers": "ค่ายเกม",
+  "popular": "ยอดนิยม",
+  "new": "เกมใหม่",
+  "recommended": "แนะนำ",
+  "playNow": "เล่นเลย",
+  "demo": "ทดลองเล่น",
+  "realMoney": "เงินจริง",
+  "loading": "กำลังโหลดเกม...",
+  "loginRequired": "กรุณาเข้าสู่ระบบก่อนเล่น",
+  "insufficientCredit": "เครดิตไม่เพียงพอ",
+  "gameUnavailable": "เกมไม่พร้อมใช้งาน",
+  "search": "ค้นหาเกม",
+  "favorites": "เกมโปรด",
+  "recentPlayed": "เล่นล่าสุด",
+  "jackpot": "แจ็คพอต",
+  "liveCasino": "คาสิโนสด",
+  "virtualSports": "กีฬาเสมือน"
+}

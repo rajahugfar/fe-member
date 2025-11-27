@@ -1,0 +1,65 @@
+{
+  "title": "Referral Program",
+  "myReferralLink": "My Referral Link",
+  "copyLink": "Copy Link",
+  "linkCopied": "Link copied",
+  "shareVia": "Share via",
+  "referralCode": "Referral Code",
+  "stats": {
+    "title": "Statistics",
+    "totalReferrals": "Total Referrals",
+    "activeReferrals": "Active Members",
+    "totalCommission": "Total Commission",
+    "availableCommission": "Available Commission",
+    "withdrawnCommission": "Withdrawn Commission",
+    "pendingCommission": "Pending Commission",
+    "todayCommission": "Today's Commission",
+    "monthlyCommission": "This Month's Commission",
+    "commissionRate": "Commission Rate"
+  },
+  "referredMembers": {
+    "title": "Referred Members",
+    "name": "Name",
+    "phone": "Phone",
+    "joinDate": "Join Date",
+    "totalBet": "Total Bet",
+    "commission": "Commission",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "noMembers": "No referred members yet"
+  },
+  "commissionHistory": {
+    "title": "Commission History",
+    "date": "Date",
+    "member": "Member",
+    "betAmount": "Bet Amount",
+    "commission": "Commission",
+    "type": "Type",
+    "status": "Status",
+    "noHistory": "No history yet"
+  },
+  "withdraw": {
+    "title": "Withdraw Commission",
+    "button": "Withdraw Commission",
+    "available": "Available to Withdraw",
+    "minimum": "Minimum Withdrawal",
+    "success": "Commission withdrawn successfully",
+    "failed": "Failed to withdraw commission",
+    "insufficient": "Insufficient commission balance"
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "step1": "1. Copy your referral link or code",
+    "step2": "2. Share the link with friends",
+    "step3": "3. When friends register and play, you earn commission",
+    "step4": "4. Withdraw commission anytime after reaching minimum"
+  },
+  "benefits": {
+    "title": "Benefits",
+    "unlimited": "Unlimited Referrals",
+    "lifetime": "Lifetime Commission",
+    "instant": "Instant Commission",
+    "withdraw": "Withdraw Anytime"
+  }
+}

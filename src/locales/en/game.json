@@ -1,0 +1,32 @@
+{
+  "title": "Games",
+  "lobby": "Game Lobby",
+  "categories": {
+    "all": "All",
+    "slot": "Slots",
+    "casino": "Casino",
+    "fishing": "Fishing",
+    "sport": "Sports",
+    "poker": "Poker",
+    "baccarat": "Baccarat",
+    "roulette": "Roulette",
+    "other": "Other"
+  },
+  "providers": "Providers",
+  "popular": "Popular",
+  "new": "New Games",
+  "recommended": "Recommended",
+  "playNow": "Play Now",
+  "demo": "Demo",
+  "realMoney": "Real Money",
+  "loading": "Loading game...",
+  "loginRequired": "Please login to play",
+  "insufficientCredit": "Insufficient credit",
+  "gameUnavailable": "Game unavailable",
+  "search": "Search games",
+  "favorites": "Favorites",
+  "recentPlayed": "Recently Played",
+  "jackpot": "Jackpot",
+  "liveCasino": "Live Casino",
+  "virtualSports": "Virtual Sports"
+}

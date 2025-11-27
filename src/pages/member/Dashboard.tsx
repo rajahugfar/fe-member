@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
+import { useTranslation } from 'react-i18next'
 import {
   FiDollarSign,
   FiTrendingUp,
@@ -27,6 +28,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation(['member', 'common', 'transaction'])
   const { member, loadProfile } = useMemberStore()
   const [summary, setSummary] = useState<any>({
     todayDeposit: 0,
@@ -89,7 +91,7 @@ const Dashboard: React.FC = () => {
       setLargeBanners(bannersData.filter((p: any) => p.banner_type === 'large' || !p.banner_type))
     } catch (error) {
       console.error('Load dashboard error:', error)
-      toast.error('โหลดข้อมูลไม่สำเร็จ')
+      toast.error(t('common:messages.error'))
     } finally {
       setLoading(false)
     }
@@ -117,12 +119,12 @@ const Dashboard: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig: any = {
-      PENDING: { color: 'bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-amber-500/20', label: 'รอดำเนินการ', icon: FiClock },
-      SUCCESS: { color: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 shadow-emerald-500/20', label: 'สำเร็จ', icon: FiCheckCircle },
-      COMPLETED: { color: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 shadow-emerald-500/20', label: 'สำเร็จ', icon: FiCheckCircle },
-      FAILED: { color: 'bg-rose-500/20 text-rose-300 border-rose-400/40 shadow-rose-500/20', label: 'ไม่สำเร็จ', icon: FiXCircle },
-      REJECTED: { color: 'bg-rose-500/20 text-rose-300 border-rose-400/40 shadow-rose-500/20', label: 'ถูกปฏิเสธ', icon: FiXCircle },
-      CANCELLED: { color: 'bg-slate-500/20 text-slate-300 border-slate-400/40 shadow-slate-500/20', label: 'ยกเลิก', icon: FiXCircle },
+      PENDING: { color: 'bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-amber-500/20', label: t('common:status.pending'), icon: FiClock },
+      SUCCESS: { color: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 shadow-emerald-500/20', label: t('common:status.success'), icon: FiCheckCircle },
+      COMPLETED: { color: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 shadow-emerald-500/20', label: t('common:status.completed'), icon: FiCheckCircle },
+      FAILED: { color: 'bg-rose-500/20 text-rose-300 border-rose-400/40 shadow-rose-500/20', label: t('common:status.failed'), icon: FiXCircle },
+      REJECTED: { color: 'bg-rose-500/20 text-rose-300 border-rose-400/40 shadow-rose-500/20', label: t('common:status.rejected'), icon: FiXCircle },
+      CANCELLED: { color: 'bg-slate-500/20 text-slate-300 border-slate-400/40 shadow-slate-500/20', label: t('common:status.cancelled'), icon: FiXCircle },
     }
 
     const config = statusConfig[status] || statusConfig.PENDING
@@ -137,17 +139,8 @@ const Dashboard: React.FC = () => {
   }
 
   const getTransactionTypeLabel = (type: string) => {
-    const types: any = {
-      DEPOSIT: 'ฝากเงิน',
-      WITHDRAWAL: 'ถอนเงิน',
-      BET: 'แทงหวย/เกม',
-      WIN: 'ถูกรางวัล',
-      BONUS: 'โบนัส',
-      TRANSFER_IN: 'โอนเข้า',
-      TRANSFER_OUT: 'โอนออก',
-      REFUND: 'คืนเงิน'
-    }
-    return types[type] || type
+    const typeKey = type.toLowerCase()
+    return t(`transaction:types.${typeKey}`, type)
   }
 
   if (loading) {
@@ -157,7 +150,7 @@ const Dashboard: React.FC = () => {
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-gold-500/30 border-t-gold-500"></div>
           <GiCrystalBall className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gold-500 animate-pulse" size={32} />
         </div>
-        <p className="text-gold-500 font-medium animate-pulse">กำลังโหลดข้อมูล...</p>
+        <p className="text-gold-500 font-medium animate-pulse">{t('common:messages.loading')}</p>
       </div>
     )
   }
@@ -175,7 +168,7 @@ const Dashboard: React.FC = () => {
               <h2 className="text-lg md:text-xl font-bold text-gold-500">
                 {member?.fullname || member?.phone || 'สมาชิก'}
               </h2>
-              <p className="text-brown-400 text-xs md:text-sm">ยินดีต้อนรับเข้าสู่ระบบ</p>
+              <p className="text-brown-400 text-xs md:text-sm">{t("member:dashboard.welcome")}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 md:gap-3 bg-admin-dark/50 rounded-lg px-3 md:px-4 py-2 md:py-3 border border-gold-500/20">

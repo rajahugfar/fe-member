@@ -1,0 +1,48 @@
+{
+  "title": "Transactions",
+  "history": "Transaction History",
+  "depositHistory": "Deposit History",
+  "withdrawalHistory": "Withdrawal History",
+  "bonusHistory": "Bonus History",
+  "type": "Type",
+  "amount": "Amount",
+  "date": "Date",
+  "time": "Time",
+  "status": "Status",
+  "reference": "Reference",
+  "detail": "Details",
+  "types": {
+    "deposit": "Deposit",
+    "withdrawal": "Withdrawal",
+    "bonus": "Bonus",
+    "refund": "Refund",
+    "commission": "Commission",
+    "win": "Win",
+    "bet": "Bet",
+    "transfer": "Transfer",
+    "adjustment": "Adjustment"
+  },
+  "statuses": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "completed": "Completed",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled",
+    "failed": "Failed"
+  },
+  "filter": {
+    "all": "All",
+    "dateRange": "Date Range",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "apply": "Apply"
+  },
+  "summary": {
+    "totalDeposit": "Total Deposit",
+    "totalWithdrawal": "Total Withdrawal",
+    "totalBonus": "Total Bonus",
+    "netProfit": "Net Profit/Loss"
+  },
+  "noTransactions": "No transactions"
+}

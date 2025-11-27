@@ -1,0 +1,48 @@
+{
+  "title": "ธุรกรรม",
+  "history": "ประวัติธุรกรรม",
+  "depositHistory": "ประวัติฝาก",
+  "withdrawalHistory": "ประวัติถอน",
+  "bonusHistory": "ประวัติโบนัส",
+  "type": "ประเภท",
+  "amount": "จำนวนเงิน",
+  "date": "วันที่",
+  "time": "เวลา",
+  "status": "สถานะ",
+  "reference": "เลขอ้างอิง",
+  "detail": "รายละเอียด",
+  "types": {
+    "deposit": "ฝาก",
+    "withdrawal": "ถอน",
+    "bonus": "โบนัส",
+    "refund": "คืนเงิน",
+    "commission": "คอมมิชชั่น",
+    "win": "ถูกรางวัล",
+    "bet": "แทง",
+    "transfer": "โอน",
+    "adjustment": "ปรับยอด"
+  },
+  "statuses": {
+    "pending": "รอดำเนินการ",
+    "processing": "กำลังดำเนินการ",
+    "completed": "สำเร็จ",
+    "approved": "อนุมัติ",
+    "rejected": "ปฏิเสธ",
+    "cancelled": "ยกเลิก",
+    "failed": "ล้มเหลว"
+  },
+  "filter": {
+    "all": "ทั้งหมด",
+    "dateRange": "ช่วงวันที่",
+    "startDate": "วันที่เริ่มต้น",
+    "endDate": "วันที่สิ้นสุด",
+    "apply": "ค้นหา"
+  },
+  "summary": {
+    "totalDeposit": "ยอดฝากรวม",
+    "totalWithdrawal": "ยอดถอนรวม",
+    "totalBonus": "ยอดโบนัสรวม",
+    "netProfit": "กำไร/ขาดทุนสุทธิ"
+  },
+  "noTransactions": "ไม่มีรายการธุรกรรม"
+}
