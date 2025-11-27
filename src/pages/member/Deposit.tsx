@@ -22,7 +22,7 @@ interface CompanyBank {
 }
 
 const Deposit: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['transaction', 'member', 'common'])
   const navigate = useNavigate()
   const [step, setStep] = useState(0) // เริ่มที่ step 0 เพื่อเลือกวิธีการฝาก
   const [depositMethod, setDepositMethod] = useState<'transfer' | 'qr' | ''>('') // วิธีการฝาก
@@ -73,7 +73,7 @@ const Deposit: React.FC = () => {
       setCompanyBanks(Array.isArray(banks) ? banks : [])
     } catch (error) {
       console.error('Failed to load company banks:', error)
-      toast.error('โหลดบัญชีบริษัทไม่สำเร็จ')
+      toast.error(t('transaction:deposit.messages.loadBanksFailed'))
     }
   }
 
@@ -83,7 +83,7 @@ const Deposit: React.FC = () => {
 
   const handleCopyAccount = (accountNumber: string) => {
     navigator.clipboard.writeText(accountNumber)
-    toast.success('คัดลอกเลขบัญชีแล้ว')
+    toast.success(t('transaction:deposit.bank.copyAccount'))
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,12 +91,12 @@ const Deposit: React.FC = () => {
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
-      toast.error('กรุณาเลือกไฟล์รูปภาพเท่านั้น')
+      toast.error(t('transaction:deposit.messages.imageOnly'))
       return
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('ไฟล์ใหญ่เกิน 5MB')
+      toast.error(t('transaction:deposit.messages.fileTooLarge'))
       return
     }
 
@@ -133,13 +133,13 @@ const Deposit: React.FC = () => {
         },
         (decodedText) => {
           // QR Code successfully scanned
-          toast.success('สแกน QR Code สำเร็จ!')
+          toast.success(t('transaction:deposit.qrScanner.success'))
           stopQrScanner()
 
           // Parse QR code data (PromptPay format typically)
           // For now, just show the decoded text
           console.log('QR Code data:', decodedText)
-          toast.success('ข้อมูล QR Code: ' + decodedText.substring(0, 20) + '...')
+          toast.success(t('transaction:deposit.qrScanner.qrData') + ' ' + decodedText.substring(0, 20) + '...')
         },
         (errorMessage) => {
           // QR Code scan error - this is normal during scanning
@@ -148,7 +148,7 @@ const Deposit: React.FC = () => {
       )
     } catch (err) {
       console.error('Failed to start QR scanner:', err)
-      toast.error('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้กล้อง')
+      toast.error(t('transaction:deposit.messages.cameraPermission'))
       setShowQrScanner(false)
     }
   }
@@ -168,13 +168,13 @@ const Deposit: React.FC = () => {
   const handleNext = async () => {
     if (step === 0) {
       if (!depositMethod) {
-        toast.error('กรุณาเลือกวิธีการฝาก')
+        toast.error(t('transaction:deposit.messages.selectMethod'))
         return
       }
       setStep(1)
     } else if (step === 1) {
       if (!amount || Number(amount) < 100) {
-        toast.error('ยอดฝากขั้นต่ำ 100 บาท')
+        toast.error(t('transaction:deposit.messages.minAmount'))
         return
       }
 
@@ -186,13 +186,13 @@ const Deposit: React.FC = () => {
       }
     } else if (step === 2) {
       if (!selectedBank) {
-        toast.error('กรุณาเลือกธนาคารที่โอน')
+        toast.error(t('transaction:deposit.messages.selectBank'))
         return
       }
       setStep(3)
     } else if (step === 3) {
       if (!slipFile) {
-        toast.error('กรุณาอัพโหลดสลิปการโอน')
+        toast.error(t('transaction:deposit.messages.uploadSlip'))
         return
       }
       setStep(4)
@@ -212,10 +212,10 @@ const Deposit: React.FC = () => {
       const data = response.data?.data || response.data
       setQrPaymentData(data)
       setShowQrPayment(true)
-      toast.success('สร้าง QR Code สำเร็จ')
+      toast.success(t('transaction:deposit.messages.qrCreated'))
     } catch (error: any) {
       console.error('Create QR error:', error)
-      toast.error(error.response?.data?.message || 'สร้าง QR Code ไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('transaction:deposit.messages.qrFailed'))
     } finally {
       setLoading(false)
     }
@@ -227,7 +227,7 @@ const Deposit: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!amount || !selectedBank || !slipFile) {
-      toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+      toast.error(t('transaction:deposit.messages.fillAllFields'))
       return
     }
 
@@ -241,11 +241,11 @@ const Deposit: React.FC = () => {
       if (promoCode) formData.append('promoCode', promoCode)
 
       await depositAPI.requestDeposit(formData)
-      toast.success('ส่งคำขอฝากเงินสำเร็จ กรุณารอการตรวจสอบ')
+      toast.success(t('transaction:deposit.messages.success'))
       navigate('/member/deposit/history')
     } catch (error: any) {
       console.error('Deposit error:', error)
-      toast.error(error.response?.data?.message || 'ฝากเงินไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('transaction:deposit.messages.failed'))
     } finally {
       setLoading(false)
     }
@@ -273,11 +273,11 @@ const Deposit: React.FC = () => {
           </div>
           <div>
             <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-green-400 to-emerald-200 mb-2 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
-              เติมเหรียญทอง 💰
+              {t('transaction:deposit.title')}
             </h1>
             <p className="text-emerald-200 text-lg font-medium flex items-center gap-2">
               <GiMagicSwirl className="animate-spin" style={{ animationDuration: '3s' }} />
-              เติมพลังเพื่อการผจญภัย
+              {t('transaction:deposit.subtitle')}
             </p>
           </div>
         </div>
@@ -289,11 +289,11 @@ const Deposit: React.FC = () => {
 
         <div className="flex items-center justify-between mb-10">
           {[
-            { num: 0, label: 'วิธีฝาก', icon: GiMagicSwirl },
-            { num: 1, label: 'จำนวน', icon: GiTwoCoins },
-            { num: 2, label: t("member:profile.bankName"), icon: GiCrystalBall },
-            { num: 3, label: 'สลิป', icon: GiDiamonds },
-            { num: 4, label: t("common:buttons.submit"), icon: GiSparkles }
+            { num: 0, label: t('transaction:deposit.steps.method'), icon: GiMagicSwirl },
+            { num: 1, label: t('transaction:deposit.steps.amount'), icon: GiTwoCoins },
+            { num: 2, label: t('transaction:deposit.steps.bank'), icon: GiCrystalBall },
+            { num: 3, label: t('transaction:deposit.steps.slip'), icon: GiDiamonds },
+            { num: 4, label: t('transaction:deposit.steps.confirm'), icon: GiSparkles }
           ].map(({ num, label, icon: Icon }, index) => (
             <React.Fragment key={num}>
               <div className="flex flex-col items-center gap-2">
@@ -334,7 +334,7 @@ const Deposit: React.FC = () => {
             <div>
               <label className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-blue-200 text-xl font-black mb-6 flex items-center gap-2">
                 <GiMagicSwirl className="text-cyan-400 animate-spin" style={{ animationDuration: '3s' }} size={24} />
-                เลือกวิธีการฝากเงิน
+                {t('transaction:deposit.methods.selectMethod')}
               </label>
 
               <div className={`grid grid-cols-1 ${bankTransferEnabled && gatewayEnabled ? 'md:grid-cols-2' : ''} gap-6`}>
@@ -363,8 +363,8 @@ const Deposit: React.FC = () => {
                         <FiCreditCard size={40} className="text-white" />
                       </div>
                       <div className="text-center">
-                        <h3 className="text-white font-black text-2xl mb-2">โอนเงินปกติ</h3>
-                        <p className="text-emerald-200 text-sm">โอนผ่านธนาคารและอัพโหลดสลิป</p>
+                        <h3 className="text-white font-black text-2xl mb-2">{t('transaction:deposit.methods.transfer')}</h3>
+                        <p className="text-emerald-200 text-sm">{t('transaction:deposit.methods.transferDesc')}</p>
                       </div>
                     </div>
                   </button>
@@ -395,8 +395,8 @@ const Deposit: React.FC = () => {
                         <GiCrystalBall size={40} className="text-white animate-pulse" />
                       </div>
                       <div className="text-center">
-                        <h3 className="text-white font-black text-2xl mb-2">สแกน QR Code</h3>
-                        <p className="text-cyan-200 text-sm">สแกน QR PromptPay เพื่อฝากเงินง่ายๆ</p>
+                        <h3 className="text-white font-black text-2xl mb-2">{t('transaction:deposit.methods.qr')}</h3>
+                        <p className="text-cyan-200 text-sm">{t('transaction:deposit.methods.qrDesc')}</p>
                       </div>
                     </div>
                   </button>
@@ -406,8 +406,8 @@ const Deposit: React.FC = () => {
                 {!bankTransferEnabled && !gatewayEnabled && (
                   <div className="col-span-full p-8 bg-gradient-to-br from-red-900/40 to-orange-900/40 border-2 border-red-500/30 rounded-2xl text-center">
                     <FiX className="mx-auto text-red-400 mb-4" size={48} />
-                    <h3 className="text-white font-bold text-xl mb-2">ระบบฝากเงินปิดปรับปรุงชั่วคราว</h3>
-                    <p className="text-red-200">กรุณาติดต่อแอดมินเพื่อขอความช่วยเหลือ</p>
+                    <h3 className="text-white font-bold text-xl mb-2">{t('transaction:deposit.methods.noMethodsAvailable')}</h3>
+                    <p className="text-red-200">{t('transaction:deposit.methods.contactAdmin')}</p>
                   </div>
                 )}
               </div>
@@ -421,7 +421,7 @@ const Deposit: React.FC = () => {
             <div>
               <label className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-green-200 text-xl font-black mb-6 flex items-center gap-2">
                 <GiTwoCoins className="text-yellow-400" size={24} />
-                เลือกจำนวนเหรียญทอง
+                {t('transaction:deposit.amount.selectAmount')}
               </label>
               <div className="grid grid-cols-3 gap-4 mb-6">
                 {QUICK_AMOUNTS.map(value => (
@@ -446,7 +446,7 @@ const Deposit: React.FC = () => {
                 ))}
               </div>
 
-              <label className="block text-emerald-200 text-sm mb-3 font-medium">หรือกรอกจำนวนเอง</label>
+              <label className="block text-emerald-200 text-sm mb-3 font-medium">{t('transaction:deposit.amount.enterCustom')}</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                   <GiTwoCoins className="text-yellow-400" size={28} />
@@ -463,7 +463,7 @@ const Deposit: React.FC = () => {
               </div>
               <p className="mt-3 text-sm text-emerald-300/80 flex items-center gap-2">
                 <FiZap size={16} />
-                ยอดฝากขั้นต่ำ 100 บาท
+                {t('transaction:deposit.amount.minAmount')}
               </p>
             </div>
           </div>
@@ -475,7 +475,7 @@ const Deposit: React.FC = () => {
             <div>
               <label className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-pink-200 text-xl font-black mb-6 flex items-center gap-2">
                 <GiCrystalBall className="text-purple-400 animate-pulse" size={24} />
-                เลือกช่องทางโอนเงิน
+                {t('transaction:deposit.bank.selectBank')}
               </label>
               <div className="grid gap-4">
                 {companyBanks.map(bank => (
@@ -537,7 +537,7 @@ const Deposit: React.FC = () => {
             <div>
               <label className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-200 text-xl font-black mb-6 flex items-center gap-2">
                 <GiDiamonds className="text-amber-400" size={24} />
-                อัพโหลดหลักฐานการโอน
+                {t('transaction:deposit.slip.uploadSlip')}
               </label>
 
               {slipPreview ? (
@@ -552,7 +552,7 @@ const Deposit: React.FC = () => {
                       className="absolute top-3 right-3 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 shadow-lg font-bold flex items-center gap-2"
                     >
                       <FiCheck size={16} />
-                      ลบรูป
+                      {t('transaction:deposit.slip.deleteImage')}
                     </button>
                   </div>
                 </div>
@@ -571,8 +571,8 @@ const Deposit: React.FC = () => {
                         <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                           <FiUpload size={32} className="text-white" />
                         </div>
-                        <span className="text-white font-bold text-lg">เลือกไฟล์จากเครื่อง</span>
-                        <span className="text-indigo-200/80 text-sm">คลิกเพื่ออัพโหลดสลิป</span>
+                        <span className="text-white font-bold text-lg">{t('transaction:deposit.slip.selectFile')}</span>
+                        <span className="text-indigo-200/80 text-sm">{t('transaction:deposit.slip.clickToUpload')}</span>
                       </div>
                       <GiSparkles className="absolute top-3 right-3 text-purple-300 opacity-50 group-hover:opacity-100 transition-opacity" size={24} />
                     </div>
@@ -584,7 +584,7 @@ const Deposit: React.FC = () => {
                       className="w-full flex items-center justify-center gap-3 px-8 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-bold text-lg shadow-[0_0_30px_rgba(168,85,247,0.3)] group"
                     >
                       <FiCamera size={24} className="group-hover:scale-110 transition-transform" />
-                      <span>ถ่ายรูปสลิป</span>
+                      <span>{t('transaction:deposit.slip.takePhoto')}</span>
                       <GiSparkles className="animate-pulse" size={20} />
                     </button>
 
@@ -593,14 +593,14 @@ const Deposit: React.FC = () => {
                       className="w-full flex items-center justify-center gap-3 px-8 py-5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-2xl hover:from-cyan-700 hover:to-blue-700 transition-all duration-300 font-bold text-lg shadow-[0_0_30px_rgba(6,182,212,0.3)] group"
                     >
                       <GiCrystalBall size={24} className="group-hover:scale-110 transition-transform animate-pulse" />
-                      <span>สแกน QR Code</span>
+                      <span>{t('transaction:deposit.slip.scanQr')}</span>
                       <GiMagicSwirl className="animate-spin" style={{ animationDuration: '3s' }} size={20} />
                     </button>
                   </div>
 
                   <p className="text-sm text-amber-200/80 text-center font-medium flex items-center justify-center gap-2">
                     <FiZap size={14} />
-                    รองรับไฟล์ JPG, PNG (ไม่เกิน 5MB)
+                    {t('transaction:deposit.slip.fileSupport')}
                   </p>
                 </div>
               )}
@@ -614,14 +614,14 @@ const Deposit: React.FC = () => {
             <div>
               <label className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-amber-200 text-xl font-black mb-6 flex items-center gap-2">
                 <GiSparkles className="text-yellow-400 animate-pulse" size={24} />
-                ยืนยันข้อมูลการฝาก
+                {t('transaction:deposit.confirm.title')}
               </label>
 
               <div className="space-y-4">
                 <div className="relative p-6 bg-gradient-to-br from-emerald-900/50 to-green-900/50 border-2 border-emerald-400/40 rounded-2xl shadow-lg overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent"></div>
                   <GiTwoCoins className="absolute top-3 right-3 text-yellow-400 opacity-20" size={48} />
-                  <p className="text-emerald-300 text-sm mb-2 font-bold">จำนวนเงินที่ฝาก</p>
+                  <p className="text-emerald-300 text-sm mb-2 font-bold">{t('transaction:deposit.confirm.depositAmount')}</p>
                   <p className="text-white text-4xl font-black flex items-center gap-3">
                     <GiTwoCoins className="text-yellow-400" size={36} />
                     ฿{Number(amount).toLocaleString()}
@@ -630,7 +630,7 @@ const Deposit: React.FC = () => {
 
                 <div className="relative p-6 bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border-2 border-indigo-400/40 rounded-2xl shadow-lg overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent"></div>
-                  <p className="text-indigo-300 text-sm mb-4 font-bold">โอนเข้าบัญชี</p>
+                  <p className="text-indigo-300 text-sm mb-4 font-bold">{t('transaction:deposit.confirm.depositTo')}</p>
                   {selectedBankInfo && (
                     <div className="flex items-center gap-4">
                       <BankIcon bankCode={selectedBankInfo.bankCode} size="lg" />
@@ -646,7 +646,7 @@ const Deposit: React.FC = () => {
                 {slipPreview && (
                   <div className="relative p-6 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-2 border-purple-400/40 rounded-2xl shadow-lg overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent"></div>
-                    <p className="text-purple-300 text-sm mb-4 font-bold">สลิปการโอน</p>
+                    <p className="text-purple-300 text-sm mb-4 font-bold">{t('transaction:deposit.confirm.slipImage')}</p>
                     <img src={slipPreview} alt="Slip" className="max-h-80 rounded-xl border-2 border-purple-400/30 shadow-lg" />
                   </div>
                 )}
@@ -655,14 +655,14 @@ const Deposit: React.FC = () => {
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
                   <label className="block text-amber-200 text-sm mb-3 font-bold flex items-center gap-2">
                     <GiDiamonds size={18} />
-                    รหัสโปรโมชั่น (ถ้ามี)
+                    {t('transaction:deposit.confirm.promoCode')}
                   </label>
                   <input
                     type="text"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                     className="w-full px-5 py-4 bg-amber-900/40 border-2 border-amber-500/30 rounded-xl text-white font-bold text-lg placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all"
-                    placeholder="WELCOME100"
+                    placeholder={t('transaction:deposit.confirm.promoPlaceholder')}
                   />
                 </div>
               </div>
@@ -679,7 +679,7 @@ const Deposit: React.FC = () => {
             >
               <span className="flex items-center justify-center gap-2">
                 <FiArrowRight className="rotate-180 group-hover:-translate-x-1 transition-transform" size={20} />
-                ย้อนกลับ
+                {t('transaction:deposit.buttons.back')}
               </span>
             </button>
           )}
@@ -690,7 +690,7 @@ const Deposit: React.FC = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               <span className="relative flex items-center justify-center gap-2">
-                ถัดไป
+                {t('transaction:deposit.buttons.next')}
                 <FiArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
               </span>
             </button>
@@ -704,12 +704,12 @@ const Deposit: React.FC = () => {
               {loading ? (
                 <span className="relative flex items-center justify-center gap-3">
                   <div className="animate-spin rounded-full h-6 w-6 border-3 border-white/30 border-t-white"></div>
-                  กำลังส่งคำขอ...
+                  {t('transaction:deposit.buttons.submitting')}
                 </span>
               ) : (
                 <span className="relative flex items-center justify-center gap-2">
                   <GiSparkles className="animate-pulse" size={22} />
-                  ยืนยันฝากเงิน
+                  {t('transaction:deposit.buttons.confirm')}
                   <FiCheck size={22} />
                 </span>
               )}
@@ -727,7 +727,7 @@ const Deposit: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-blue-200 flex items-center gap-2">
                 <GiCrystalBall className="text-cyan-400 animate-pulse" size={28} />
-                สแกน QR Code
+                {t('transaction:deposit.qrScanner.title')}
               </h3>
               <button
                 onClick={stopQrScanner}
@@ -743,7 +743,7 @@ const Deposit: React.FC = () => {
 
             <p className="text-cyan-200 text-center text-sm flex items-center justify-center gap-2">
               <GiMagicSwirl className="animate-spin" style={{ animationDuration: '2s' }} size={16} />
-              จ่อกล้องไปที่ QR Code บนสลิปการโอน
+              {t('transaction:deposit.qrScanner.instruction')}
             </p>
           </div>
         </div>
@@ -758,7 +758,7 @@ const Deposit: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-green-200 flex items-center gap-2">
                 <GiCrystalBall className="text-emerald-400 animate-pulse" size={32} />
-                สแกน QR เพื่อชำระเงิน
+                {t('transaction:deposit.qrPayment.title')}
               </h3>
               <button
                 onClick={() => {
@@ -773,7 +773,7 @@ const Deposit: React.FC = () => {
 
             {/* Amount Display */}
             <div className="mb-6 p-6 bg-gradient-to-br from-yellow-900/50 to-amber-900/50 border-2 border-yellow-400/40 rounded-2xl text-center">
-              <p className="text-yellow-200 text-sm mb-2">ยอดที่ต้องชำระ</p>
+              <p className="text-yellow-200 text-sm mb-2">{t('transaction:deposit.qrPayment.amountToPay')}</p>
               <p className="text-white text-5xl font-black flex items-center justify-center gap-3">
                 <GiTwoCoins className="text-yellow-400 animate-pulse" size={42} />
                 ฿{Number(qrPaymentData.amount).toLocaleString()}
@@ -793,16 +793,16 @@ const Deposit: React.FC = () => {
             {/* Order Info */}
             <div className="space-y-3 mb-6">
               <div className="p-4 bg-emerald-900/30 border border-emerald-400/30 rounded-xl">
-                <p className="text-emerald-300 text-xs mb-1">เลขที่คำสั่งซื้อ</p>
+                <p className="text-emerald-300 text-xs mb-1">{t('transaction:deposit.qrPayment.orderId')}</p>
                 <p className="text-white font-mono text-sm">{qrPaymentData.orderId}</p>
               </div>
               <div className="p-4 bg-emerald-900/30 border border-emerald-400/30 rounded-xl">
-                <p className="text-emerald-300 text-xs mb-1">รหัสฝากเงิน</p>
+                <p className="text-emerald-300 text-xs mb-1">{t('transaction:deposit.qrPayment.depositId')}</p>
                 <p className="text-white font-mono text-sm">{qrPaymentData.depositId}</p>
               </div>
               <div className="p-4 bg-amber-900/30 border border-amber-400/30 rounded-xl">
-                <p className="text-amber-300 text-xs mb-1">สถานะ</p>
-                <p className="text-yellow-200 font-bold">{qrPaymentData.status === 'PENDING' ? 'รอการชำระเงิน' : qrPaymentData.status}</p>
+                <p className="text-amber-300 text-xs mb-1">{t('transaction:deposit.qrPayment.status')}</p>
+                <p className="text-yellow-200 font-bold">{qrPaymentData.status === 'PENDING' ? t('transaction:deposit.qrPayment.waitingPayment') : qrPaymentData.status}</p>
               </div>
             </div>
 
@@ -810,14 +810,14 @@ const Deposit: React.FC = () => {
             <div className="p-4 bg-cyan-900/20 border-2 border-cyan-400/30 rounded-xl mb-6">
               <p className="text-cyan-200 text-sm font-medium flex items-center gap-2 mb-2">
                 <GiSparkles className="text-cyan-400" size={18} />
-                วิธีการชำระเงิน
+                {t('transaction:deposit.qrPayment.howToPay')}
               </p>
               <ol className="text-cyan-100 text-xs space-y-1 pl-6 list-decimal">
-                <li>เปิดแอพธนาคารของคุณ</li>
-                <li>เลือกสแกน QR Code</li>
-                <li>สแกน QR Code ด้านบน</li>
-                <li>ยืนยันการโอนเงิน</li>
-                <li>รอระบบอนุมัติอัตโนมัติ (ประมาณ 1-2 นาที)</li>
+                <li>{t('transaction:deposit.qrPayment.step1')}</li>
+                <li>{t('transaction:deposit.qrPayment.step2')}</li>
+                <li>{t('transaction:deposit.qrPayment.step3')}</li>
+                <li>{t('transaction:deposit.qrPayment.step4')}</li>
+                <li>{t('transaction:deposit.qrPayment.step5')}</li>
               </ol>
             </div>
 
@@ -828,7 +828,7 @@ const Deposit: React.FC = () => {
                 className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all font-bold shadow-lg flex items-center justify-center gap-2"
               >
                 <GiCrystalBall size={20} />
-                เปิดลิงก์ชำระเงิน
+                {t('transaction:deposit.qrPayment.openPaymentLink')}
               </button>
               <button
                 onClick={() => {
@@ -838,13 +838,13 @@ const Deposit: React.FC = () => {
                 className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl hover:from-emerald-700 hover:to-green-700 transition-all font-bold shadow-lg flex items-center justify-center gap-2"
               >
                 <FiCheck size={20} />
-                ดูประวัติการฝาก
+                {t('transaction:deposit.qrPayment.viewHistory')}
               </button>
             </div>
 
             <p className="text-center text-emerald-200/60 text-xs mt-4 flex items-center justify-center gap-1">
               <GiMagicSwirl className="animate-spin" style={{ animationDuration: '3s' }} size={14} />
-              QR Code นี้จะหมดอายุใน 15 นาที
+              {t('transaction:deposit.qrPayment.qrExpire')}
             </p>
           </div>
         </div>
