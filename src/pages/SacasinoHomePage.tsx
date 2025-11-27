@@ -12,7 +12,7 @@ import 'swiper/css/pagination'
 import { useTranslation } from 'react-i18next'
 
 const SacasinoHomePage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'navigation', 'auth'])
   const [activeTab, setActiveTab] = useState('all')
   const [providers, setProviders] = useState<GameProvider[]>([])
   const [games, setGames] = useState<Game[]>([])
@@ -279,19 +279,19 @@ const SacasinoHomePage = () => {
                 <img src="/images/sacasino/icons/ic-line-support.png" alt="LINE" className="h-10" />
               </a>
               
-              <Link 
+              <Link
                 to="/register"
                 className="px-6 py-2 rounded-lg text-sm font-bold text-white transition hover:scale-105"
                 style={{ background: 'linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%)' }}
               >
-                สมัครสมาชิก
+                {t('auth:register.title')}
               </Link>
-              <Link 
+              <Link
                 to="/login"
                 className="px-6 py-2 rounded-lg text-sm font-bold text-white transition hover:scale-105"
                 style={{ background: 'linear-gradient(180deg, #22c55e 0%, #16a34a 100%)' }}
               >
-                เข้าสู่ระบบ
+                {t('auth:login.title')}
               </Link>
             </div>
           </div>
