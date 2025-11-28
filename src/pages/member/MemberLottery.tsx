@@ -153,9 +153,9 @@ const MemberLottery: React.FC = () => {
   const otherPeriods = periods.filter(p => !isPremiumLottery(p.huayCode) && !p.huayCode.startsWith('SET'))
 
   const tabs = [
-    { key: 'list' as TabType, label: 'รายการหวย', icon: FiCalendar },
+    { key: 'list' as TabType, label: t("lottery:index.lotteryList"), icon: FiCalendar },
     { key: 'results' as TabType, label: t("lottery:results"), icon: FiTrendingUp },
-    { key: 'history' as TabType, label: 'โพยหวย', icon: FiFileText },
+    { key: 'history' as TabType, label: t("lottery:index.lotteryTickets"), icon: FiFileText },
   ]
 
   return (
@@ -198,9 +198,9 @@ const MemberLottery: React.FC = () => {
             className="text-center mb-6"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 mb-2 drop-shadow-lg">
-              ✨ ระบบหวยออนไลน์
+              ✨ {t("lottery:memberLottery.title")}
             </h1>
-            <p className="text-gray-400 text-sm">เลือกหวยที่ต้องการแทง พร้อมผลรางวัลทันที</p>
+            <p className="text-gray-400 text-sm">{t("lottery:memberLottery.subtitle")}</p>
           </motion.div>
 
           {/* Tabs */}
@@ -315,7 +315,7 @@ const MemberLottery: React.FC = () => {
                         className="text-center py-16 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10"
                       >
                         <FiCalendar className="text-5xl text-gray-500 mx-auto mb-3" />
-                        <p className="text-gray-400">ไม่มีงวดหวยที่เปิดรับแทง</p>
+                        <p className="text-gray-400">{t("lottery:memberLottery.noPeriods")}</p>
                       </motion.div>
                     )}
                   </div>
@@ -364,7 +364,7 @@ const PremiumLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ p
       const diff = closeTime.getTime() - now.getTime()
 
       if (diff <= 0) {
-        setTimeLeft('ปิดรับแล้ว')
+        setTimeLeft(t('lottery:index.alreadyClosed'))
         return
       }
 
@@ -447,7 +447,7 @@ const StandardLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ 
       const diff = closeTime.getTime() - now.getTime()
 
       if (diff <= 0) {
-        setTimeLeft('ปิดรับแล้ว')
+        setTimeLeft(t('lottery:index.alreadyClosed'))
         return
       }
 
@@ -525,7 +525,7 @@ const LotteryMyBets: React.FC = () => {
       setPoys(data || [])
     } catch (error) {
       console.error('Failed to load poy history:', error)
-      toast.error('ไม่สามารถโหลดประวัติโพยได้')
+      toast.error(t('lottery:messages.loadHistoryFailed'))
       setPoys([])
     } finally {
       setLoading(false)
@@ -573,18 +573,18 @@ const LotteryMyBets: React.FC = () => {
   }
 
   const handleCancelPoy = async (poyId: string) => {
-    if (!confirm('คุณต้องการยกเลิกโพยนี้ใช่หรือไม่?\n\nเครดิตจะถูกคืนให้ทันที')) {
+    if (!confirm(t('lottery:memberLottery.confirmCancel'))) {
       return
     }
 
     setCancellingId(poyId)
     try {
       await memberLotteryAPI.cancelPoy(poyId)
-      toast.success('ยกเลิกโพยสำเร็จ เครดิตได้รับคืนแล้ว')
+      toast.success(t('lottery:messages.cancelSuccess'))
       loadPoyHistory()
     } catch (error: any) {
       console.error('Failed to cancel poy:', error)
-      toast.error(error.response?.data?.message || 'ไม่สามารถยกเลิกโพยได้')
+      toast.error(error.response?.data?.message || t('lottery:messages.cancelFailed'))
     } finally {
       setCancellingId(null)
     }
@@ -610,7 +610,7 @@ const LotteryMyBets: React.FC = () => {
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-600/20 border border-green-400/30 rounded-lg">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            <span className="text-green-300 font-semibold text-xs">ออกผลแล้ว</span>
+            <span className="text-green-300 font-semibold text-xs">{t("lottery:status.resulted")}</span>
           </div>
         )
       default:
@@ -643,9 +643,9 @@ const LotteryMyBets: React.FC = () => {
   }
 
   const subTabs = [
-    { key: 'today' as const, label: 'ซื้อวันนี้', icon: '📅', count: todayPoys.length, color: 'from-blue-500 to-cyan-500' },
-    { key: 'pending' as const, label: 'รอผลออก', icon: '⏳', count: pendingPoys.length, color: 'from-yellow-500 to-orange-500' },
-    { key: 'completed' as const, label: 'ออกผลแล้ว', icon: '🏆', count: completedPoys.length, color: 'from-green-500 to-emerald-500' },
+    { key: 'today' as const, label: t("lottery:tabs.today"), icon: '📅', count: todayPoys.length, color: 'from-blue-500 to-cyan-500' },
+    { key: 'pending' as const, label: t("lottery:tabs.pending"), icon: '⏳', count: pendingPoys.length, color: 'from-yellow-500 to-orange-500' },
+    { key: 'completed' as const, label: t("lottery:tabs.completed"), icon: '🏆', count: completedPoys.length, color: 'from-green-500 to-emerald-500' },
   ]
 
   if (loading) {
@@ -699,14 +699,14 @@ const LotteryMyBets: React.FC = () => {
         >
           <div className="text-8xl mb-6">🎴</div>
           <h2 className="text-2xl font-bold text-white mb-3">
-            {activeSubTab === 'today' && 'ยังไม่มีโพยวันนี้'}
-            {activeSubTab === 'pending' && 'ไม่มีโพยรอผล'}
-            {activeSubTab === 'completed' && 'ไม่มีโพยที่ออกผล'}
+            {activeSubTab === 'today' && t("lottery:emptyStates.noPoyToday")}
+            {activeSubTab === 'pending' && t("lottery:emptyStates.noPoyPending")}
+            {activeSubTab === 'completed' && t("lottery:emptyStates.noPoyCompleted")}
           </h2>
           <p className="text-gray-400">
-            {activeSubTab === 'today' && 'เริ่มต้นแทงหวยเพื่อสร้างโพยของคุณ'}
-            {activeSubTab === 'pending' && 'โพยทั้งหมดออกผลแล้ว'}
-            {activeSubTab === 'completed' && 'ยังไม่มีโพยที่ออกผล'}
+            {activeSubTab === 'today' && t("lottery:emptyStates.startBetting")}
+            {activeSubTab === 'pending' && t("lottery:emptyStates.allResulted")}
+            {activeSubTab === 'completed' && t("lottery:emptyStates.noResults")}
           </p>
         </motion.div>
       )}
@@ -735,10 +735,10 @@ const LotteryMyBets: React.FC = () => {
                       <div className="text-4xl">{getPoyIcon(poy.status)}</div>
                       <div className="flex-1">
                         <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 mb-1">
-                          {poy.poyName || 'โพยหวย'}
+                          {poy.poyName || t("lottery:index.lotteryTickets")}
                         </h3>
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="text-gray-400">เลขโพย:</span>
+                          <span className="text-gray-400">{t("lottery:poyNumber")}:</span>
                           <span className="font-mono text-purple-300 font-semibold">{poy.poyNumber}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
@@ -784,7 +784,7 @@ const LotteryMyBets: React.FC = () => {
                           disabled={cancellingId === poy.id}
                           className="px-4 py-1.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-50"
                         >
-                          {cancellingId === poy.id ? 'กำลังยกเลิก...' : t("lottery:cancelBet") }
+                          {cancellingId === poy.id ? t("lottery:memberLottery.cancelling") : t("lottery:cancelBet") }
                         </button>
                       </div>
                     </div>

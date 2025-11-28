@@ -169,5 +169,15 @@
     "lotteryTickets": "Lottery Tickets",
     "chatSupport": "Live Chat",
     "topUp": "Top Up"
+  },
+  "memberLottery": {
+    "title": "Online Lottery System",
+    "subtitle": "Choose lottery to bet with instant results",
+    "noPeriods": "No lottery periods available",
+    "cancelling": "Cancelling...",
+    "confirmCancel": "Do you want to cancel this ticket?\n\nCredit will be refunded immediately",
+    "todayTab": "Today",
+    "pendingTab": "Pending",
+    "completedTab": "Completed"
   }
 }
