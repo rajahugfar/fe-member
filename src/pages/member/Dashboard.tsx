@@ -489,10 +489,10 @@ const Dashboard: React.FC = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <GiSparkles className="text-yellow-400 group-hover:animate-spin" size={20} />
-                        <p className="text-white font-bold text-lg">{lottery.name}</p>
+                        <p className="text-white font-bold text-lg">{lottery.huayName || lottery.name}</p>
                       </div>
                       <p className="text-sm text-purple-200">
-                        {t("lottery:dashboard.drawPeriod")} {formatDate(lottery.drawDate)}
+                        {t("lottery:dashboard.drawPeriod")} {formatDate(lottery.periodDate || lottery.drawDate)}
                       </p>
                     </div>
                     <div className="text-right bg-black/30 rounded-xl px-4 py-2 border border-yellow-400/20">
