@@ -147,5 +147,11 @@
     "stockThai": "หุ้นไทย",
     "stockForeign": "หุ้นต่างประเทศ",
     "other": "อื่นๆ"
+  },
+  "dashboard": {
+    "activeLotteries": "หวยที่เปิดรับแทง",
+    "drawPeriod": "งวดวันที่",
+    "betNow": "แทงเลย",
+    "viewAllLotteries": "ดูทั้งหมด"
   }
 }

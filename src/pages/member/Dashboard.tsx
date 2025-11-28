@@ -28,7 +28,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 
 const Dashboard: React.FC = () => {
-  const { t } = useTranslation(['member', 'common', 'transaction'])
+  const { t } = useTranslation(['member', 'common', 'transaction', 'lottery', 'game'])
   const { member, loadProfile } = useMemberStore()
   const [summary, setSummary] = useState<any>({
     todayDeposit: 0,
@@ -220,7 +220,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               <span className="text-white font-bold text-sm md:text-base block">{t("navigation:menu.deposit")}</span>
-              <span className="text-brown-400 text-xs">เติมเครดิต</span>
+              <span className="text-brown-400 text-xs">{t("member:dashboard.topUpCredit")}</span>
             </div>
           </div>
         </Link>
@@ -235,7 +235,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               <span className="text-white font-bold text-sm md:text-base block">{t("navigation:menu.withdraw")}</span>
-              <span className="text-brown-400 text-xs">รับรางวัล</span>
+              <span className="text-brown-400 text-xs">{t("member:dashboard.claimReward")}</span>
             </div>
           </div>
         </Link>
@@ -250,7 +250,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               <span className="text-white font-bold text-sm md:text-base block">{t("lottery:betting")}</span>
-              <span className="text-brown-400 text-xs">ทำนายโชค</span>
+              <span className="text-brown-400 text-xs">{t("member:dashboard.fortuneTelling")}</span>
             </div>
           </div>
         </Link>
@@ -264,7 +264,7 @@ const Dashboard: React.FC = () => {
               <FiGrid className="text-white" size={24} />
             </div>
             <div>
-              <span className="text-white font-bold text-sm md:text-base block">เล่นเกม</span>
+              <span className="text-white font-bold text-sm md:text-base block">{t("member:dashboard.playGames")}</span>
               <span className="text-brown-400 text-xs">{t("game:categories.casino")}</span>
             </div>
           </div>
@@ -317,7 +317,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl md:text-2xl font-bold text-gold-500 flex items-center gap-2">
             <FiZap className="text-gold-500" size={24} />
-            สถิติวันนี้
+            {t("member:dashboard.todayStats")}
           </h2>
           <button
             onClick={loadDashboardData}
@@ -404,13 +404,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-200 flex items-center gap-2">
               <GiMagicSwirl className="text-indigo-400" size={24} />
-              ประวัติการทำรายการ
+              {t("member:dashboard.recentHistory")}
             </h2>
             <Link
               to="/member/transactions"
               className="text-sm text-indigo-300 hover:text-indigo-200 transition-colors font-bold flex items-center gap-1 group"
             >
-              ดูทั้งหมด
+              {t("member:dashboard.viewAll")}
               <FiArrowUp className="group-hover:translate-x-1 transition-transform" size={14} />
             </Link>
           </div>
@@ -461,13 +461,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-pink-200 flex items-center gap-2">
               <GiCrystalBall className="text-purple-400 animate-pulse" size={24} />
-              หวยที่เปิดรับ
+              {t("lottery:dashboard.activeLotteries")}
             </h2>
             <Link
               to="/member/lottery"
               className="text-sm text-purple-300 hover:text-purple-200 transition-colors font-bold flex items-center gap-1 group"
             >
-              แทงเลย
+              {t("lottery:dashboard.betNow")}
               <FiZap className="group-hover:scale-125 transition-transform" size={14} />
             </Link>
           </div>
@@ -492,7 +492,7 @@ const Dashboard: React.FC = () => {
                         <p className="text-white font-bold text-lg">{lottery.name}</p>
                       </div>
                       <p className="text-sm text-purple-200">
-                        งวดวันที่ {formatDate(lottery.drawDate)}
+                        {t("lottery:dashboard.drawPeriod")} {formatDate(lottery.drawDate)}
                       </p>
                     </div>
                     <div className="text-right bg-black/30 rounded-xl px-4 py-2 border border-yellow-400/20">
@@ -518,7 +518,7 @@ const Dashboard: React.FC = () => {
 
           <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-200 mb-6 flex items-center gap-3">
             <FiAward className="text-amber-400" size={28} />
-            โปรโมชั่นพิเศษ
+            {t("member:dashboard.specialPromotions")}
           </h2>
           <div className="space-y-4">
             {promotionBanners.slice(0, 2).map((banner: any, index: number) => (
@@ -540,7 +540,7 @@ const Dashboard: React.FC = () => {
                   to={banner.link_url || "/member/promotions"}
                   className={`inline-flex items-center gap-2 px-4 py-2 ${index === 0 ? 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 hover:shadow-amber-500/50' : 'bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 hover:shadow-emerald-500/50'} text-white font-bold rounded-lg shadow-lg transition-all duration-300`}
                 >
-                  ดูรายละเอียด
+                  {t("member:dashboard.viewDetails")}
                   <FiArrowUp className="group-hover:translate-x-1 transition-transform" size={16} />
                 </Link>
               </div>

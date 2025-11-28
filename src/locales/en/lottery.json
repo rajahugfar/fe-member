@@ -147,5 +147,11 @@
     "stockThai": "Thai Stock",
     "stockForeign": "Foreign Stock",
     "other": "Other"
+  },
+  "dashboard": {
+    "activeLotteries": "Active Lotteries",
+    "drawPeriod": "Draw Date",
+    "betNow": "Bet Now",
+    "viewAllLotteries": "View All"
   }
 }

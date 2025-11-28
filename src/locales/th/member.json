@@ -10,7 +10,16 @@
     "quickActions": "เมนูด่วน",
     "recentTransactions": "ธุรกรรมล่าสุด",
     "activeLotteries": "หวยที่เปิดรับแทง",
-    "announcements": "ประกาศ"
+    "announcements": "ประกาศ",
+    "todayStats": "สถิติวันนี้",
+    "recentHistory": "ประวัติการทำรายการ",
+    "viewAll": "ดูทั้งหมด",
+    "specialPromotions": "โปรโมชั่นพิเศษ",
+    "viewDetails": "ดูรายละเอียด",
+    "topUpCredit": "เติมเครดิต",
+    "claimReward": "รับรางวัล",
+    "fortuneTelling": "ทำนายโชค",
+    "playGames": "เล่นเกม"
   },
   "profile": {
     "title": "โปรไฟล์",

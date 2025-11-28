@@ -10,7 +10,16 @@
     "quickActions": "Quick Actions",
     "recentTransactions": "Recent Transactions",
     "activeLotteries": "Active Lotteries",
-    "announcements": "Announcements"
+    "announcements": "Announcements",
+    "todayStats": "Today's Stats",
+    "recentHistory": "Transaction History",
+    "viewAll": "View All",
+    "specialPromotions": "Special Promotions",
+    "viewDetails": "View Details",
+    "topUpCredit": "Top Up Credit",
+    "claimReward": "Claim Reward",
+    "fortuneTelling": "Fortune Telling",
+    "playGames": "Play Games"
   },
   "profile": {
     "title": "Profile",
