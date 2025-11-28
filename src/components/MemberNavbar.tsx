@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa'
 import { MdHistory } from 'react-icons/md'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 interface MemberNavbarProps {
   profile: any
@@ -20,16 +21,37 @@ interface MemberNavbarProps {
 }
 
 const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation(['navigation', 'transaction'])
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [language, setLanguage] = useState<'th' | 'en'>('th')
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Get current language from i18n
+  const rawLang = i18n.language || localStorage.getItem('i18nextLng') || 'th'
+  const currentLang = rawLang.startsWith('en') ? 'en' : 'th'
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('th-TH', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(amount)
+  }
+
+  // Change language function
+  const changeLanguage = async (lang: string) => {
+    if (lang === currentLang) return
+
+    try {
+      await i18n.changeLanguage(lang)
+      localStorage.setItem('i18nextLng', lang)
+      toast.success(lang === 'th' ? 'เปลี่ยนเป็นภาษาไทยแล้ว ✓' : 'Changed to English ✓', {
+        duration: 1500,
+        position: 'top-center',
+      })
+      setTimeout(() => window.location.reload(), 300)
+    } catch (error) {
+      console.error('Failed to change language:', error)
+      toast.error('Failed to change language')
+    }
   }
 
   // Close dropdown when clicking outside
@@ -109,12 +131,13 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         <span className="text-sm">{t("navigation:menu.profile")}</span>
                       </Link>
                       <Link
-                      to="/member/lottery/history"
-                      className="block px-4 py-3 hover:bg-white/10 transition-colors"
-                    >
-                      <FaHistory className="inline mr-2" />
-                      ประวัติโพย
-                    </Link>
+                        to="/member/lottery/history"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
+                      >
+                        <FaHistory className="mr-3 text-orange-500" />
+                        <span className="text-sm">{t("navigation:menu.lotteryHistory")}</span>
+                      </Link>
 
                       <Link
                         to="/member/deposit/history"
@@ -122,7 +145,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
                       >
                         <FaMoneyBillWave className="mr-3 text-green-500" />
-                        <span className="text-sm">{language === 'th' ? 'ประวัติการฝาก' : 'Deposit History'}</span>
+                        <span className="text-sm">{t("transaction:depositHistory")}</span>
                       </Link>
 
                       <Link
@@ -131,7 +154,7 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
                       >
                         <MdHistory className="mr-3 text-blue-500 text-lg" />
-                        <span className="text-sm">{language === 'th' ? 'ประวัติการถอน' : 'Withdrawal History'}</span>
+                        <span className="text-sm">{t("transaction:withdrawalHistory")}</span>
                       </Link>
 
                       <Link
@@ -140,33 +163,33 @@ const MemberNavbar = ({ profile, settings, onLogout }: MemberNavbarProps) => {
                         className="flex items-center px-4 py-2.5 text-white hover:bg-white/10 transition-colors duration-200"
                       >
                         <FaUserFriends className="mr-3 text-purple-500" />
-                        <span className="text-sm">{language === 'th' ? 'แนะนำเพื่อน' : 'Invite Friends'}</span>
+                        <span className="text-sm">{t("navigation:menu.affiliate")}</span>
                       </Link>
                     </div>
 
                     <div className="border-t border-gray-700 py-1">
                       <div className="px-4 py-2">
-                        <p className="text-white/60 text-xs mb-2">{language === 'th' ? 'ภาษา' : 'Language'}</p>
+                        <p className="text-white/60 text-xs mb-2">{currentLang === 'th' ? 'ภาษา' : 'Language'}</p>
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => setLanguage('th')}
+                            onClick={() => changeLanguage('th')}
                             className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-                              language === 'th'
+                              currentLang === 'th'
                                 ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
                                 : 'bg-gray-700 text-white/60 hover:bg-gray-600'
                             }`}
                           >
-                            TH
+                            🇹🇭 TH
                           </button>
                           <button
-                            onClick={() => setLanguage('en')}
+                            onClick={() => changeLanguage('en')}
                             className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-                              language === 'en'
+                              currentLang === 'en'
                                 ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
                                 : 'bg-gray-700 text-white/60 hover:bg-gray-600'
                             }`}
                           >
-                            EN
+                            🇬🇧 EN
                           </button>
                         </div>
                       </div>
