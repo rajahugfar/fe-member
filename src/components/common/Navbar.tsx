@@ -129,9 +129,12 @@ const Navbar = () => {
                       <FaHistory className="inline mr-2" />
                       {t('navigation:menu.lotteryHistory')}
                     </Link>
+                    <div className="px-4 py-3 border-t border-white/10">
+                      <LanguageSwitcher variant="dropdown" />
+                    </div>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-3 hover:bg-white/10 transition-colors text-red-400"
+                      className="w-full text-left px-4 py-3 hover:bg-white/10 transition-colors text-red-400 border-t border-white/10"
                     >
                       <FaSignOutAlt className="inline mr-2" />
                       {t('auth:logout.title')}
