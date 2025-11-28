@@ -250,6 +250,19 @@ const MemberIndex = () => {
     }).format(amount)
   }
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return '-'
+    return new Intl.DateTimeFormat('th-TH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date)
+  }
+
   // Calculate countdown
   const getCountdown = (closeTime: string) => {
     const close = new Date(closeTime).getTime()
@@ -584,7 +597,7 @@ const MemberIndex = () => {
                               {period.huayName}
                             </h3>
                           </div>
-                          <p className="text-white/80 text-sm">{t('lottery:dashboard.drawPeriod')} {period.periodName}</p>
+                          <p className="text-white/80 text-sm">{t('lottery:dashboard.drawPeriod')} {formatDate(period.periodDate)}</p>
                         </div>
                         <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1">
                           <span className="text-xs font-semibold">#{period.id}</span>
