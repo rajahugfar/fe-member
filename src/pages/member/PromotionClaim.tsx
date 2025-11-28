@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FiGift, FiPercent, FiDollarSign, FiTrendingUp, FiCheck, FiX, FiInfo } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 
@@ -21,6 +22,7 @@ interface Promotion {
 }
 
 const PromotionClaim = () => {
+  const { t } = useTranslation()
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null)
@@ -55,7 +57,7 @@ const PromotionClaim = () => {
       }
     } catch (error) {
       console.error('Error fetching promotions:', error)
-      toast.error('ไม่สามารถโหลดโปรโมชั่นได้')
+      toast.error(t("promotion:messages.fetchError"))
     } finally {
       setLoading(false)
     }
@@ -99,9 +101,9 @@ const PromotionClaim = () => {
     if (!selectedPromo) return
 
     const deposit = parseFloat(depositAmount) || 0
-    
+
     if (deposit < selectedPromo.min_deposit) {
-      toast.error(`ยอดฝากขั้นต่ำ ${selectedPromo.min_deposit} บาท`)
+      toast.error(t("promotion:messages.minDepositError", { amount: selectedPromo.min_deposit }))
       return
     }
 
@@ -121,14 +123,14 @@ const PromotionClaim = () => {
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
-        toast.success('รับโปรโมชั่นสำเร็จ!')
+        toast.success(t("promotion:claimSuccess"))
         setSelectedPromo(null)
         setDepositAmount('')
         // Redirect to deposit page or show success message
       } else {
-        toast.error(data.message || 'ไม่สามารถรับโปรโมชั่นได้')
+        toast.error(data.message || t("promotion:messages.claimError"))
       }
     } catch (error) {
       console.error('Error claiming promotion:', error)
@@ -139,15 +141,8 @@ const PromotionClaim = () => {
   }
 
   const getPromotionTypeLabel = (type: string) => {
-    const types: Record<string, string> = {
-      'new_member': 'สมาชิกใหม่',
-      'daily_first': 'ครั้งแรกของวัน',
-      'normal': 'รับได้ตลอด',
-      'cashback': 'คืนยอดเสีย',
-      'deposit': 'โบนัสฝาก',
-      'freespin': 'ฟรีสปิน'
-    }
-    return types[type] || type
+    const typeKey = `promotion:promotionTypes.${type}`
+    return t(typeKey, { defaultValue: type })
   }
 
   const getPromotionTypeBadge = (type: string) => {
@@ -169,9 +164,9 @@ const PromotionClaim = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
             <FiGift className="text-yellow-500" />
-            รับโปรโมชั่น
+            {t("promotion:claimPromotion.pageTitle")}
           </h1>
-          <p className="text-gray-400">เลือกโปรโมชั่นและคำนวณโบนัสที่คุณจะได้รับ</p>
+          <p className="text-gray-400">{t("promotion:claimPromotion.pageSubtitle")}</p>
         </div>
 
         {/* Loading */}
@@ -182,7 +177,7 @@ const PromotionClaim = () => {
         ) : promotions.length === 0 ? (
           <div className="text-center py-20">
             <FiGift className="mx-auto text-6xl text-gray-600 mb-4" />
-            <p className="text-gray-400 text-lg">ไม่มีโปรโมชั่นในขณะนี้</p>
+            <p className="text-gray-400 text-lg">{t("promotion:messages.noPromotions")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -229,32 +224,32 @@ const PromotionClaim = () => {
                       <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center gap-2 text-sm">
                           <FiPercent className="text-yellow-500" />
-                          <span className="text-gray-400">โบนัส:</span>
+                          <span className="text-gray-400">{t("promotion:bonus.label")}:</span>
                           <span className="font-bold text-yellow-500">
                             {promo.bonus_type === 'percentage'
                               ? `${promo.bonus_value}%`
-                              : `${promo.bonus_value} บาท`}
+                              : `${promo.bonus_value} ${t("promotion:bonus.baht")}`}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm">
                           <FiDollarSign className="text-green-500" />
-                          <span className="text-gray-400">รับสูงสุด:</span>
+                          <span className="text-gray-400">{t("promotion:bonus.maxLabel")}</span>
                           <span className="font-semibold text-white">
-                            {promo.max_bonus.toLocaleString()} บาท
+                            {promo.max_bonus.toLocaleString()} {t("promotion:bonus.baht")}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="text-gray-400">ฝากขั้นต่ำ:</span>
+                          <span className="text-gray-400">{t("promotion:fields.minDeposit")}</span>
                           <span className="text-white">
-                            {promo.min_deposit.toLocaleString()} บาท
+                            {promo.min_deposit.toLocaleString()} {t("promotion:bonus.baht")}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm">
                           <FiTrendingUp className="text-blue-500" />
-                          <span className="text-gray-400">เทิร์นโอเวอร์:</span>
+                          <span className="text-gray-400">{t("promotion:fields.turnover")}</span>
                           <span className="text-white">
                             {promo.turnover_requirement}x
                           </span>
@@ -273,25 +268,25 @@ const PromotionClaim = () => {
                   <>
                     <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                       <FiGift className="text-yellow-500" />
-                      คำนวณโบนัส
+                      {t("promotion:calculator.title")}
                     </h3>
 
                     {/* Selected Promotion */}
                     <div className="mb-4 p-3 bg-gray-700/50 rounded-lg">
-                      <p className="text-sm text-gray-400 mb-1">โปรโมชั่นที่เลือก:</p>
+                      <p className="text-sm text-gray-400 mb-1">{t("promotion:calculator.selectedPromotion")}</p>
                       <p className="font-semibold text-white">{selectedPromo.name}</p>
                     </div>
 
                     {/* Deposit Amount Input */}
                     <div className="mb-4">
                       <label className="block text-sm text-gray-400 mb-2">
-                        ยอดฝาก (บาท)
+                        {t("promotion:calculator.depositAmount")}
                       </label>
                       <input
                         type="number"
                         value={depositAmount}
                         onChange={(e) => setDepositAmount(e.target.value)}
-                        placeholder={`ขั้นต่ำ ${selectedPromo.min_deposit} บาท`}
+                        placeholder={t("promotion:calculator.depositPlaceholder", { amount: selectedPromo.min_deposit })}
                         className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                       />
                     </div>
@@ -301,7 +296,7 @@ const PromotionClaim = () => {
                       <div className="space-y-3 mb-6">
                         {/* Bonus */}
                         <div className="flex items-center justify-between p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
-                          <span className="text-green-400">โบนัสที่ได้รับ:</span>
+                          <span className="text-green-400">{t("promotion:bonus.received")}</span>
                           <span className="font-bold text-green-400 text-lg">
                             ฿{calculatedBonus.toLocaleString()}
                           </span>
@@ -309,7 +304,7 @@ const PromotionClaim = () => {
 
                         {/* Total */}
                         <div className="flex items-center justify-between p-3 bg-purple-500/20 border border-purple-500/30 rounded-lg">
-                          <span className="text-purple-400">ยอดรวมที่ได้:</span>
+                          <span className="text-purple-400">{t("promotion:bonus.total")}</span>
                           <span className="font-bold text-purple-400 text-lg">
                             ฿{totalAmount.toLocaleString()}
                           </span>
@@ -317,7 +312,7 @@ const PromotionClaim = () => {
 
                         {/* Required Turnover */}
                         <div className="flex items-center justify-between p-3 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-                          <span className="text-blue-400">เทิร์นที่ต้องทำ:</span>
+                          <span className="text-blue-400">{t("promotion:bonus.turnoverRequired")}</span>
                           <span className="font-bold text-blue-400 text-lg">
                             ฿{requiredTurnover.toLocaleString()}
                           </span>
@@ -330,7 +325,7 @@ const PromotionClaim = () => {
                       <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg flex items-start gap-2">
                         <FiInfo className="text-red-400 mt-0.5 flex-shrink-0" />
                         <p className="text-sm text-red-400">
-                          ยอดฝากขั้นต่ำ {selectedPromo.min_deposit} บาท
+                          {t("promotion:messages.minDepositError", { amount: selectedPromo.min_deposit })}
                         </p>
                       </div>
                     )}
@@ -349,12 +344,12 @@ const PromotionClaim = () => {
                         {claiming ? (
                           <>
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                            <span>กำลังรับโปรโมชั่น...</span>
+                            <span>{t("promotion:messages.claiming")}</span>
                           </>
                         ) : (
                           <>
                             <FiCheck />
-                            <span>รับโปรโมชั่นนี้</span>
+                            <span>{t("promotion:claimPromotion.claimButton")}</span>
                           </>
                         )}
                       </button>
@@ -374,7 +369,7 @@ const PromotionClaim = () => {
                     {/* Terms */}
                     {selectedPromo.terms_and_conditions && (
                       <div className="mt-4 p-3 bg-gray-700/50 rounded-lg">
-                        <p className="text-xs text-gray-400 mb-1">เงื่อนไข:</p>
+                        <p className="text-xs text-gray-400 mb-1">{t("promotion:fields.termsLabel")}</p>
                         <p className="text-xs text-gray-300 whitespace-pre-line">
                           {selectedPromo.terms_and_conditions}
                         </p>
@@ -384,7 +379,7 @@ const PromotionClaim = () => {
                 ) : (
                   <div className="text-center py-12">
                     <FiGift className="mx-auto text-6xl text-gray-600 mb-4" />
-                    <p className="text-gray-400">เลือกโปรโมชั่นที่ต้องการ</p>
+                    <p className="text-gray-400">{t("promotion:calculator.selectPromotionPrompt")}</p>
                   </div>
                 )}
               </div>

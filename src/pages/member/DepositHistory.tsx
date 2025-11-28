@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast'
 import BankIcon from '../../components/BankIcon'
 
 const DepositHistory: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['transaction', 'common', 'member'])
   const [deposits, setDeposits] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -64,7 +64,7 @@ const DepositHistory: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const config: any = {
-      PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'รอตรวจสอบ', icon: FiClock },
+      PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: t("common:status.pending"), icon: FiClock },
       SUCCESS: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: t("common:status.success"), icon: FiCheckCircle },
       REJECTED: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: t("common:status.rejected"), icon: FiXCircle },
       CANCELLED: { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: t("common:buttons.cancel"), icon: FiXCircle },
@@ -92,33 +92,33 @@ const DepositHistory: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-6 shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-white">ประวัติการฝากเงิน</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">{t("transaction:depositHistory")}</h1>
       </div>
 
       {/* Filters */}
       <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <FiFilter className="text-white" />
-          <h2 className="text-white font-medium">กรองข้อมูล</h2>
+          <h2 className="text-white font-medium">{t("transaction:filterData")}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-white/80 text-sm mb-2">สถานะ</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:statusLabel")}</label>
             <select
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
               className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="" className="bg-gray-800">ทั้งหมด</option>
-              <option value="PENDING" className="bg-gray-800">รอตรวจสอบ</option>
+              <option value="" className="bg-gray-800">{t("transaction:filter.all")}</option>
+              <option value="PENDING" className="bg-gray-800">{t("common:status.pending")}</option>
               <option value="SUCCESS" className="bg-gray-800">{t("common:status.success")}</option>
               <option value="REJECTED" className="bg-gray-800">{t("common:status.rejected")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">จากวันที่</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:fromDate")}</label>
             <input
               type="date"
               value={filters.startDate}
@@ -128,7 +128,7 @@ const DepositHistory: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">ถึงวันที่</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:toDate")}</label>
             <input
               type="date"
               value={filters.endDate}
@@ -145,12 +145,12 @@ const DepositHistory: React.FC = () => {
           <table className="w-full">
             <thead className="bg-white/5">
               <tr>
-                <th className="px-6 py-4 text-left text-white font-medium">วันที่/เวลา</th>
-                <th className="px-6 py-4 text-left text-white font-medium">จำนวน</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:dateTimeLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:amountLabel")}</th>
                 <th className="px-6 py-4 text-left text-white font-medium">{t("member:profile.bankName")}</th>
-                <th className="px-6 py-4 text-left text-white font-medium">สถานะ</th>
-                <th className="px-6 py-4 text-left text-white font-medium">สลิป</th>
-                <th className="px-6 py-4 text-left text-white font-medium">หมายเหตุ</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:statusLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:slipLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:noteLabel")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
@@ -165,7 +165,7 @@ const DepositHistory: React.FC = () => {
               ) : deposits.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-white/60">
-                    ไม่พบรายการฝากเงิน
+                    {t("transaction:noDeposits")}
                   </td>
                 </tr>
               ) : (
@@ -203,7 +203,7 @@ const DepositHistory: React.FC = () => {
                           className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
                         >
                           <FiEye size={16} />
-                          <span className="text-sm">ดูสลิป</span>
+                          <span className="text-sm">{t("transaction:viewSlip")}</span>
                         </button>
                       )}
                     </td>
@@ -223,7 +223,11 @@ const DepositHistory: React.FC = () => {
         {totalPages > 1 && (
           <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between">
             <p className="text-white/60 text-sm">
-              แสดง {pagination.offset + 1}-{Math.min(pagination.offset + pagination.limit, pagination.total)} จาก {pagination.total} รายการ
+              {t("transaction:showingRecords", {
+                from: pagination.offset + 1,
+                to: Math.min(pagination.offset + pagination.limit, pagination.total),
+                total: pagination.total
+              })}
             </p>
             <div className="flex gap-2">
               <button
@@ -231,14 +235,14 @@ const DepositHistory: React.FC = () => {
                 disabled={currentPage === 1}
                 className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ก่อนหน้า
+                {t("transaction:previousPage")}
               </button>
               <button
                 onClick={() => handlePageChange(pagination.offset + pagination.limit)}
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ถัดไป
+                {t("transaction:nextPage")}
               </button>
             </div>
           </div>

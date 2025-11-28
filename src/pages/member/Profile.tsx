@@ -6,26 +6,27 @@ import { profileAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 import BankIcon from '../../components/BankIcon'
 
-const THAI_BANKS = [
-  { value: 'KBANK', label: 'กสิกรไทย' },
-  { value: 'SCB', label: 'ไทยพาณิชย์' },
-  { value: 'BBL', label: 'กรุงเทพ' },
-  { value: 'KTB', label: 'กรุงไทย' },
-  { value: 'TMB', label: 'ทหารไทยธนชาต' },
-  { value: 'BAY', label: 'กรุงศรีอยุธยา' },
-  { value: 'GSB', label: 'ออมสิน' },
-  { value: 'BAAC', label: 'ธ.ก.ส.' },
-  { value: 'TRUEWALLET', label: 'TrueMoney Wallet' },
-]
-
 type Tab = 'personal' | 'bank' | 'password' | 'security'
 
 const Profile: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['member', 'common'])
   const { member, loadProfile: refreshProfile, updateProfile: updateMemberProfile } = useMemberStore()
   const [activeTab, setActiveTab] = useState<Tab>('personal')
   const [bankAccounts, setBankAccounts] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+
+  // Define THAI_BANKS inside component to use t()
+  const THAI_BANKS = [
+    { value: 'KBANK', label: t('member:profile.banks.KBANK') },
+    { value: 'SCB', label: t('member:profile.banks.SCB') },
+    { value: 'BBL', label: t('member:profile.banks.BBL') },
+    { value: 'KTB', label: t('member:profile.banks.KTB') },
+    { value: 'TMB', label: t('member:profile.banks.TMB') },
+    { value: 'BAY', label: t('member:profile.banks.BAY') },
+    { value: 'GSB', label: t('member:profile.banks.GSB') },
+    { value: 'BAAC', label: t('member:profile.banks.BAAC') },
+    { value: 'TRUEWALLET', label: t('member:profile.banks.TRUEWALLET') },
+  ]
 
   // Personal Info Edit State
   const [editMode, setEditMode] = useState(false)
@@ -123,51 +124,51 @@ const Profile: React.FC = () => {
     try {
       if (bankForm.id) {
         await profileAPI.updateBankAccount(bankForm.id, bankForm)
-        toast.success('แก้ไขบัญชีธนาคารสำเร็จ')
+        toast.success(t('member:profile.bankUpdateSuccess'))
       } else {
         await profileAPI.addBankAccount(bankForm)
-        toast.success('เพิ่มบัญชีธนาคารสำเร็จ')
+        toast.success(t('member:profile.bankAddSuccess'))
       }
       setShowBankModal(false)
       loadBankAccounts()
     } catch (error: any) {
       console.error('Save bank account error:', error)
-      toast.error(error.response?.data?.message || 'บันทึกบัญชีธนาคารไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('member:profile.bankSaveFailed'))
     }
   }
 
   const handleDeleteBankAccount = async (id: number) => {
-    if (!confirm('ยืนยันการลบบัญชีธนาคารนี้?')) return
+    if (!confirm(t('member:profile.confirmDeleteBank'))) return
 
     try {
       await profileAPI.deleteBankAccount(id)
-      toast.success('ลบบัญชีธนาคารสำเร็จ')
+      toast.success(t('member:profile.bankDeleteSuccess'))
       loadBankAccounts()
     } catch (error: any) {
       console.error('Delete bank account error:', error)
-      toast.error(error.response?.data?.message || 'ลบบัญชีธนาคารไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('member:profile.bankDeleteFailed'))
     }
   }
 
   const handleSetPrimaryBank = async (id: number) => {
     try {
       await profileAPI.setPrimaryBankAccount(id)
-      toast.success('ตั้งเป็นบัญชีหลักสำเร็จ')
+      toast.success(t('member:profile.setPrimarySuccess'))
       loadBankAccounts()
     } catch (error: any) {
       console.error('Set primary bank error:', error)
-      toast.error(error.response?.data?.message || 'ตั้งบัญชีหลักไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('member:profile.setPrimaryFailed'))
     }
   }
 
   const handleChangePassword = async () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error('รหัสผ่านใหม่ไม่ตรงกัน')
+      toast.error(t('member:profile.passwordMismatch'))
       return
     }
 
     if (passwordForm.newPassword.length < 6) {
-      toast.error('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
+      toast.error(t('member:profile.passwordMinLength'))
       return
     }
 
@@ -177,11 +178,11 @@ const Profile: React.FC = () => {
         newPassword: passwordForm.newPassword,
         confirmPassword: passwordForm.confirmPassword
       })
-      toast.success('เปลี่ยนรหัสผ่านสำเร็จ')
+      toast.success(t('member:profile.passwordChangeSuccess'))
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (error: any) {
       console.error('Change password error:', error)
-      toast.error(error.response?.data?.message || 'เปลี่ยนรหัสผ่านไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('member:profile.passwordChangeFailed'))
     }
   }
 
@@ -208,7 +209,7 @@ const Profile: React.FC = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-white">โปรไฟล์สมาชิก</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">{t('member:profile.pageTitle')}</h1>
       </div>
 
       {/* Tabs */}
@@ -218,7 +219,7 @@ const Profile: React.FC = () => {
             { id: 'personal', icon: FiUser, label: t("member:profile.personalInfo") },
             { id: 'bank', icon: FiCreditCard, label: t("member:profile.bankAccount") },
             { id: 'password', icon: FiLock, label: t("member:profile.changePassword") },
-            { id: 'security', icon: FiShield, label: 'ความปลอดภัย' },
+            { id: 'security', icon: FiShield, label: t("member:profile.security") },
           ].map(tab => {
             const Icon = tab.icon
             return (
@@ -283,7 +284,7 @@ const Profile: React.FC = () => {
                 <div className="flex items-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg">
                   <FiPhone className="text-white/60" />
                   <span className="text-white">{member?.phone}</span>
-                  <span className="ml-auto text-xs text-white/60">(ไม่สามารถแก้ไขได้)</span>
+                  <span className="ml-auto text-xs text-white/60">{t('member:profile.phoneCannotEdit')}</span>
                 </div>
               </div>
 
@@ -323,7 +324,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-white/80 text-sm mb-2">สมาชิกตั้งแต่</label>
+                <label className="block text-white/80 text-sm mb-2">{t('member:profile.memberSince')}</label>
                 <div className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg">
                   <span className="text-white">{formatDate(member?.createdAt)}</span>
                 </div>
@@ -337,14 +338,14 @@ const Profile: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">{t("member:profile.bankAccount")}</h2>
-              <p className="text-white/60 text-sm">บัญชีสำหรับถอนเงิน</p>
+              <p className="text-white/60 text-sm">{t('member:profile.bankAccountForWithdrawal')}</p>
             </div>
 
             <div className="space-y-3">
               {bankAccounts.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-white/60 mb-2">ยังไม่มีบัญชีธนาคาร</p>
-                  <p className="text-white/40 text-sm">กรุณาติดต่อแอดมินเพื่อเพิ่มบัญชีธนาคาร</p>
+                  <p className="text-white/60 mb-2">{t('member:profile.noBankAccount')}</p>
+                  <p className="text-white/40 text-sm">{t('member:profile.contactAdminToAddBank')}</p>
                 </div>
               ) : (
                 bankAccounts.map(bank => (
@@ -359,7 +360,7 @@ const Profile: React.FC = () => {
                           {THAI_BANKS.find(b => b.value === bank.bankName)?.label || bank.bankName}
                         </p>
                         <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30">
-                          บัญชีหลัก
+                          {t('member:profile.primaryAccount')}
                         </span>
                       </div>
                       <p className="text-white/60 text-sm">{bank.accountNumber}</p>
@@ -373,7 +374,7 @@ const Profile: React.FC = () => {
             <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
               <p className="text-blue-300 text-sm flex items-center gap-2">
                 <FiShield size={16} />
-                <span>ต้องการเปลี่ยนบัญชีธนาคาร? กรุณาติดต่อแอดมินผ่านไลน์</span>
+                <span>{t('member:profile.changeBankContact')}</span>
               </p>
             </div>
           </div>
@@ -422,7 +423,7 @@ const Profile: React.FC = () => {
                 onClick={handleChangePassword}
                 className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all font-medium"
               >
-                เปลี่ยนรหัสผ่าน
+                {t('member:profile.changePassword')}
               </button>
             </div>
           </div>
@@ -431,22 +432,22 @@ const Profile: React.FC = () => {
         {/* Security Tab */}
         {activeTab === 'security' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-white">ความปลอดภัย</h2>
+            <h2 className="text-xl font-bold text-white">{t('member:profile.security')}</h2>
 
             <div className="space-y-4">
               <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                <p className="text-white/80 text-sm mb-1">เข้าสู่ระบบล่าสุด</p>
+                <p className="text-white/80 text-sm mb-1">{t('member:profile.lastLogin')}</p>
                 <p className="text-white font-medium">{formatDate(member?.createdAt)}</p>
               </div>
 
               <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                <p className="text-white/80 text-sm mb-1">IP Address ล่าสุด</p>
+                <p className="text-white/80 text-sm mb-1">{t('member:profile.lastIpAddress')}</p>
                 <p className="text-white font-medium">-</p>
               </div>
 
               <div className="p-4 bg-yellow-600/20 border border-yellow-500/30 rounded-lg">
                 <p className="text-yellow-400 text-sm">
-                  💡 เพื่อความปลอดภัยของบัญชี กรุณาเปลี่ยนรหัสผ่านเป็นประจำ และอย่าแชร์ข้อมูลบัญชีกับผู้อื่น
+                  {t('member:profile.securityTip')}
                 </p>
               </div>
             </div>
@@ -459,7 +460,7 @@ const Profile: React.FC = () => {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-white/10">
             <h3 className="text-xl font-bold text-white mb-4">
-              {bankForm.id ? 'แก้ไขบัญชีธนาคาร' : 'เพิ่มบัญชีธนาคาร'}
+              {bankForm.id ? t('member:profile.editBankAccount') : t('member:profile.addBankAccount')}
             </h3>
 
             <div className="space-y-4">
@@ -470,7 +471,7 @@ const Profile: React.FC = () => {
                   onChange={(e) => setBankForm({ ...bankForm, bankName: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  <option value="" className="bg-gray-800">เลือกธนาคาร</option>
+                  <option value="" className="bg-gray-800">{t('member:profile.selectBank')}</option>
                   {THAI_BANKS.map(bank => (
                     <option key={bank.value} value={bank.value} className="bg-gray-800">
                       {bank.label}
@@ -497,7 +498,7 @@ const Profile: React.FC = () => {
                   value={bankForm.accountName}
                   onChange={(e) => setBankForm({ ...bankForm, accountName: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="นายสมชาย ใจดี"
+                  placeholder={t("member:profile.accountName")}
                 />
               </div>
 
@@ -506,13 +507,13 @@ const Profile: React.FC = () => {
                   onClick={handleSaveBankAccount}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all font-medium"
                 >
-                  บันทึก
+                  {t('common:buttons.save')}
                 </button>
                 <button
                   onClick={() => setShowBankModal(false)}
                   className="flex-1 px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all font-medium"
                 >
-                  ยกเลิก
+                  {t('common:buttons.cancel')}
                 </button>
               </div>
             </div>

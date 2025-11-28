@@ -56,7 +56,7 @@ const LotteryHistory: React.FC = () => {
       setHasMore((data || []).length === pageSize)
     } catch (error) {
       console.error('Failed to fetch poys:', error)
-      toast.error('ไม่สามารถโหลดประวัติได้')
+      toast.error(t('lottery:messages.loadHistoryFailed'))
     } finally {
       setLoading(false)
     }
@@ -106,18 +106,18 @@ const LotteryHistory: React.FC = () => {
   }
 
   const handleCancelPoy = async (poyId: string) => {
-    if (!confirm('คุณต้องการยกเลิกโพยนี้ใช่หรือไม่?\n\nเครดิตจะถูกคืนให้ทันที')) {
+    if (!confirm(t('lottery:messages.confirmCancel'))) {
       return
     }
 
     setCancellingId(poyId)
     try {
       await memberLotteryAPI.cancelPoy(poyId)
-      toast.success('ยกเลิกโพยสำเร็จ เครดิตได้รับคืนแล้ว')
+      toast.success(t('lottery:messages.cancelSuccess'))
       fetchPoys()
     } catch (error: any) {
       console.error('Failed to cancel poy:', error)
-      toast.error(error.response?.data?.message || 'ไม่สามารถยกเลิกโพยได้')
+      toast.error(error.response?.data?.message || t('lottery:messages.cancelFailed'))
     } finally {
       setCancellingId(null)
     }
@@ -125,18 +125,18 @@ const LotteryHistory: React.FC = () => {
 
   const handleExportCSV = () => {
     if (poys.length === 0) {
-      toast.error('ไม่มีข้อมูลให้ Export')
+      toast.error(t('lottery:messages.noDataToExport'))
       return
     }
 
     const headers = [
-      'เลขโพย',
-      'วันที่',
-      t("navigation:menu.lottery"),
-      'จำนวนเลข',
-      'ยอดเดิมพัน',
-      'ยอดถูกรางวัล',
-      'สถานะ',
+      t('lottery:poyNumber'),
+      t('lottery:betDate'),
+      t('navigation:menu.lottery'),
+      t('lottery:totalBets'),
+      t('lottery:labels.totalBetAmount'),
+      t('lottery:winAmount'),
+      t('common:status'),
     ]
 
     const rows = poys.map((poy) => [
@@ -161,15 +161,15 @@ const LotteryHistory: React.FC = () => {
     link.click()
     document.body.removeChild(link)
 
-    toast.success('ส่งออกข้อมูลสำเร็จ')
+    toast.success(t('lottery:messages.exportSuccess'))
   }
 
   const getStatusLabel = (status: number): string => {
     switch (status) {
-      case 0: return 'ยกเลิกแล้ว'
-      case 1: return 'รอผล'
-      case 2: return 'ออกผลแล้ว'
-      default: return 'ไม่ทราบสถานะ'
+      case 0: return t('lottery:status.cancelled')
+      case 1: return t('lottery:status.waitingResult')
+      case 2: return t('lottery:status.resulted')
+      default: return t('lottery:status.unknown')
     }
   }
 
@@ -179,27 +179,27 @@ const LotteryHistory: React.FC = () => {
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-500/20 to-rose-600/20 border border-red-400/30 rounded-lg">
             <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-            <span className="text-red-300 font-semibold text-xs">ยกเลิกแล้ว</span>
+            <span className="text-red-300 font-semibold text-xs">{t('lottery:status.cancelled')}</span>
           </div>
         )
       case 1:
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-yellow-500/20 to-amber-600/20 border border-yellow-400/30 rounded-lg">
             <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-            <span className="text-yellow-300 font-semibold text-xs">รอออกผล</span>
+            <span className="text-yellow-300 font-semibold text-xs">{t('lottery:status.waitingResult')}</span>
           </div>
         )
       case 2:
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-600/20 border border-green-400/30 rounded-lg">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            <span className="text-green-300 font-semibold text-xs">ออกผลแล้ว</span>
+            <span className="text-green-300 font-semibold text-xs">{t('lottery:status.resulted')}</span>
           </div>
         )
       default:
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gray-500/20 to-slate-600/20 border border-gray-400/30 rounded-lg">
-            <span className="text-gray-300 font-semibold text-xs">ไม่ทราบสถานะ</span>
+            <span className="text-gray-300 font-semibold text-xs">{t('lottery:status.unknown')}</span>
           </div>
         )
     }
@@ -226,9 +226,9 @@ const LotteryHistory: React.FC = () => {
   }
 
   const subTabs = [
-    { key: 'today' as const, label: 'ซื้อวันนี้', count: todayPoys.length },
-    { key: 'pending' as const, label: 'รอผลออก', count: pendingPoys.length },
-    { key: 'completed' as const, label: 'ออกผลแล้ว', count: completedPoys.length },
+    { key: 'today' as const, label: t('lottery:tabs.today'), count: todayPoys.length },
+    { key: 'pending' as const, label: t('lottery:tabs.pending'), count: pendingPoys.length },
+    { key: 'completed' as const, label: t('lottery:tabs.completed'), count: completedPoys.length },
   ]
 
   return (
@@ -272,9 +272,9 @@ const LotteryHistory: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="text-left">
                 <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 mb-1 drop-shadow-lg">
-                  📋 ประวัติโพยหวย
+                  📋 {t('lottery:history.title')}
                 </h1>
-                <p className="text-gray-400 text-sm">ดูประวัติโพยหวยทั้งหมดของคุณ</p>
+                <p className="text-gray-400 text-sm">{t('lottery:history.subtitle')}</p>
               </div>
               <button
                 onClick={handleExportCSV}
@@ -282,7 +282,7 @@ const LotteryHistory: React.FC = () => {
                 disabled={poys.length === 0}
               >
                 <FiDownload size={16} />
-                Export
+                {t('lottery:actions.export')}
               </button>
             </div>
           </motion.div>
@@ -321,7 +321,7 @@ const LotteryHistory: React.FC = () => {
               >
                 <FiFileText className="text-5xl text-purple-400" />
               </motion.div>
-              <p className="text-gray-300 mt-4 font-medium">กำลังโหลดโพยหวย...</p>
+              <p className="text-gray-300 mt-4 font-medium">{t('lottery:messages.loadingPoys')}</p>
             </div>
           ) : filteredPoys.length === 0 ? (
             <motion.div
@@ -331,14 +331,14 @@ const LotteryHistory: React.FC = () => {
             >
               <div className="text-8xl mb-6">🎴</div>
               <h2 className="text-2xl font-bold text-white mb-3">
-                {activeSubTab === 'today' && 'ยังไม่มีโพยวันนี้'}
-                {activeSubTab === 'pending' && 'ไม่มีโพยรอผล'}
-                {activeSubTab === 'completed' && 'ไม่มีโพยที่ออกผล'}
+                {activeSubTab === 'today' && t('lottery:emptyStates.noPoyToday')}
+                {activeSubTab === 'pending' && t('lottery:emptyStates.noPoyPending')}
+                {activeSubTab === 'completed' && t('lottery:emptyStates.noPoyCompleted')}
               </h2>
               <p className="text-gray-400">
-                {activeSubTab === 'today' && 'เริ่มต้นแทงหวยเพื่อสร้างโพยของคุณ'}
-                {activeSubTab === 'pending' && 'โพยทั้งหมดออกผลแล้ว'}
-                {activeSubTab === 'completed' && 'ยังไม่มีโพยที่ออกผล'}
+                {activeSubTab === 'today' && t('lottery:emptyStates.startBetting')}
+                {activeSubTab === 'pending' && t('lottery:emptyStates.allResulted')}
+                {activeSubTab === 'completed' && t('lottery:emptyStates.noResults')}
               </p>
             </motion.div>
           ) : (
@@ -370,7 +370,7 @@ const LotteryHistory: React.FC = () => {
                                 {poy.poyName || poy.stockName || 'โพยหวย'}
                               </h3>
                               <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-400">เลขโพย:</span>
+                                <span className="text-gray-400">{t('lottery:poyNumber')}:</span>
                                 <span className="font-mono text-purple-300 font-semibold">{poy.poyNumber}</span>
                               </div>
                               <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
@@ -385,19 +385,19 @@ const LotteryHistory: React.FC = () => {
                         {/* Stats Grid */}
                         <div className="grid grid-cols-3 gap-3 mb-4">
                           <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-sm rounded-xl p-3 border border-purple-400/20">
-                            <p className="text-purple-300 text-xs mb-1">💰 ยอดแทง</p>
+                            <p className="text-purple-300 text-xs mb-1">💰 {t('lottery:labels.totalBetAmount')}</p>
                             <p className="text-white font-bold text-lg">{poy.totalPrice?.toFixed(2) || '0.00'}</p>
-                            <p className="text-gray-500 text-xs">บาท</p>
+                            <p className="text-gray-500 text-xs">{t('lottery:labels.baht')}</p>
                           </div>
                           <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/5 backdrop-blur-sm rounded-xl p-3 border border-green-400/20">
-                            <p className="text-green-300 text-xs mb-1">🎁 ยอดชนะ</p>
+                            <p className="text-green-300 text-xs mb-1">🎁 {t('lottery:labels.totalWinAmount')}</p>
                             <p className="text-green-400 font-bold text-lg">{winAmount.toFixed(2)}</p>
-                            <p className="text-gray-500 text-xs">บาท</p>
+                            <p className="text-gray-500 text-xs">{t('lottery:labels.baht')}</p>
                           </div>
                           <div className="bg-gradient-to-br from-blue-500/10 to-cyan-600/5 backdrop-blur-sm rounded-xl p-3 border border-blue-400/20">
-                            <p className="text-blue-300 text-xs mb-1">💳 เครดิตหลัง</p>
+                            <p className="text-blue-300 text-xs mb-1">💳 {t('lottery:labels.creditAfter')}</p>
                             <p className="text-blue-400 font-bold text-lg">{poy.balanceAfter?.toFixed(2) || '0.00'}</p>
-                            <p className="text-gray-500 text-xs">บาท</p>
+                            <p className="text-gray-500 text-xs">{t('lottery:labels.baht')}</p>
                           </div>
                         </div>
 
@@ -408,7 +408,7 @@ const LotteryHistory: React.FC = () => {
                               <div className="flex items-center gap-2">
                                 <FiClock className="text-orange-400 animate-pulse" />
                                 <span className="text-orange-300 text-sm font-medium">
-                                  เหลือเวลายกเลิก {timeLeft} นาที
+                                  {t('lottery:labels.timeLeftToCancel', { minutes: timeLeft })}
                                 </span>
                               </div>
                               <button
@@ -416,7 +416,7 @@ const LotteryHistory: React.FC = () => {
                                 disabled={cancellingId === poy.id}
                                 className="px-4 py-1.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-50"
                               >
-                                {cancellingId === poy.id ? 'กำลังยกเลิก...' : t("lottery:cancelBet") }
+                                {cancellingId === poy.id ? t('lottery:labels.cancelling') : t('lottery:cancelBet') }
                               </button>
                             </div>
                           </div>
@@ -426,7 +426,7 @@ const LotteryHistory: React.FC = () => {
                         {poy.note && (
                           <div className="mb-4 p-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-400/20 rounded-xl">
                             <p className="text-indigo-300 text-xs mb-1 flex items-center gap-1">
-                              <FiFileText /> หมายเหตุ
+                              <FiFileText /> {t('lottery:note')}
                             </p>
                             <p className="text-gray-300 text-sm">{poy.note}</p>
                           </div>
@@ -436,7 +436,7 @@ const LotteryHistory: React.FC = () => {
                         <Link to={`/member/lottery/poy/${poy.id}`}>
                           <button className="w-full py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-400/30 rounded-xl transition-all flex items-center justify-center gap-2 text-purple-300 font-medium text-sm">
                             <FiFileText />
-                            ดูรายการแทงทั้งหมด
+                            {t('lottery:actions.viewAllBets')}
                             <FiChevronRight />
                           </button>
                         </Link>
@@ -456,17 +456,17 @@ const LotteryHistory: React.FC = () => {
                 disabled={page === 1}
                 className="px-4 py-2 bg-white/5 border border-white/10 text-white rounded-lg hover:bg-white/10 disabled:opacity-50 transition-all"
               >
-                ก่อนหน้า
+                {t('lottery:actions.previous')}
               </button>
               <div className="px-4 py-2 bg-white/10 text-white rounded-lg">
-                หน้า {page}
+                {t('lottery:labels.page')} {page}
               </div>
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={!hasMore}
                 className="px-4 py-2 bg-white/5 border border-white/10 text-white rounded-lg hover:bg-white/10 disabled:opacity-50 transition-all"
               >
-                ถัดไป
+                {t('lottery:actions.next')}
               </button>
             </div>
           )}

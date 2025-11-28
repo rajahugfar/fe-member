@@ -21,7 +21,7 @@ const LotteryResults: React.FC = () => {
       setResults(response.data.lotteries || [])
     } catch (error) {
       console.error('Failed to fetch results:', error)
-      toast.error('ไม่สามารถโหลดผลรางวัลได้')
+      toast.error(t('lottery:messages.loadResultsFailed'))
     } finally {
       setLoading(false)
     }
@@ -45,15 +45,15 @@ const LotteryResults: React.FC = () => {
       // Map group IDs to display names (same as admin page)
       // Group 0 and 1 = หวยรัฐบาลไทย (รวม รัฐบาล, ออมสิน, ธกส)
       const groupNames: { [key: number]: { name: string; order: number } } = {
-        0: { name: 'หวยรัฐบาล/ออมสิน/ธกส', order: 0 },
-        1: { name: 'หวยรัฐบาล/ออมสิน/ธกส', order: 0 },
-        2: { name: 'หวยลาว', order: 1 },
-        3: { name: 'หวยฮานอย', order: 2 },
-        4: { name: 'หุ้นไทย', order: 3 },
-        5: { name: 'หุ้นต่างประเทศ', order: 4 },
+        0: { name: t('lottery:groups.govSavingsBACC'), order: 0 },
+        1: { name: t('lottery:groups.govSavingsBACC'), order: 0 },
+        2: { name: t('lottery:groups.lao'), order: 1 },
+        3: { name: t('lottery:groups.hanoi'), order: 2 },
+        4: { name: t('lottery:groups.stockThai'), order: 3 },
+        5: { name: t('lottery:groups.stockForeign'), order: 4 },
       }
-      
-      const groupInfo = groupNames[groupId] || { name: 'อื่นๆ', order: 99 }
+
+      const groupInfo = groupNames[groupId] || { name: t('lottery:groups.other'), order: 99 }
       const groupKey = groupInfo.name
       
       if (!groups[groupKey]) {
@@ -86,27 +86,27 @@ const LotteryResults: React.FC = () => {
               <FiAward className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1">ผลรางวัล</h1>
-              <p className="text-white/80">ตรวจผลหวยรางวัลของคุณ</p>
+              <h1 className="text-3xl font-bold text-white mb-1">{t('lottery:resultsPage.title')}</h1>
+              <p className="text-white/80">{t('lottery:resultsPage.subtitle')}</p>
             </div>
           </div>
           <div className="flex gap-3">
             <div className="relative">
               <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 z-10" />
-              <input 
-                type="date" 
-                value={selectedDate} 
+              <input
+                type="date"
+                value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-xl text-gray-900 font-medium focus:ring-2 focus:ring-white focus:border-white shadow-lg"
               />
             </div>
-            <button 
+            <button
               onClick={fetchResults}
               disabled={loading}
               className="flex items-center gap-2 px-5 py-2.5 bg-white text-amber-600 font-semibold rounded-xl hover:bg-white/90 transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
             >
-              <FiRefreshCw className={loading ? 'animate-spin' : ''} /> 
-              รีเฟรช
+              <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+              {t('lottery:actions.refresh')}
             </button>
           </div>
         </div>
@@ -119,13 +119,13 @@ const LotteryResults: React.FC = () => {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-yellow-500/30 border-t-yellow-500"></div>
             <FiAward className="absolute inset-0 m-auto w-8 h-8 text-yellow-500" />
           </div>
-          <p className="text-gray-400 mt-4 text-lg">กำลังโหลดผลรางวัล...</p>
+          <p className="text-gray-400 mt-4 text-lg">{t('lottery:messages.loadingResults')}</p>
         </div>
       ) : groupedResults.length === 0 ? (
         <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-2xl border border-white/10 p-12 text-center">
           <FiAward className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <p className="text-gray-400 text-xl mb-2">ยังไม่มีผลรางวัล</p>
-          <p className="text-gray-500 text-sm">* หวย GLO, BAAC, ออมสิน จะแสดงผลล่าสุดเสมอ</p>
+          <p className="text-gray-400 text-xl mb-2">{t('lottery:emptyStates.noResultsAvailable')}</p>
+          <p className="text-gray-500 text-sm">* {t('lottery:resultsPage.noteDetails')}</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -140,7 +140,7 @@ const LotteryResults: React.FC = () => {
                     {group.name}
                   </h3>
                   <span className="px-4 py-1.5 bg-gray-900/20 backdrop-blur-sm text-gray-900 font-bold rounded-full text-sm">
-                    {group.items.length} งวด
+                    {group.items.length} {t('lottery:labels.round')}
                   </span>
                 </div>
               </div>
@@ -181,7 +181,7 @@ const LotteryResults: React.FC = () => {
                       </div>
                       {lottery.has4d && (
                         <span className="px-3 py-1 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-400 text-xs font-bold rounded-full border border-yellow-500/30">
-                          4 ตัว
+                          {t('lottery:labels.4digit')}
                         </span>
                       )}
                     </div>
@@ -192,7 +192,7 @@ const LotteryResults: React.FC = () => {
                       {lottery.has4d && (
                         <div className="col-span-3">
                           <div className="text-center">
-                            <div className="text-yellow-400 text-xs font-semibold mb-2 uppercase tracking-wider">รางวัลที่ 1 (4 ตัว)</div>
+                            <div className="text-yellow-400 text-xs font-semibold mb-2 uppercase tracking-wider">{t('lottery:labels.prize1')} ({t('lottery:labels.4digit')})</div>
                             {lottery.result4Up ? (
                               <div className="relative overflow-hidden bg-gradient-to-br from-yellow-500/30 to-amber-500/30 backdrop-blur-sm border-2 border-yellow-500/50 rounded-xl p-4 shadow-lg">
                                 <div className="text-3xl font-black text-yellow-400 tracking-wider drop-shadow-lg">
@@ -210,7 +210,7 @@ const LotteryResults: React.FC = () => {
 
                       {/* 3 ตัว */}
                       <div className="text-center">
-                        <div className="text-blue-400 text-xs font-semibold mb-2 uppercase tracking-wider">3 ตัว</div>
+                        <div className="text-blue-400 text-xs font-semibold mb-2 uppercase tracking-wider">{t('lottery:labels.3digit')}</div>
                         {lottery.result3Up ? (
                           <div className="bg-gradient-to-br from-blue-500/30 to-cyan-500/30 backdrop-blur-sm border-2 border-blue-500/50 rounded-lg p-3 shadow-md">
                             <div className="text-2xl font-black text-blue-400 tracking-wide">
@@ -267,7 +267,7 @@ const LotteryResults: React.FC = () => {
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djEyaC00VjM0aDR6bTAtMjR2MTJoLTRWMTBoNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
             <div className="relative">
               <p className="text-blue-300 text-sm font-medium">
-                💡 <span className="font-bold">หมายเหตุ:</span> หวย GLO, BAAC, ออมสิน จะแสดงผลล่าสุดเสมอ ไม่จำกัดวันที่
+                💡 <span className="font-bold">{t('lottery:resultsPage.note')}:</span> {t('lottery:resultsPage.noteDetails')}
               </p>
             </div>
           </div>

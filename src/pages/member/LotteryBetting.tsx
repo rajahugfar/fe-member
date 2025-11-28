@@ -126,7 +126,7 @@ const LotteryBetting: React.FC = () => {
       const foundPeriod = periods.find((p: OpenPeriod) => p.id === periodId)
 
       if (!foundPeriod) {
-        toast.error('ไม่พบงวดหวยนี้')
+        toast.error(t('lottery:messages.periodNotFound'))
         navigate('/member/lottery')
         return
       }
@@ -269,7 +269,7 @@ const LotteryBetting: React.FC = () => {
     if (!number) return
 
     if (selectedBetTypes.length === 0) {
-      toast.error('กรุณาเลือกประเภทการแทง')
+      toast.error(t('lottery:messages.selectBetType'))
       return
     }
 
@@ -288,11 +288,11 @@ const LotteryBetting: React.FC = () => {
     }
 
     if (totalAdded > 1) {
-      toast.success(`เพิ่ม ${totalAdded} รายการลงตะกร้าแล้ว`)
+      toast.success(t('lottery:messages.addedToCart', { count: totalAdded }))
     } else if (totalAdded === 1) {
-      toast.success(`เพิ่ม ${number} ลงตะกร้าแล้ว`)
+      toast.success(t('lottery:messages.addedSingleToCart', { number }))
     } else {
-      toast.error('เลขนี้มีในตะกร้าแล้ว')
+      toast.error(t('lottery:messages.alreadyInCart'))
     }
   }
 
@@ -326,7 +326,7 @@ const LotteryBetting: React.FC = () => {
     }
 
     if (addedCount > 0) {
-      toast.success(`เพิ่ม ${addedCount} เลขลงตะกร้าแล้ว`)
+      toast.success(t('lottery:messages.addedNumbersToCart', { count: addedCount }))
     }
   }
 
@@ -335,20 +335,20 @@ const LotteryBetting: React.FC = () => {
     cart.forEach(item => {
       updateCartItem(item.id, { amount: price })
     })
-    toast.success(`ใส่ราคา ${price} บาท ทุกรายการแล้ว`)
+    toast.success(t('lottery:messages.bulkPriceApplied', { price }))
   }
 
   // Handle Submit
   const handleSubmit = () => {
     if (cart.length === 0) {
-      toast.error('กรุณาเพิ่มรายการแทงก่อน')
+      toast.error(t('lottery:messages.pleaseAddBets'))
       return
     }
 
     // Check all items have amount
     const hasEmptyAmount = cart.some(item => item.amount <= 0)
     if (hasEmptyAmount) {
-      toast.error('กรุณาใส่ราคาให้ครบทุกรายการ')
+      toast.error(t('lottery:messages.pleaseEnterAllAmounts'))
       return
     }
 
@@ -384,7 +384,7 @@ const LotteryBetting: React.FC = () => {
       setSuccessTotalAmount(currentTotalAmount)
       setSuccessTotalPotentialWin(currentTotalPotentialWin)
       setShowSuccessModal(true)
-      clearCart() // ล้างตะกร้าหลังส่งสำเร็จ
+      clearCart()
 
       // Reload credit across the app
       reloadCredit()
@@ -392,10 +392,10 @@ const LotteryBetting: React.FC = () => {
       // Refresh user data immediately to update credit
       await refreshUser()
 
-      toast.success('แทงหวยสำเร็จ!')
+      toast.success(t('lottery:messages.betPlacedSuccess'))
     } catch (error: any) {
       console.error('Submit error:', error)
-      toast.error(error.response?.data?.message || 'แทงหวยไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t('lottery:messages.betPlacedFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -458,9 +458,9 @@ const LotteryBetting: React.FC = () => {
       }
     })
     if (addedCount > 0) {
-      toast.success(`โหลด ${addedCount} รายการลงตะกร้าแล้ว`)
+      toast.success(t('lottery:messages.loadedTemplate', { count: addedCount }))
     } else {
-      toast.error('เลขทั้งหมดมีในตะกร้าแล้ว')
+      toast.error(t('lottery:messages.allNumbersInCart'))
     }
   }
 
@@ -490,7 +490,7 @@ const LotteryBetting: React.FC = () => {
             className="flex items-center gap-2 text-white hover:text-yellow-400 mb-6 transition-colors text-sm font-semibold bg-gray-700/50 hover:bg-gray-700 px-3 py-2 rounded-lg"
           >
             <FiArrowLeft className="text-base" />
-            <span>กลับไปเลือกหวย</span>
+            <span>{t('lottery:actions.backToLottery')}</span>
           </button>
 
           <div className="bg-gray-800/90 rounded-xl p-6 border border-gray-700 shadow-2xl max-w-2xl mx-auto">
@@ -499,7 +499,7 @@ const LotteryBetting: React.FC = () => {
               <p className="text-yellow-300 text-lg">{period.periodName}</p>
               <div className="mt-4 inline-block bg-red-500/20 text-red-400 px-4 py-2 rounded-lg">
                 <FiClock className="inline-block mr-2" />
-                ปิดรับแทงแล้ว
+                {t('lottery:labels.closedAlready')}
               </div>
             </div>
 
@@ -510,37 +510,37 @@ const LotteryBetting: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                   {lotteryResult.result3Up && (
                     <div className="bg-gray-700/50 p-4 rounded-lg text-center">
-                      <p className="text-gray-400 text-sm mb-1">3ตัวบน</p>
+                      <p className="text-gray-400 text-sm mb-1">{t('lottery:betTypes.teng_bon_3')}</p>
                       <p className="text-3xl font-bold text-yellow-400">{lotteryResult.result3Up}</p>
                     </div>
                   )}
                   {lotteryResult.result2Up && (
                     <div className="bg-gray-700/50 p-4 rounded-lg text-center">
-                      <p className="text-gray-400 text-sm mb-1">2ตัวบน</p>
+                      <p className="text-gray-400 text-sm mb-1">{t('lottery:betTypes.teng_bon_2')}</p>
                       <p className="text-3xl font-bold text-yellow-400">{lotteryResult.result2Up}</p>
                     </div>
                   )}
                   {lotteryResult.result2Low && (
                     <div className="bg-gray-700/50 p-4 rounded-lg text-center">
-                      <p className="text-gray-400 text-sm mb-1">2ตัวล่าง</p>
+                      <p className="text-gray-400 text-sm mb-1">{t('lottery:betTypes.teng_lang_2')}</p>
                       <p className="text-3xl font-bold text-yellow-400">{lotteryResult.result2Low}</p>
                     </div>
                   )}
                   {lotteryResult.result4Up && (
                     <div className="bg-gray-700/50 p-4 rounded-lg text-center">
-                      <p className="text-gray-400 text-sm mb-1">4ตัวบน</p>
+                      <p className="text-gray-400 text-sm mb-1">{t('lottery:betTypes.teng_bon_4')}</p>
                       <p className="text-3xl font-bold text-yellow-400">{lotteryResult.result4Up}</p>
                     </div>
                   )}
                   {lotteryResult.result3Front && (
                     <div className="bg-gray-700/50 p-4 rounded-lg text-center">
-                      <p className="text-gray-400 text-sm mb-1">3ตัวหน้า</p>
+                      <p className="text-gray-400 text-sm mb-1">{t('lottery:betTypes.teng_bon_3')}</p>
                       <p className="text-3xl font-bold text-yellow-400">{lotteryResult.result3Front}</p>
                     </div>
                   )}
                   {lotteryResult.result3Down && (
                     <div className="bg-gray-700/50 p-4 rounded-lg text-center">
-                      <p className="text-gray-400 text-sm mb-1">3ตัวล่าง</p>
+                      <p className="text-gray-400 text-sm mb-1">{t('lottery:betTypes.teng_lang_3')}</p>
                       <p className="text-3xl font-bold text-yellow-400">{lotteryResult.result3Down}</p>
                     </div>
                   )}
@@ -548,7 +548,7 @@ const LotteryBetting: React.FC = () => {
               </div>
             ) : (
               <div className="text-center text-gray-400 py-8">
-                <p>รอประกาศผล...</p>
+                <p>{t('lottery:labels.waitingForResult')}</p>
               </div>
             )}
 
@@ -557,7 +557,7 @@ const LotteryBetting: React.FC = () => {
                 to="/member/lottery/history"
                 className="inline-block bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-semibold"
               >
-                ดูประวัติการแทง
+                {t('lottery:actions.viewHistory')}
               </Link>
             </div>
           </div>
@@ -580,10 +580,10 @@ const LotteryBetting: React.FC = () => {
     try {
       logout()
       navigate('/login')
-      toast.success('ออกจากระบบสำเร็จ')
+      toast.success(t('lottery:messages.logoutSuccess'))
     } catch (error) {
       console.error('Logout error:', error)
-      toast.error('เกิดข้อผิดพลาดในการออกจากระบบ')
+      toast.error(t('lottery:messages.logoutError'))
     }
   }
 
@@ -605,19 +605,19 @@ const LotteryBetting: React.FC = () => {
               className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors text-sm font-semibold bg-gray-700/50 hover:bg-gray-700 px-3 py-2 rounded-lg"
             >
               <FiArrowLeft className="text-base" />
-              <span>กลับไปเลือกหวย</span>
+              <span>{t('lottery:actions.backToLottery')}</span>
             </button>
             <button
               onClick={() => setShowTemplatesModal(true)}
               className="flex items-center gap-2 text-white hover:text-green-400 transition-colors text-sm font-semibold bg-green-600/50 hover:bg-green-600 px-3 py-2 rounded-lg"
             >
-              <span>โพยที่บันทึกไว้</span>
+              <span>{t('lottery:actions.savedTemplates')}</span>
             </button>
             <button
               onClick={handleShowRules}
               className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors text-sm font-semibold bg-yellow-600/50 hover:bg-yellow-600 px-3 py-2 rounded-lg"
             >
-              <span>📋 กติกา</span>
+              <span>📋 {t('lottery:actions.rules')}</span>
             </button>
           </div>
 
@@ -631,7 +631,7 @@ const LotteryBetting: React.FC = () => {
               <div className="flex items-center gap-2 text-yellow-300 mb-1">
                 <FiClock className="text-lg animate-pulse" />
                 <span className="text-base font-bold">
-                  ปิดรับ: {new Date(period.closeTime).toLocaleTimeString('th-TH', {
+                  {t('lottery:actions.closingAt')}: {new Date(period.closeTime).toLocaleTimeString('th-TH', {
                     hour: '2-digit',
                     minute: '2-digit'
                   })}
@@ -703,7 +703,7 @@ const LotteryBetting: React.FC = () => {
             className="lg:hidden fixed bottom-4 right-4 z-40 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-full px-6 py-4 shadow-2xl flex items-center gap-3 font-bold text-base animate-bounce"
           >
             <FiShoppingCart className="text-xl" />
-            <span>รายการแทง ({cart.length})</span>
+            <span>{t('lottery:labels.betList')} ({cart.length})</span>
             <span className="bg-white text-yellow-600 px-3 py-1 rounded-full text-sm">
               {formatNumber(totalAmount)}฿
             </span>
@@ -804,7 +804,7 @@ const LotteryBetting: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <span className="text-2xl">📋</span>
-                กติกา {period?.huayName}
+                {t('lottery:actions.rules')} {period?.huayName}
               </h3>
               <button
                 onClick={() => setShowRulesModal(false)}
@@ -828,7 +828,7 @@ const LotteryBetting: React.FC = () => {
                   dangerouslySetInnerHTML={{ __html: rulesDetail }}
                 />
               ) : (
-                <p className="text-gray-500 text-center py-4">ไม่มีกติกา</p>
+                <p className="text-gray-500 text-center py-4">{t('lottery:labels.noRules')}</p>
               )}
             </div>
 
@@ -837,30 +837,30 @@ const LotteryBetting: React.FC = () => {
               <div>
                 <h4 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2">
                   <span>💰</span>
-                  อัตราจ่าย
+                  {t('lottery:labels.payoutRate')}
                 </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-gray-700/50">
-                        <th className="px-3 py-2 text-left text-gray-300 font-semibold">ประเภท</th>
-                        <th className="px-3 py-2 text-center text-gray-300 font-semibold">จ่าย</th>
-                        <th className="px-3 py-2 text-center text-gray-300 font-semibold">ต่ำสุด</th>
-                        <th className="px-3 py-2 text-center text-gray-300 font-semibold">สูงสุด</th>
+                        <th className="px-3 py-2 text-left text-gray-300 font-semibold">{t('lottery:betTypes.teng_bon_3').split(' ')[0]}</th>
+                        <th className="px-3 py-2 text-center text-gray-300 font-semibold">{t('lottery:labels.payout')}</th>
+                        <th className="px-3 py-2 text-center text-gray-300 font-semibold">{t('lottery:labels.minimum')}</th>
+                        <th className="px-3 py-2 text-center text-gray-300 font-semibold">{t('lottery:labels.maximum')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {(() => {
                         const betTypeLabels: { [key: string]: string } = {
-                          'teng_bon_4': '4ตัวบน',
-                          'tode_4': '4ตัวโต๊ด',
-                          'teng_bon_3': '3ตัวบน',
-                          'teng_lang_3': '3ตัวล่าง',
-                          'tode_3': '3ตัวโต๊ด',
-                          'teng_bon_2': '2ตัวบน',
-                          'teng_lang_2': '2ตัวล่าง',
-                          'teng_bon_1': t("lottery:betTypes.teng_bon_1"),
-                          'teng_lang_1': t("lottery:betTypes.teng_lang_1") }
+                          'teng_bon_4': t('lottery:betTypes.teng_bon_4'),
+                          'tode_4': t('lottery:betTypes.tode_4'),
+                          'teng_bon_3': t('lottery:betTypes.teng_bon_3'),
+                          'teng_lang_3': t('lottery:betTypes.teng_lang_3'),
+                          'tode_3': t('lottery:betTypes.tode_3'),
+                          'teng_bon_2': t('lottery:betTypes.teng_bon_2'),
+                          'teng_lang_2': t('lottery:betTypes.teng_lang_2'),
+                          'teng_bon_1': t('lottery:betTypes.teng_bon_1'),
+                          'teng_lang_1': t('lottery:betTypes.teng_lang_1') }
 
                         // Sort order: 4 digit -> 3 digit -> 2 digit -> 1 digit
                         const sortOrder: { [key: string]: number } = {

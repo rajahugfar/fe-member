@@ -45,6 +45,27 @@
     "netProfit": "Net Profit/Loss"
   },
   "noTransactions": "No transactions",
+  "filterData": "Filter Data",
+  "statusLabel": "Status",
+  "fromDate": "From Date",
+  "toDate": "To Date",
+  "dateTimeLabel": "Date/Time",
+  "amountLabel": "Amount",
+  "slipLabel": "Slip",
+  "noteLabel": "Note",
+  "viewSlip": "View Slip",
+  "noDeposits": "No deposits found",
+  "noWithdrawals": "No withdrawals found",
+  "noBonuses": "No bonuses found",
+  "showingRecords": "Showing {{from}}-{{to}} of {{total}} records",
+  "previousPage": "Previous",
+  "nextPage": "Next",
+  "bonusTypes": {
+    "DEPOSIT": "Deposit Bonus",
+    "CASHBACK": "Cashback",
+    "SPECIAL": "Special Bonus",
+    "WELCOME": "Welcome Bonus"
+  },
   "deposit": {
     "title": "Top Up Gold Coins 💰",
     "subtitle": "Power up for your adventure",

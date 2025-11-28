@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast'
 import BankIcon from '../../components/BankIcon'
 
 const WithdrawalHistory: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['transaction', 'common', 'member'])
   const [withdrawals, setWithdrawals] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -83,24 +83,24 @@ const WithdrawalHistory: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-white">ประวัติการถอนเงิน</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">{t("transaction:withdrawalHistory")}</h1>
       </div>
 
       <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <FiFilter className="text-white" />
-          <h2 className="text-white font-medium">กรองข้อมูล</h2>
+          <h2 className="text-white font-medium">{t("transaction:filterData")}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-white/80 text-sm mb-2">สถานะ</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:statusLabel")}</label>
             <select
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
               className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="" className="bg-gray-800">ทั้งหมด</option>
+              <option value="" className="bg-gray-800">{t("transaction:filter.all")}</option>
               <option value="PENDING" className="bg-gray-800">{t("common:status.pending")}</option>
               <option value="SUCCESS" className="bg-gray-800">{t("common:status.success")}</option>
               <option value="REJECTED" className="bg-gray-800">{t("common:status.rejected")}</option>
@@ -108,7 +108,7 @@ const WithdrawalHistory: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">จากวันที่</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:fromDate")}</label>
             <input
               type="date"
               value={filters.startDate}
@@ -118,7 +118,7 @@ const WithdrawalHistory: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">ถึงวันที่</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:toDate")}</label>
             <input
               type="date"
               value={filters.endDate}
@@ -134,11 +134,11 @@ const WithdrawalHistory: React.FC = () => {
           <table className="w-full">
             <thead className="bg-white/5">
               <tr>
-                <th className="px-6 py-4 text-left text-white font-medium">วันที่/เวลา</th>
-                <th className="px-6 py-4 text-left text-white font-medium">จำนวน</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:dateTimeLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:amountLabel")}</th>
                 <th className="px-6 py-4 text-left text-white font-medium">{t("member:profile.bankAccount")}</th>
-                <th className="px-6 py-4 text-left text-white font-medium">สถานะ</th>
-                <th className="px-6 py-4 text-left text-white font-medium">หมายเหตุ</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:statusLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:noteLabel")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
@@ -153,7 +153,7 @@ const WithdrawalHistory: React.FC = () => {
               ) : withdrawals.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-white/60">
-                    ไม่พบรายการถอนเงิน
+                    {t("transaction:noWithdrawals")}
                   </td>
                 </tr>
               ) : (
@@ -194,7 +194,11 @@ const WithdrawalHistory: React.FC = () => {
         {totalPages > 1 && (
           <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between">
             <p className="text-white/60 text-sm">
-              แสดง {pagination.offset + 1}-{Math.min(pagination.offset + pagination.limit, pagination.total)} จาก {pagination.total} รายการ
+              {t("transaction:showingRecords", {
+                from: pagination.offset + 1,
+                to: Math.min(pagination.offset + pagination.limit, pagination.total),
+                total: pagination.total
+              })}
             </p>
             <div className="flex gap-2">
               <button
@@ -202,14 +206,14 @@ const WithdrawalHistory: React.FC = () => {
                 disabled={currentPage === 1}
                 className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ก่อนหน้า
+                {t("transaction:previousPage")}
               </button>
               <button
                 onClick={() => setPagination(prev => ({ ...prev, offset: prev.offset + prev.limit }))}
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ถัดไป
+                {t("transaction:nextPage")}
               </button>
             </div>
           </div>

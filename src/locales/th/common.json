@@ -32,7 +32,8 @@
     "inactive": "ไม่ใช้งาน",
     "approved": "อนุมัติ",
     "rejected": "ปฏิเสธ",
-    "completed": "เสร็จสิ้น"
+    "completed": "เสร็จสิ้น",
+    "expired": "หมดอายุ"
   },
   "messages": {
     "loading": "กำลังโหลด...",

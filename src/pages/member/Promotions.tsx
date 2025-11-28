@@ -8,11 +8,11 @@ const Promotions: React.FC = () => {
   const { t } = useTranslation()
 
   const CATEGORIES = [
-    { value: '', label: 'ทั้งหมด' },
+    { value: '', label: t("promotion:categories.all") },
     { value: 'DEPOSIT', label: t("navigation:menu.deposit") },
-    { value: 'CASHBACK', label: 'คืนยอดเสีย' },
+    { value: 'CASHBACK', label: t("promotion:categories.cashback") },
     { value: 'REFERRAL', label: t("navigation:menu.affiliate") },
-    { value: 'SPECIAL', label: 'พิเศษ' },
+    { value: 'SPECIAL', label: t("promotion:categories.special") },
   ]
   const [promotions, setPromotions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -32,7 +32,7 @@ const Promotions: React.FC = () => {
       setPromotions(response.data.data || [])
     } catch (error) {
       console.error('Load promotions error:', error)
-      toast.error('โหลดโปรโมชั่นไม่สำเร็จ')
+      toast.error(t("promotion:messages.loadError"))
     } finally {
       setLoading(false)
     }
@@ -44,7 +44,7 @@ const Promotions: React.FC = () => {
       setSelectedPromo(response.data.data || response.data)
     } catch (error) {
       console.error('Load promotion details error:', error)
-      toast.error('โหลดรายละเอียดไม่สำเร็จ')
+      toast.error(t("promotion:messages.loadDetailsError"))
     }
   }
 
@@ -60,7 +60,7 @@ const Promotions: React.FC = () => {
       loadPromotions()
     } catch (error: any) {
       console.error('Claim promotion error:', error)
-      toast.error(error.response?.data?.message || 'รับโปรโมชั่นไม่สำเร็จ')
+      toast.error(error.response?.data?.message || t("promotion:messages.claimError"))
     } finally {
       setClaiming(false)
     }
@@ -71,7 +71,7 @@ const Promotions: React.FC = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-600 to-yellow-600 rounded-2xl p-6 shadow-xl">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{t("navigation:menu.promotions")}</h1>
-        <p className="text-white/80">รับสิทธิพิเศษและโบนัสมากมาย</p>
+        <p className="text-white/80">{t("promotion:subtitle")}</p>
       </div>
 
       {/* Category Tabs */}
@@ -101,7 +101,7 @@ const Promotions: React.FC = () => {
           </div>
         ) : promotions.length === 0 ? (
           <div className="col-span-full text-center py-12">
-            <p className="text-white/60">ไม่มีโปรโมชั่นในขณะนี้</p>
+            <p className="text-white/60">{t("promotion:messages.noPromotions")}</p>
           </div>
         ) : (
           promotions.map((promo) => (
@@ -138,10 +138,10 @@ const Promotions: React.FC = () => {
                 {promo.bonusPercent && (
                   <div className="flex items-center gap-2 text-yellow-400">
                     <FiGift size={16} />
-                    <span className="font-bold">โบนัส {promo.bonusPercent}%</span>
+                    <span className="font-bold">{t("promotion:bonus.percent", { percent: promo.bonusPercent })}</span>
                     {promo.maxBonus && (
                       <span className="text-white/60 text-sm">
-                        (สูงสุด ฿{promo.maxBonus.toLocaleString()})
+                        ({t("promotion:bonus.max", { amount: promo.maxBonus.toLocaleString() })})
                       </span>
                     )}
                   </div>
@@ -154,7 +154,7 @@ const Promotions: React.FC = () => {
                     className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
                   >
                     <FiInfo size={16} />
-                    <span>รายละเอียด</span>
+                    <span>{t("promotion:buttons.viewDetails")}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -163,7 +163,7 @@ const Promotions: React.FC = () => {
                     className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-600 to-yellow-600 text-white rounded-lg hover:from-orange-700 hover:to-yellow-700 transition-all font-medium flex items-center justify-center gap-2"
                   >
                     <FiCheck size={16} />
-                    <span>รับเลย</span>
+                    <span>{t("promotion:buttons.claimNow")}</span>
                   </button>
                 </div>
               </div>
@@ -197,10 +197,10 @@ const Promotions: React.FC = () => {
                   <div className="flex items-center gap-3 text-yellow-400">
                     <FiGift size={24} />
                     <div>
-                      <p className="font-bold text-xl">โบนัส {selectedPromo.bonusPercent}%</p>
+                      <p className="font-bold text-xl">{t("promotion:bonus.percent", { percent: selectedPromo.bonusPercent })}</p>
                       {selectedPromo.maxBonus && (
                         <p className="text-white/70 text-sm">
-                          รับได้สูงสุด ฿{selectedPromo.maxBonus.toLocaleString()}
+                          {t("promotion:bonus.maxReceive", { amount: selectedPromo.maxBonus.toLocaleString() })}
                         </p>
                       )}
                     </div>
@@ -210,16 +210,16 @@ const Promotions: React.FC = () => {
 
               {/* Description */}
               <div>
-                <h3 className="text-white font-bold mb-2">รายละเอียด</h3>
+                <h3 className="text-white font-bold mb-2">{t("promotion:details")}</h3>
                 <p className="text-white/80 whitespace-pre-line">{selectedPromo.description}</p>
               </div>
 
               {/* Terms & Conditions */}
               <div>
-                <h3 className="text-white font-bold mb-2">เงื่อนไข</h3>
+                <h3 className="text-white font-bold mb-2">{t("promotion:terms")}</h3>
                 <div className="bg-white/5 rounded-lg p-4">
                   <p className="text-white/70 text-sm whitespace-pre-line">
-                    {selectedPromo.terms || 'ไม่มีเงื่อนไข'}
+                    {selectedPromo.terms || t("promotion:fields.noTerms")}
                   </p>
                 </div>
               </div>
@@ -227,13 +227,13 @@ const Promotions: React.FC = () => {
               {/* Promo Code Input (if required) */}
               {selectedPromo.requiresCode && (
                 <div>
-                  <label className="block text-white/80 text-sm mb-2">รหัสโปรโมชั่น</label>
+                  <label className="block text-white/80 text-sm mb-2">{t("promotion:promoCode")}</label>
                   <input
                     type="text"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    placeholder="กรอกรหัสโปรโมชั่น"
+                    placeholder={t("promotion:enterPromoCode")}
                   />
                 </div>
               )}
@@ -248,7 +248,7 @@ const Promotions: React.FC = () => {
                   {claiming ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>กำลังรับโปรโมชั่น...</span>
+                      <span>{t("promotion:messages.claiming")}</span>
                     </>
                   ) : (
                     <>
@@ -264,7 +264,7 @@ const Promotions: React.FC = () => {
                   }}
                   className="px-6 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-medium"
                 >
-                  ปิด
+                  {t("promotion:buttons.close")}
                 </button>
               </div>
             </div>

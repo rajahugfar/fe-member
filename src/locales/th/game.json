@@ -30,5 +30,53 @@
   "recentPlayed": "เล่นล่าสุด",
   "jackpot": "แจ็คพอต",
   "liveCasino": "คาสิโนสด",
-  "virtualSports": "กีฬาเสมือน"
+  "virtualSports": "กีฬาเสมือน",
+  "actionButtons": {
+    "account": "บัญชี",
+    "deposit": "ฝากถอน",
+    "register": "สมัคร",
+    "contact": "ติดต่อ"
+  },
+  "breadcrumb": {
+    "home": "หน้าแรก"
+  },
+  "providerFilter": {
+    "viewingFrom": "กำลังดูเกมจากค่าย:",
+    "viewAll": "ดูทั้งหมด"
+  },
+  "searchPlaceholder": "ค้นหา...",
+  "noGamesFound": "ไม่พบเกม",
+  "badges": {
+    "featured": "แนะนำ",
+    "new": "ใหม่"
+  },
+  "buttons": {
+    "play": "เล่น",
+    "demo": "ทดลอง"
+  },
+  "loadingModal": {
+    "title": "กำลังเปิดเกม",
+    "message": "กรุณารอสักครู่... กำลังโอนเครดิตและเตรียมเกม"
+  },
+  "transferModal": {
+    "title": "โอนเงิน",
+    "toGame": "โอนเข้าเกม",
+    "fromGame": "โอนออกเกม",
+    "mainWallet": "กระเป๋าหลัก",
+    "gameWallet": "กระเป๋าเกม",
+    "amount": "จำนวนเงิน",
+    "amountPlaceholder": "0.00",
+    "confirm": "ยืนยัน",
+    "cancel": "ยกเลิก"
+  },
+  "messages": {
+    "logoutSuccess": "ออกจากระบบสำเร็จ",
+    "loadGameError": "โหลดเกมไม่สำเร็จ",
+    "playGameError": "เปิดเกมไม่สำเร็จ",
+    "transferSuccess": "โอนเงินสำเร็จ",
+    "transferError": "โอนเงินไม่สำเร็จ",
+    "enterAmount": "กรุณากรอกจำนวนเงิน",
+    "insufficientMainWallet": "ยอดเงินในกระเป๋าหลักไม่เพียงพอ",
+    "insufficientGameWallet": "ยอดเงินในกระเป๋าเกมไม่เพียงพอ"
+  }
 }

@@ -30,5 +30,62 @@
     "referral": "Referral Bonus"
   },
   "howToUse": "How to Use",
-  "requirements": "Requirements"
+  "requirements": "Requirements",
+  "subtitle": "Receive exclusive benefits and bonuses",
+  "categories": {
+    "all": "All",
+    "cashback": "Cashback",
+    "special": "Special"
+  },
+  "messages": {
+    "loadError": "Failed to load promotions",
+    "loadDetailsError": "Failed to load details",
+    "claimError": "Failed to claim promotion",
+    "claiming": "Claiming promotion...",
+    "noPromotions": "No promotions available",
+    "fetchError": "Unable to load promotions",
+    "minDepositError": "Minimum deposit {{amount}} baht"
+  },
+  "buttons": {
+    "viewDetails": "Details",
+    "claimNow": "Claim Now",
+    "close": "Close"
+  },
+  "bonus": {
+    "label": "Bonus",
+    "percent": "Bonus {{percent}}%",
+    "max": "Max ฿{{amount}}",
+    "maxReceive": "Max receive ฿{{amount}}",
+    "received": "Bonus received:",
+    "total": "Total amount:",
+    "turnoverRequired": "Required turnover:",
+    "maxLabel": "Max receive:",
+    "baht": "baht"
+  },
+  "calculator": {
+    "title": "Calculate Bonus",
+    "selectedPromotion": "Selected promotion:",
+    "depositAmount": "Deposit Amount (baht)",
+    "depositPlaceholder": "Min {{amount}} baht",
+    "selectPromotionPrompt": "Select a promotion"
+  },
+  "promotionTypes": {
+    "new_member": "New Member",
+    "daily_first": "Daily First",
+    "normal": "Anytime",
+    "cashback": "Cashback",
+    "deposit": "Deposit Bonus",
+    "freespin": "Free Spins"
+  },
+  "fields": {
+    "minDeposit": "Min deposit:",
+    "turnover": "Turnover:",
+    "termsLabel": "Terms:",
+    "noTerms": "No terms"
+  },
+  "claimPromotion": {
+    "pageTitle": "Claim Promotion",
+    "pageSubtitle": "Select a promotion and calculate the bonus you will receive",
+    "claimButton": "Claim This Promotion"
+  }
 }

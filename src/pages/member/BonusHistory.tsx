@@ -5,7 +5,7 @@ import { promotionAPI } from '../../api/memberAPI'
 import { toast } from 'react-hot-toast'
 
 const BonusHistory: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['transaction', 'common', 'navigation', 'promotion'])
   const [bonuses, setBonuses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -57,9 +57,9 @@ const BonusHistory: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const config: any = {
-      PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'รอรับ', icon: FiClock },
+      PENDING: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: t("common:status.pending"), icon: FiClock },
       CLAIMED: { color: 'bg-green-500/20 text-green-400 border-green-500/30', label: t("promotion:claimed_status"), icon: FiCheckCircle },
-      EXPIRED: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'หมดอายุ', icon: FiXCircle },
+      EXPIRED: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: t("common:status.expired"), icon: FiXCircle },
       CANCELLED: { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: t("common:buttons.cancel"), icon: FiXCircle },
     }
 
@@ -76,11 +76,11 @@ const BonusHistory: React.FC = () => {
 
   const getBonusTypeLabel = (type: string) => {
     const types: any = {
-      DEPOSIT: 'โบนัสฝากเงิน',
-      CASHBACK: 'คืนยอดเสีย',
+      DEPOSIT: t("transaction:bonusTypes.DEPOSIT"),
+      CASHBACK: t("transaction:bonusTypes.CASHBACK"),
       REFERRAL: t("navigation:menu.affiliate"),
-      SPECIAL: 'โบนัสพิเศษ',
-      WELCOME: 'โบนัสต้อนรับ',
+      SPECIAL: t("transaction:bonusTypes.SPECIAL"),
+      WELCOME: t("transaction:bonusTypes.WELCOME"),
     }
     return types[type] || type
   }
@@ -99,26 +99,26 @@ const BonusHistory: React.FC = () => {
       <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <FiFilter className="text-white" />
-          <h2 className="text-white font-medium">กรองข้อมูล</h2>
+          <h2 className="text-white font-medium">{t("transaction:filterData")}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-white/80 text-sm mb-2">สถานะ</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:statusLabel")}</label>
             <select
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
               className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              <option value="" className="bg-gray-800">ทั้งหมด</option>
-              <option value="PENDING" className="bg-gray-800">รอรับ</option>
+              <option value="" className="bg-gray-800">{t("transaction:filter.all")}</option>
+              <option value="PENDING" className="bg-gray-800">{t("common:status.pending")}</option>
               <option value="CLAIMED" className="bg-gray-800">{t("promotion:claimed_status")}</option>
-              <option value="EXPIRED" className="bg-gray-800">หมดอายุ</option>
+              <option value="EXPIRED" className="bg-gray-800">{t("common:status.expired")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">จากวันที่</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:fromDate")}</label>
             <input
               type="date"
               value={filters.startDate}
@@ -128,7 +128,7 @@ const BonusHistory: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-white/80 text-sm mb-2">ถึงวันที่</label>
+            <label className="block text-white/80 text-sm mb-2">{t("transaction:toDate")}</label>
             <input
               type="date"
               value={filters.endDate}
@@ -145,12 +145,12 @@ const BonusHistory: React.FC = () => {
           <table className="w-full">
             <thead className="bg-white/5">
               <tr>
-                <th className="px-6 py-4 text-left text-white font-medium">วันที่</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:date")}</th>
                 <th className="px-6 py-4 text-left text-white font-medium">{t("navigation:menu.promotions")}</th>
-                <th className="px-6 py-4 text-left text-white font-medium">ประเภท</th>
-                <th className="px-6 py-4 text-right text-white font-medium">จำนวน</th>
-                <th className="px-6 py-4 text-left text-white font-medium">สถานะ</th>
-                <th className="px-6 py-4 text-left text-white font-medium">หมายเหตุ</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:type")}</th>
+                <th className="px-6 py-4 text-right text-white font-medium">{t("transaction:amountLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:statusLabel")}</th>
+                <th className="px-6 py-4 text-left text-white font-medium">{t("transaction:noteLabel")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
@@ -165,7 +165,7 @@ const BonusHistory: React.FC = () => {
               ) : bonuses.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-white/60">
-                    ไม่พบรายการโบนัส
+                    {t("transaction:noBonuses")}
                   </td>
                 </tr>
               ) : (
@@ -205,7 +205,11 @@ const BonusHistory: React.FC = () => {
         {totalPages > 1 && (
           <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between">
             <p className="text-white/60 text-sm">
-              แสดง {pagination.offset + 1}-{Math.min(pagination.offset + pagination.limit, pagination.total)} จาก {pagination.total} รายการ
+              {t("transaction:showingRecords", {
+                from: pagination.offset + 1,
+                to: Math.min(pagination.offset + pagination.limit, pagination.total),
+                total: pagination.total
+              })}
             </p>
             <div className="flex gap-2">
               <button
@@ -213,14 +217,14 @@ const BonusHistory: React.FC = () => {
                 disabled={currentPage === 1}
                 className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ก่อนหน้า
+                {t("transaction:previousPage")}
               </button>
               <button
                 onClick={() => setPagination(prev => ({ ...prev, offset: prev.offset + prev.limit }))}
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ถัดไป
+                {t("transaction:nextPage")}
               </button>
             </div>
           </div>

@@ -32,7 +32,8 @@
     "inactive": "Inactive",
     "approved": "Approved",
     "rejected": "Rejected",
-    "completed": "Completed"
+    "completed": "Completed",
+    "expired": "Expired"
   },
   "messages": {
     "loading": "Loading...",
