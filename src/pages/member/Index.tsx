@@ -43,7 +43,7 @@ type SiteSettingsMap = {
 }
 
 const MemberIndex = () => {
-  const { t } = useTranslation(['navigation', 'game', 'common'])
+  const { t } = useTranslation(['navigation', 'game', 'common', 'lottery'])
   const navigate = useNavigate()
   const { logout, member } = useMemberStore()
   const [profile, setProfile] = useState<any>(null)
@@ -239,7 +239,7 @@ const MemberIndex = () => {
   const handleLogout = () => {
     logout()
     navigate('/member/login')
-    toast.success('ออกจากระบบสำเร็จ')
+    toast.success(t('lottery:messages.logoutSuccess'))
   }
 
   const formatCurrency = (amount: number) => {
@@ -257,7 +257,7 @@ const MemberIndex = () => {
     const diff = close - now
 
     if (diff <= 0) {
-      return { text: 'ปิดรับแล้ว', expired: true, hours: 0, minutes: 0, seconds: 0 }
+      return { text: t('lottery:index.alreadyClosed'), expired: true, hours: 0, minutes: 0, seconds: 0 }
     }
 
     const hours = Math.floor(diff / (1000 * 60 * 60))
@@ -330,7 +330,7 @@ const MemberIndex = () => {
   const actionButtons = [
     {
       id: 'deposit',
-      name: 'เติมเงิน',
+      name: t("lottery:index.topUp"),
       icon: <FaCoins className="text-2xl" />,
       link: '/member/deposit',
       bg: 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700'
@@ -344,7 +344,7 @@ const MemberIndex = () => {
     },
     {
       id: 'lottery-history',
-      name: 'โพยหวย',
+      name: t("lottery:index.lotteryTickets"),
       icon: <FaDice className="text-2xl" />,
       link: '/member/lottery/history',
       bg: 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
@@ -365,7 +365,7 @@ const MemberIndex = () => {
     },
     {
       id: 'support',
-      name: 'แชทช่วยเหลือ',
+      name: t("lottery:index.chatSupport"),
       icon: <SiLivechat className="text-2xl" />,
       link: '#chat',
       bg: 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
@@ -535,7 +535,7 @@ const MemberIndex = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-white">
-              {activeTab === 'Lottery' ? 'รายการหวยเปิดรับแทง' : 'เกมยอดนิยม'}
+              {activeTab === 'Lottery' ? t('lottery:index.lotteryList') : t('lottery:index.popularGames')}
             </h2>
           </div>
           
@@ -545,7 +545,7 @@ const MemberIndex = () => {
               {lotteryLoading ? (
                 <div className="flex justify-center items-center py-20">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
-                  <p className="ml-4 text-white">กำลังโหลดรายการหวย...</p>
+                  <p className="ml-4 text-white">{t('lottery:index.loadingLotteries')}</p>
                 </div>
               ) : lotteryPeriods.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -584,7 +584,7 @@ const MemberIndex = () => {
                               {period.huayName}
                             </h3>
                           </div>
-                          <p className="text-white/80 text-sm">งวดวันที่ {period.periodName}</p>
+                          <p className="text-white/80 text-sm">{t('lottery:dashboard.drawPeriod')} {period.periodName}</p>
                         </div>
                         <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1">
                           <span className="text-xs font-semibold">#{period.id}</span>
@@ -596,27 +596,27 @@ const MemberIndex = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs text-white/70 flex items-center gap-1">
                             <FiClock className="animate-pulse" />
-                            เหลือเวลา
+                            {t('lottery:index.timeRemaining')}
                           </span>
                           {countdown.expired && (
-                            <span className="text-xs bg-red-500/80 px-2 py-0.5 rounded-full">ปิดรับแล้ว</span>
+                            <span className="text-xs bg-red-500/80 px-2 py-0.5 rounded-full">{t('lottery:index.alreadyClosed')}</span>
                           )}
                         </div>
                         <div className={`text-center ${countdown.expired ? 'opacity-50' : ''}`}>
                           <div className="flex justify-center gap-2">
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px]">
                               <div className="text-2xl font-bold font-mono">{countdown.hours.toString().padStart(2, '0')}</div>
-                              <div className="text-[10px] text-white/70">ชั่วโมง</div>
+                              <div className="text-[10px] text-white/70">{t('lottery:index.hours')}</div>
                             </div>
                             <div className="flex items-center text-2xl font-bold">:</div>
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px]">
                               <div className="text-2xl font-bold font-mono">{countdown.minutes.toString().padStart(2, '0')}</div>
-                              <div className="text-[10px] text-white/70">นาที</div>
+                              <div className="text-[10px] text-white/70">{t('lottery:index.minutes')}</div>
                             </div>
                             <div className="flex items-center text-2xl font-bold">:</div>
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px]">
                               <div className="text-2xl font-bold font-mono">{countdown.seconds.toString().padStart(2, '0')}</div>
-                              <div className="text-[10px] text-white/70">วินาที</div>
+                              <div className="text-[10px] text-white/70">{t('lottery:index.seconds')}</div>
                             </div>
                           </div>
                         </div>
@@ -630,7 +630,7 @@ const MemberIndex = () => {
                             : 'bg-white/90 text-gray-900 hover:bg-white hover:shadow-lg'
                         }`}
                       >
-                        {countdown.expired ? 'ดูผลหวย' : 'แทงหวยเลย!'}
+                        {countdown.expired ? t('lottery:index.viewResults') : t('lottery:index.betNowButton')}
                       </button>
                     </div>
                   </Link>
@@ -639,7 +639,7 @@ const MemberIndex = () => {
                 </div>
               ) : (
                 <div className="text-center py-20 text-gray-400">
-                  <p>ไม่มีหวยเปิดรับแทงในขณะนี้</p>
+                  <p>{t('lottery:index.noLotteriesAvailable')}</p>
                 </div>
               )}
             </>

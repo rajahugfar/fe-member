@@ -153,5 +153,21 @@
     "drawPeriod": "งวดวันที่",
     "betNow": "แทงเลย",
     "viewAllLotteries": "ดูทั้งหมด"
+  },
+  "index": {
+    "lotteryList": "รายการหวยเปิดรับแทง",
+    "popularGames": "เกมยอดนิยม",
+    "loadingLotteries": "กำลังโหลดรายการหวย...",
+    "noLotteriesAvailable": "ไม่มีหวยเปิดรับแทงในขณะนี้",
+    "timeRemaining": "เหลือเวลา",
+    "alreadyClosed": "ปิดรับแล้ว",
+    "hours": "ชั่วโมง",
+    "minutes": "นาที",
+    "seconds": "วินาที",
+    "viewResults": "ดูผลหวย",
+    "betNowButton": "แทงหวยเลย!",
+    "lotteryTickets": "โพยหวย",
+    "chatSupport": "แชทช่วยเหลือ",
+    "topUp": "เติมเงิน"
   }
 }

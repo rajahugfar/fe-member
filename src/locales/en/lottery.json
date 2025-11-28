@@ -153,5 +153,21 @@
     "drawPeriod": "Draw Date",
     "betNow": "Bet Now",
     "viewAllLotteries": "View All"
+  },
+  "index": {
+    "lotteryList": "Open Lotteries",
+    "popularGames": "Popular Games",
+    "loadingLotteries": "Loading lotteries...",
+    "noLotteriesAvailable": "No lotteries available at the moment",
+    "timeRemaining": "Time Remaining",
+    "alreadyClosed": "Closed",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "viewResults": "View Results",
+    "betNowButton": "Bet Now!",
+    "lotteryTickets": "Lottery Tickets",
+    "chatSupport": "Live Chat",
+    "topUp": "Top Up"
   }
 }
