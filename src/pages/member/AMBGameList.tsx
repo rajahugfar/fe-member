@@ -9,13 +9,6 @@ import { useMemberStore } from '@store/memberStore'
 import { toast } from 'react-hot-toast'
 import MemberChat from '@/components/chat/MemberChat'
 
-const ACTION_BUTTONS = [
-  { id: 'account', name: 'บัญชี', image: '/images/btn-play-profile.webp', link: '/member/dashboard' },
-  { id: 'deposit', name: 'ฝากถอน', image: '/images/btn-play-topup.webp', link: '/member/deposit' },
-  { id: 'register', name: 'สมัคร', image: '/images/btn-play-register.webp', link: '/member/promotions' },
-  { id: 'contact', name: 'ติดต่อ', image: '/images/btn-play-contact.webp', link: 'tel:0277777777' },
-]
-
 const AMBGameList: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -214,41 +207,6 @@ const AMBGameList: React.FC = () => {
                 </>
               )}
             </nav>
-          </div>
-
-          {/* 4 Action Buttons */}
-          <div className="mb-6">
-            <div className="grid grid-cols-4 gap-3">
-              {ACTION_BUTTONS.map((button) => {
-                const isExternal = button.link.startsWith('tel:') || button.link.startsWith('http')
-
-                return isExternal ? (
-                  <a
-                    key={button.id}
-                    href={button.link}
-                    className="relative group overflow-hidden rounded-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl"
-                  >
-                    <img
-                      src={button.image}
-                      alt={button.name}
-                      className="w-full h-auto object-cover"
-                    />
-                  </a>
-                ) : (
-                  <Link
-                    key={button.id}
-                    to={button.link}
-                    className="relative group overflow-hidden rounded-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl"
-                  >
-                    <img
-                      src={button.image}
-                      alt={button.name}
-                      className="w-full h-auto object-cover"
-                    />
-                  </Link>
-                )
-              })}
-            </div>
           </div>
 
           {/* Provider Header */}
