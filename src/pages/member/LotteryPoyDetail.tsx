@@ -58,7 +58,7 @@ const LotteryPoyDetail: React.FC = () => {
       setPoy(data)
     } catch (error: any) {
       console.error('Failed to load poy detail:', error)
-      toast.error('ไม่สามารถโหลดข้อมูลโพยได้')
+      toast.error(t('lottery:messages.loadPoyDetailFailed'))
       navigate('/member/lottery')
     } finally {
       setLoading(false)
@@ -67,16 +67,16 @@ const LotteryPoyDetail: React.FC = () => {
 
   const getBetTypeName = (betType: string): string => {
     const types: Record<string, string> = {
-      'teng_bon_3': '3 ตัวบน',
-      'teng_lang_3': '3 ตัวล่าง',
-      'teng_lang_nha_3': '3 ตัวหน้า',
-      'tode_3': '3 ตัวโต๊ด',
-      'teng_bon_2': '2 ตัวบน',
-      'teng_lang_2': '2 ตัวล่าง',
+      'teng_bon_3': t("lottery:betTypes.teng_bon_3"),
+      'teng_lang_3': t("lottery:betTypes.teng_lang_3"),
+      'teng_lang_nha_3': t("lottery:betTypes.teng_lang_nha_3"),
+      'tode_3': t("lottery:betTypes.tode_3"),
+      'teng_bon_2': t("lottery:betTypes.teng_bon_2"),
+      'teng_lang_2': t("lottery:betTypes.teng_lang_2"),
       'teng_bon_1': t("lottery:betTypes.teng_bon_1"),
       'teng_lang_1': t("lottery:betTypes.teng_lang_1"),
-      'tode_4': '4 ตัวโต๊ด',
-      'teng_bon_4': '4 ตัวบน'
+      'tode_4': t("lottery:betTypes.tode_4"),
+      'teng_bon_4': t("lottery:betTypes.teng_bon_4")
     }
     return types[betType] || betType
   }
@@ -86,19 +86,19 @@ const LotteryPoyDetail: React.FC = () => {
       case 0:
         return (
           <span className="px-3 py-1.5 bg-gradient-to-r from-red-500/20 to-rose-600/20 border border-red-400/30 rounded-lg text-red-300 font-semibold text-sm">
-            ยกเลิกแล้ว
+            {t("lottery:status.cancelled")}
           </span>
         )
       case 1:
         return (
           <span className="px-3 py-1.5 bg-gradient-to-r from-yellow-500/20 to-amber-600/20 border border-yellow-400/30 rounded-lg text-yellow-300 font-semibold text-sm">
-            รอออกผล
+            {t("lottery:status.pending")}
           </span>
         )
       case 2:
         return (
           <span className="px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-600/20 border border-green-400/30 rounded-lg text-green-300 font-semibold text-sm">
-            ออกผลแล้ว
+            {t("lottery:status.resulted")}
           </span>
         )
       default:
@@ -111,12 +111,12 @@ const LotteryPoyDetail: React.FC = () => {
       return { label: t("common:buttons.cancel"), style: 'bg-red-500/20 text-red-300 border-red-400/30' }
     }
     if (status === 1) {
-      return { label: 'รอออกผล', style: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' }
+      return { label: t("lottery:status.pending"), style: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' }
     }
     if (item.isWin) {
       return { label: t("member:dashboard.todayWin"), style: 'bg-green-500/20 text-green-300 border-green-400/30' }
     }
-    return { label: 'ไม่ถูกรางวัล', style: 'bg-gray-500/20 text-gray-400 border-gray-400/30' }
+    return { label: t("lottery:status.notWin"), style: 'bg-gray-500/20 text-gray-400 border-gray-400/30' }
   }
 
   const formatDate = (dateString: string) => {
@@ -155,12 +155,12 @@ const LotteryPoyDetail: React.FC = () => {
       <div className="min-h-screen bg-[#0a0e27] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-xl text-white mb-2">ไม่พบข้อมูลโพย</h2>
+          <h2 className="text-xl text-white mb-2">{t('lottery:messages.poyNotFound')}</h2>
           <button
             onClick={() => navigate('/member/lottery')}
             className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg"
           >
-            กลับหน้าหลัก
+            {t('common:buttons.backToHome')}
           </button>
         </div>
       </div>
@@ -188,10 +188,10 @@ const LotteryPoyDetail: React.FC = () => {
               className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors mb-4"
             >
               <FiArrowLeft className="text-xl" />
-              <span>กลับ</span>
+              <span>{t('common:buttons.back')}</span>
             </button>
             <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300">
-              รายละเอียดโพย
+              {t('lottery:poyDetail.title')}
             </h1>
           </motion.div>
 
@@ -205,7 +205,7 @@ const LotteryPoyDetail: React.FC = () => {
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-3 px-6 text-center border-b border-purple-400/30">
               <div className="flex items-center justify-center gap-2 text-white">
                 <FiFileText className="text-xl" />
-                <span className="text-lg font-semibold">โพยเลขที่ #{poy.poyNumber}</span>
+                <span className="text-lg font-semibold">{t('lottery:poyDetail.poyNumber')} #{poy.poyNumber}</span>
               </div>
             </div>
 
@@ -231,26 +231,26 @@ const LotteryPoyDetail: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-sm rounded-xl p-4 border border-purple-400/20">
                   <p className="text-purple-300 text-sm mb-1 flex items-center gap-1">
-                    <span>💰</span> ยอดแทง
+                    <span>💰</span> {t('lottery:poyDetail.totalBet')}
                   </p>
                   <p className="text-white font-bold text-2xl">{(poy.totalPrice || 0).toFixed(2)}</p>
-                  <p className="text-gray-500 text-xs">บาท</p>
+                  <p className="text-gray-500 text-xs">{t('common:currency.baht')}</p>
                 </div>
 
                 <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/5 backdrop-blur-sm rounded-xl p-4 border border-green-400/20">
                   <p className="text-green-300 text-sm mb-1 flex items-center gap-1">
-                    <span>🎁</span> ผลได้เสีย
+                    <span>🎁</span> {t('lottery:poyDetail.winLoss')}
                   </p>
                   <p className={`font-bold text-2xl ${(poy.winPrice || 0) > 0 ? 'text-green-400' : 'text-white'}`}>
                     {(poy.winPrice || 0) > 0 ? '+' : ''}{(poy.winPrice || 0).toFixed(2)}
                   </p>
-                  <p className="text-gray-500 text-xs">บาท</p>
+                  <p className="text-gray-500 text-xs">{t('common:currency.baht')}</p>
                 </div>
               </div>
 
               {poy.note && (
                 <div className="mt-4 p-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-400/20 rounded-xl">
-                  <p className="text-indigo-300 text-xs mb-1">หมายเหตุ</p>
+                  <p className="text-indigo-300 text-xs mb-1">{t('common:note')}</p>
                   <p className="text-gray-300 text-sm">{poy.note}</p>
                 </div>
               )}
@@ -268,7 +268,7 @@ const LotteryPoyDetail: React.FC = () => {
               <div className="bg-gradient-to-r from-yellow-600 to-orange-600 py-3 px-6 text-center border-b border-yellow-400/30">
                 <div className="flex items-center justify-center gap-2 text-white">
                   <FiAward className="text-xl" />
-                  <span className="text-lg font-semibold">เลขที่ออก</span>
+                  <span className="text-lg font-semibold">{t('lottery:poyDetail.resultNumbers')}</span>
                 </div>
               </div>
 
@@ -276,7 +276,7 @@ const LotteryPoyDetail: React.FC = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {poy.result3Up && (
                     <div className="text-center">
-                      <p className="text-gray-400 text-sm mb-2">3 ตัวตรง</p>
+                      <p className="text-gray-400 text-sm mb-2">{t("lottery:betTypes.teng_bon_3")}</p>
                       <p className="text-3xl font-bold text-yellow-400">{poy.result3Up}</p>
                     </div>
                   )}
@@ -288,13 +288,13 @@ const LotteryPoyDetail: React.FC = () => {
                   )}
                   {poy.result3Front && (
                     <div className="text-center">
-                      <p className="text-gray-400 text-sm mb-2">3 ตัวหน้า</p>
+                      <p className="text-gray-400 text-sm mb-2">{t("lottery:betTypes.teng_lang_nha_3")}</p>
                       <p className="text-3xl font-bold text-green-400">{poy.result3Front}</p>
                     </div>
                   )}
                   {poy.result3Down && (
                     <div className="text-center">
-                      <p className="text-gray-400 text-sm mb-2">3 ตัวหลัง</p>
+                      <p className="text-gray-400 text-sm mb-2">{t("lottery:betTypes.teng_lang_3")}</p>
                       <p className="text-3xl font-bold text-pink-400">{poy.result3Down}</p>
                     </div>
                   )}
@@ -311,7 +311,7 @@ const LotteryPoyDetail: React.FC = () => {
           >
             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               <span>📋</span>
-              รายการแทงทั้งหมด ({poy.items.length} รายการ)
+              {t('lottery:poyDetail.allBets')} ({poy.items.length} {t('lottery:poyDetail.items')})
             </h2>
 
             {/* Grid 3 columns */}
@@ -349,15 +349,15 @@ const LotteryPoyDetail: React.FC = () => {
                       {/* Details */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-gray-400">ราคาจ่าย</span>
+                          <span className="text-gray-400">{t('lottery:poyDetail.payout')}</span>
                           <span className="text-blue-300 font-semibold">{(payout || 0).toFixed(0)}</span>
                         </div>
                         <div className="flex justify-between items-center text-xs pt-1.5 border-t border-purple-400/20">
-                          <span className="text-gray-400">ราคาแทง</span>
+                          <span className="text-gray-400">{t('lottery:poyDetail.betAmount')}</span>
                           <span className="text-white font-semibold">{(item.price || 0).toFixed(0)}</span>
                         </div>
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-gray-400">ผลได้เสีย</span>
+                          <span className="text-gray-400">{t('lottery:poyDetail.winLoss')}</span>
                           <span className={`font-bold ${(item.winAmount || 0) > 0 ? 'text-green-400' : 'text-gray-300'}`}>
                             {(item.winAmount || 0) > 0 ? '+' : ''}{(item.winAmount || 0).toFixed(0)}
                           </span>
