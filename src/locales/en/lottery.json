@@ -10,6 +10,7 @@
     "teng_bon_3": "3D Top",
     "tode_3": "3D Tode",
     "teng_lang_3": "3D Bottom",
+    "teng_lang_nha_3": "3D Front",
     "teng_bon_2": "2D Top",
     "teng_lang_2": "2D Bottom",
     "teng_bon_1": "Run Top",
@@ -31,7 +32,17 @@
   "pending": "Pending Result",
   "resulted": "Result Announced",
   "poyNumber": "Ticket Number",
-  "poyDetail": "Ticket Details",
+  "poyDetail": {
+    "title": "Ticket Details",
+    "poyNumber": "Ticket Number",
+    "totalBet": "Total Bet Amount",
+    "winLoss": "Win/Loss",
+    "resultNumbers": "Result Numbers",
+    "allBets": "All Bets",
+    "items": "Items",
+    "payout": "Payout",
+    "betAmount": "Bet Amount"
+  },
   "betDate": "Bet Date",
   "drawDate": "Draw Date",
   "prize": "Prize",
@@ -75,7 +86,9 @@
     "exportSuccess": "Data exported successfully",
     "loadResultsFailed": "Failed to load results",
     "loadingResults": "Loading results...",
-    "loadingPoys": "Loading tickets..."
+    "loadingPoys": "Loading tickets...",
+    "loadPoyDetailFailed": "Failed to load ticket details",
+    "poyNotFound": "Ticket not found"
   },
   "actions": {
     "backToLottery": "Back to Lottery",
@@ -115,6 +128,7 @@
     "pending": "Pending Result",
     "waitingResult": "Waiting Result",
     "resulted": "Result Announced",
+    "notWin": "No Prize",
     "unknown": "Unknown Status"
   },
   "tabs": {

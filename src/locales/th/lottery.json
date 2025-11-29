@@ -10,6 +10,7 @@
     "teng_bon_3": "3 ตัวบน",
     "tode_3": "3 ตัวโต๊ด",
     "teng_lang_3": "3 ตัวล่าง",
+    "teng_lang_nha_3": "3 ตัวหน้า",
     "teng_bon_2": "2 ตัวบน",
     "teng_lang_2": "2 ตัวล่าง",
     "teng_bon_1": "วิ่งบน",
@@ -31,7 +32,17 @@
   "pending": "รอออกผล",
   "resulted": "ออกผลแล้ว",
   "poyNumber": "เลขที่โพย",
-  "poyDetail": "รายละเอียดโพย",
+  "poyDetail": {
+    "title": "รายละเอียดโพย",
+    "poyNumber": "เลขที่โพย",
+    "totalBet": "ยอดแทงทั้งหมด",
+    "winLoss": "กำไร/ขาดทุน",
+    "resultNumbers": "ผลรางวัล",
+    "allBets": "รายการแทงทั้งหมด",
+    "items": "รายการ",
+    "payout": "อัตราจ่าย",
+    "betAmount": "ยอดแทง"
+  },
   "betDate": "วันที่แทง",
   "drawDate": "วันที่ออกผล",
   "prize": "รางวัล",
@@ -75,7 +86,9 @@
     "exportSuccess": "ส่งออกข้อมูลสำเร็จ",
     "loadResultsFailed": "ไม่สามารถโหลดผลรางวัลได้",
     "loadingResults": "กำลังโหลดผลรางวัล...",
-    "loadingPoys": "กำลังโหลดโพยหวย..."
+    "loadingPoys": "กำลังโหลดโพยหวย...",
+    "loadPoyDetailFailed": "ไม่สามารถโหลดรายละเอียดโพยได้",
+    "poyNotFound": "ไม่พบโพยนี้"
   },
   "actions": {
     "backToLottery": "กลับไปเลือกหวย",
@@ -115,6 +128,7 @@
     "pending": "รอออกผล",
     "waitingResult": "รอออกผล",
     "resulted": "ออกผลแล้ว",
+    "notWin": "ไม่ถูกรางวัล",
     "unknown": "ไม่ทราบสถานะ"
   },
   "tabs": {

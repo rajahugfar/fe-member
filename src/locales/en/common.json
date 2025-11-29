@@ -7,6 +7,7 @@
     "delete": "Delete",
     "close": "Close",
     "back": "Back",
+    "backToHome": "Back to Home",
     "next": "Next",
     "previous": "Previous",
     "confirm": "Confirm",
@@ -22,6 +23,7 @@
     "copy": "Copy",
     "refresh": "Refresh"
   },
+  "note": "Note",
   "status": {
     "success": "Success",
     "pending": "Pending",
