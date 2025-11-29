@@ -112,6 +112,7 @@
   },
   "status": {
     "cancelled": "Cancelled",
+    "pending": "Pending Result",
     "waitingResult": "Waiting Result",
     "resulted": "Result Announced",
     "unknown": "Unknown Status"
@@ -178,6 +179,19 @@
     "confirmCancel": "Do you want to cancel this ticket?\n\nCredit will be refunded immediately",
     "todayTab": "Today",
     "pendingTab": "Pending",
-    "completedTab": "Completed"
+    "completedTab": "Completed",
+    "premiumLotteries": "Top 3 Government Lotteries",
+    "stockLotteries": "Thai Stock Lotteries",
+    "otherLotteries": "Other Lotteries",
+    "timeRemaining": "Time Remaining",
+    "betNow": "Bet Now",
+    "loadingPoys": "Loading tickets...",
+    "betAmount": "Bet Amount",
+    "winAmount": "Win Amount",
+    "balanceAfter": "Balance After",
+    "currency": "Baht",
+    "cancelTimeLeft": "{{minutes}} minutes left to cancel",
+    "note": "Note",
+    "viewAllBets": "View All Bets"
   }
 }

@@ -112,6 +112,7 @@
   },
   "status": {
     "cancelled": "ยกเลิกแล้ว",
+    "pending": "รอออกผล",
     "waitingResult": "รอออกผล",
     "resulted": "ออกผลแล้ว",
     "unknown": "ไม่ทราบสถานะ"
@@ -178,6 +179,19 @@
     "confirmCancel": "คุณต้องการยกเลิกโพยนี้ใช่หรือไม่?\n\nเครดิตจะถูกคืนให้ทันที",
     "todayTab": "ซื้อวันนี้",
     "pendingTab": "รอผลออก",
-    "completedTab": "ออกผลแล้ว"
+    "completedTab": "ออกผลแล้ว",
+    "premiumLotteries": "หวยรัฐบาล 3 อันดับหลัก",
+    "stockLotteries": "หวยหุ้นไทย",
+    "otherLotteries": "หวยอื่นๆ",
+    "timeRemaining": "เหลือเวลา",
+    "betNow": "แทงเลย",
+    "loadingPoys": "กำลังโหลดโพยหวย...",
+    "betAmount": "ยอดแทง",
+    "winAmount": "ยอดชนะ",
+    "balanceAfter": "เครดิตหลัง",
+    "currency": "บาท",
+    "cancelTimeLeft": "เหลือเวลายกเลิก {{minutes}} นาที",
+    "note": "หมายเหตุ",
+    "viewAllBets": "ดูรายการแทงทั้งหมด"
   }
 }

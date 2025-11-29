@@ -252,7 +252,7 @@ const MemberLottery: React.FC = () => {
                         >
                           <div className="flex items-center gap-1.5">
                             <FiStar className="text-yellow-400 text-lg" />
-                            <h2 className="text-xl font-bold text-white">หวยรัฐบาล 3 อันดับหลัก</h2>
+                            <h2 className="text-xl font-bold text-white">{t("lottery:memberLottery.premiumLotteries")}</h2>
                           </div>
                           <div className="flex-1 h-px bg-gradient-to-r from-yellow-400/50 to-transparent"></div>
                         </motion.div>
@@ -274,7 +274,7 @@ const MemberLottery: React.FC = () => {
                         >
                           <div className="flex items-center gap-1.5">
                             <FiTrendingUp className="text-blue-400 text-lg" />
-                            <h2 className="text-xl font-bold text-white">หวยหุ้นไทย</h2>
+                            <h2 className="text-xl font-bold text-white">{t("lottery:memberLottery.stockLotteries")}</h2>
                           </div>
                           <div className="flex-1 h-px bg-gradient-to-r from-blue-400/50 to-transparent"></div>
                         </motion.div>
@@ -296,7 +296,7 @@ const MemberLottery: React.FC = () => {
                         >
                           <div className="flex items-center gap-1.5">
                             <FiZap className="text-purple-400 text-lg" />
-                            <h2 className="text-xl font-bold text-white">หวยอื่นๆ</h2>
+                            <h2 className="text-xl font-bold text-white">{t("lottery:memberLottery.otherLotteries")}</h2>
                           </div>
                           <div className="flex-1 h-px bg-gradient-to-r from-purple-400/50 to-transparent"></div>
                         </motion.div>
@@ -412,7 +412,7 @@ const PremiumLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ p
         <div className="relative bg-black/20 backdrop-blur-sm rounded-xl p-3 mb-3 border border-white/10">
           <div className="flex items-center justify-center gap-1.5 text-yellow-300/90 mb-1">
             <FiClock className="text-sm animate-pulse" />
-            <span className="text-xs font-medium">เหลือเวลา</span>
+            <span className="text-xs font-medium">{t("lottery:memberLottery.timeRemaining")}</span>
           </div>
           <div className="text-center">
             <span className="text-2xl font-mono font-bold text-white drop-shadow">{timeLeft}</span>
@@ -425,7 +425,7 @@ const PremiumLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ p
           className="relative w-full py-2.5 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-white font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg text-sm overflow-hidden group"
         >
           <span className="relative z-10 flex items-center gap-2">
-            แทงเลย
+            {t("lottery:memberLottery.betNow")}
             <FiChevronRight className="text-lg group-hover:translate-x-1 transition-transform" />
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
@@ -498,7 +498,7 @@ const StandardLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ 
           className="relative w-full py-2 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-white font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md text-sm overflow-hidden group"
         >
           <span className="relative z-10 flex items-center gap-1.5">
-            แทงเลย
+            {t("lottery:memberLottery.betNow")}
             <FiChevronRight className="text-base group-hover:translate-x-1 transition-transform" />
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
@@ -599,14 +599,14 @@ const LotteryMyBets: React.FC = () => {
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-500/20 to-rose-600/20 border border-red-400/30 rounded-lg">
             <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-            <span className="text-red-300 font-semibold text-xs">ยกเลิกแล้ว</span>
+            <span className="text-red-300 font-semibold text-xs">{t("lottery:status.cancelled")}</span>
           </div>
         )
       case 1:
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-yellow-500/20 to-amber-600/20 border border-yellow-400/30 rounded-lg">
             <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-            <span className="text-yellow-300 font-semibold text-xs">รอออกผล</span>
+            <span className="text-yellow-300 font-semibold text-xs">{t("lottery:status.pending")}</span>
           </div>
         )
       case 2:
@@ -619,7 +619,7 @@ const LotteryMyBets: React.FC = () => {
       default:
         return (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gray-500/20 to-slate-600/20 border border-gray-400/30 rounded-lg">
-            <span className="text-gray-300 font-semibold text-xs">ไม่ทราบสถานะ</span>
+            <span className="text-gray-300 font-semibold text-xs">{t("lottery:status.unknown")}</span>
           </div>
         )
     }
@@ -661,7 +661,7 @@ const LotteryMyBets: React.FC = () => {
         >
           <FiFileText className="text-5xl text-purple-400" />
         </motion.div>
-        <p className="text-gray-300 mt-4 font-medium">กำลังโหลดโพยหวย...</p>
+        <p className="text-gray-300 mt-4 font-medium">{t("lottery:memberLottery.loadingPoys")}</p>
       </div>
     )
   }
@@ -756,19 +756,19 @@ const LotteryMyBets: React.FC = () => {
                   {/* Stats Grid */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-sm rounded-xl p-3 border border-purple-400/20">
-                      <p className="text-purple-300 text-xs mb-1">💰 ยอดแทง</p>
+                      <p className="text-purple-300 text-xs mb-1">💰 {t("lottery:memberLottery.betAmount")}</p>
                       <p className="text-white font-bold text-lg">{poy.totalPrice?.toFixed(2) || '0.00'}</p>
-                      <p className="text-gray-500 text-xs">บาท</p>
+                      <p className="text-gray-500 text-xs">{t("lottery:memberLottery.currency")}</p>
                     </div>
                     <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/5 backdrop-blur-sm rounded-xl p-3 border border-green-400/20">
-                      <p className="text-green-300 text-xs mb-1">🎁 ยอดชนะ</p>
+                      <p className="text-green-300 text-xs mb-1">🎁 {t("lottery:memberLottery.winAmount")}</p>
                       <p className="text-green-400 font-bold text-lg">{poy.winPrice?.toFixed(2) || '0.00'}</p>
-                      <p className="text-gray-500 text-xs">บาท</p>
+                      <p className="text-gray-500 text-xs">{t("lottery:memberLottery.currency")}</p>
                     </div>
                     <div className="bg-gradient-to-br from-blue-500/10 to-cyan-600/5 backdrop-blur-sm rounded-xl p-3 border border-blue-400/20">
-                      <p className="text-blue-300 text-xs mb-1">💳 เครดิตหลัง</p>
+                      <p className="text-blue-300 text-xs mb-1">💳 {t("lottery:memberLottery.balanceAfter")}</p>
                       <p className="text-blue-400 font-bold text-lg">{poy.balanceAfter?.toFixed(2) || '0.00'}</p>
-                      <p className="text-gray-500 text-xs">บาท</p>
+                      <p className="text-gray-500 text-xs">{t("lottery:memberLottery.currency")}</p>
                     </div>
                   </div>
 
@@ -779,7 +779,7 @@ const LotteryMyBets: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <FiClock className="text-orange-400 animate-pulse" />
                           <span className="text-orange-300 text-sm font-medium">
-                            เหลือเวลายกเลิก {timeLeft} นาที
+                            {t("lottery:memberLottery.cancelTimeLeft", { minutes: timeLeft })}
                           </span>
                         </div>
                         <button
@@ -797,7 +797,7 @@ const LotteryMyBets: React.FC = () => {
                   {poy.note && (
                     <div className="mb-4 p-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-400/20 rounded-xl">
                       <p className="text-indigo-300 text-xs mb-1 flex items-center gap-1">
-                        <FiFileText /> หมายเหตุ
+                        <FiFileText /> {t("lottery:memberLottery.note")}
                       </p>
                       <p className="text-gray-300 text-sm">{poy.note}</p>
                     </div>
@@ -807,7 +807,7 @@ const LotteryMyBets: React.FC = () => {
                   <Link to={`/member/lottery/poy/${poy.id}`}>
                     <button className="w-full py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-400/30 rounded-xl transition-all flex items-center justify-center gap-2 text-purple-300 font-medium text-sm">
                       <FiFileText />
-                      ดูรายการแทงทั้งหมด
+                      {t("lottery:memberLottery.viewAllBets")}
                       <FiChevronRight />
                     </button>
                   </Link>
