@@ -53,6 +53,7 @@ const LotteryBetting: React.FC = () => {
 
   // Success State
   const [successPoyId, setSuccessPoyId] = useState('')
+  const [successPoyNumber, setSuccessPoyNumber] = useState('')
   const [successNote, setSuccessNote] = useState('')
   const [successCart, setSuccessCart] = useState<typeof cart>([])
   const [successTotalAmount, setSuccessTotalAmount] = useState(0)
@@ -377,8 +378,9 @@ const LotteryBetting: React.FC = () => {
       // Success - Store cart data before clearing
       const currentTotalAmount = cart.reduce((sum, item) => sum + item.amount, 0)
       const currentTotalPotentialWin = cart.reduce((sum, item) => sum + item.potential_win, 0)
-      
+
       setSuccessPoyId(response.poyId || 'N/A')
+      setSuccessPoyNumber(response.poyNumber || 'N/A')
       setSuccessNote(note)
       setSuccessCart([...cart]) // Store cart snapshot
       setSuccessTotalAmount(currentTotalAmount)
@@ -776,6 +778,7 @@ const LotteryBetting: React.FC = () => {
           setSuccessCart([])
         }}
         poyId={successPoyId}
+        poyNumber={successPoyNumber}
         cart={successCart}
         totalAmount={successTotalAmount}
         totalPotentialWin={successTotalPotentialWin}

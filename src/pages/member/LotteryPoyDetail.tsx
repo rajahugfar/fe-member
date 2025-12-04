@@ -120,19 +120,27 @@ const LotteryPoyDetail: React.FC = () => {
   }
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    if (!dateString) return '-'
+    // API sends time with Z (UTC) but it's actually Bangkok time already
+    const localDateString = dateString.replace('Z', '+07:00')
+    const date = new Date(localDateString)
     return date.toLocaleDateString('th-TH', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
+      timeZone: 'Asia/Bangkok'
     })
   }
 
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
+    if (!dateString) return '-'
+    // API sends time with Z (UTC) but it's actually Bangkok time already
+    const localDateString = dateString.replace('Z', '+07:00')
+    const date = new Date(localDateString)
     return date.toLocaleTimeString('th-TH', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'Asia/Bangkok'
     })
   }
 

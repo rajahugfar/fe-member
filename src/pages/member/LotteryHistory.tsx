@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { memberLotteryAPI } from '@api/memberLotteryAPI'
 import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   FiDownload,
   FiClock,
   FiFileText,
   FiChevronRight,
+  FiArrowLeft,
 } from 'react-icons/fi'
 
 // Poy interface
@@ -27,12 +28,14 @@ interface Poy {
   status: number
   note: string
   dateBuy?: string
+  huayTime?: string
   createdAt: string
   updatedAt: string
 }
 
 const LotteryHistory: React.FC = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [poys, setPoys] = useState<Poy[]>([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -64,7 +67,10 @@ const LotteryHistory: React.FC = () => {
 
   // Filter poys by tab - use Thai timezone
   const todayPoys = poys.filter(poy => {
-    const buyDate = new Date(poy.dateBuy || poy.createdAt)
+    const dateString = poy.dateBuy || poy.createdAt
+    if (!dateString) return false
+    const localDateString = dateString.replace('Z', '+07:00')
+    const buyDate = new Date(localDateString)
     const today = new Date()
     // Compare using Thai date string to handle timezone correctly
     const buyDateThai = buyDate.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok' })
@@ -90,18 +96,35 @@ const LotteryHistory: React.FC = () => {
 
   const filteredPoys = getFilteredPoys()
 
-  const canCancelPoy = (dateBuy: string) => {
-    const buyTime = new Date(dateBuy).getTime()
+  const canCancelPoy = (poy: Poy) => {
+    // Must have huayTime to cancel
+    if (!poy.huayTime) return false
+
+    // Must cancel at least 1 hour before lottery draw time
+    const localHuayTime = poy.huayTime.replace('Z', '+07:00')
+    const closeTime = new Date(localHuayTime).getTime()
     const now = new Date().getTime()
-    const diffMinutes = (now - buyTime) / (1000 * 60)
-    return diffMinutes < 30
+    const timeUntilDraw = closeTime - now
+    const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
+
+    return timeUntilDraw >= oneHour
   }
 
-  const getTimeLeftToCancel = (dateBuy: string) => {
-    const buyTime = new Date(dateBuy).getTime()
+  const getTimeLeftToCancel = (poy: Poy) => {
+    // Must have huayTime
+    if (!poy.huayTime) return null
+
+    // Show minutes until lottery draw (must be at least 1 hour)
+    const localHuayTime = poy.huayTime.replace('Z', '+07:00')
+    const closeTime = new Date(localHuayTime).getTime()
     const now = new Date().getTime()
-    const diffMinutes = 30 - (now - buyTime) / (1000 * 60)
-    if (diffMinutes <= 0) return null
+    const timeUntilDraw = closeTime - now
+    const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
+
+    // Cannot cancel if less than 1 hour remaining
+    if (timeUntilDraw < oneHour) return null
+
+    const diffMinutes = timeUntilDraw / (1000 * 60)
     return Math.floor(diffMinutes)
   }
 
@@ -139,15 +162,21 @@ const LotteryHistory: React.FC = () => {
       t('common:status'),
     ]
 
-    const rows = poys.map((poy) => [
-      poy.poyNumber,
-      new Date(poy.dateBuy || poy.createdAt).toLocaleDateString('th-TH'),
-      poy.stockName,
-      poy.totalBets,
-      poy.totalPrice,
-      poy.winPrice || poy.totalWin || 0,
-      getStatusLabel(poy.status),
-    ])
+    const rows = poys.map((poy) => {
+      const dateString = poy.dateBuy || poy.createdAt
+      const dateDisplay = dateString
+        ? new Date(dateString.replace('Z', '+07:00')).toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok' })
+        : '-'
+      return [
+        poy.poyNumber,
+        dateDisplay,
+        poy.stockName,
+        poy.totalBets,
+        poy.totalPrice,
+        poy.winPrice || poy.totalWin || 0,
+        getStatusLabel(poy.status),
+      ]
+    })
 
     const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
 
@@ -206,13 +235,17 @@ const LotteryHistory: React.FC = () => {
   }
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    if (!dateString) return '-'
+    // API sends time with Z (UTC) but it's actually Bangkok time already
+    const localDateString = dateString.replace('Z', '+07:00')
+    const date = new Date(localDateString)
     return date.toLocaleDateString('th-TH', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'Asia/Bangkok'
     })
   }
 
@@ -276,14 +309,23 @@ const LotteryHistory: React.FC = () => {
                 </h1>
                 <p className="text-gray-400 text-sm">{t('lottery:history.subtitle')}</p>
               </div>
-              <button
-                onClick={handleExportCSV}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-xl hover:from-green-400 hover:to-emerald-500 transition-all shadow-lg"
-                disabled={poys.length === 0}
-              >
-                <FiDownload size={16} />
-                {t('lottery:actions.export')}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate('/member/lottery')}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white text-sm font-semibold rounded-xl hover:from-purple-400 hover:to-blue-500 transition-all shadow-lg"
+                >
+                  <FiArrowLeft size={16} />
+                  {t('lottery:actions.backToBetting') || 'กลับไปแทงหวย'}
+                </button>
+                <button
+                  onClick={handleExportCSV}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-xl hover:from-green-400 hover:to-emerald-500 transition-all shadow-lg"
+                  disabled={poys.length === 0}
+                >
+                  <FiDownload size={16} />
+                  {t('lottery:actions.export')}
+                </button>
+              </div>
             </div>
           </motion.div>
 
@@ -345,8 +387,8 @@ const LotteryHistory: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredPoys.map((poy, index) => {
                 const dateBuy = poy.dateBuy || poy.createdAt
-                const canCancel = poy.status === 1 && canCancelPoy(dateBuy)
-                const timeLeft = canCancel ? getTimeLeftToCancel(dateBuy) : null
+                const canCancel = poy.status === 1 && canCancelPoy(poy)
+                const timeLeft = canCancel ? getTimeLeftToCancel(poy) : null
                 const winAmount = poy.winPrice || poy.totalWin || 0
 
                 return (

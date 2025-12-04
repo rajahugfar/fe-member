@@ -130,12 +130,15 @@ export default function MembersManagement() {
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '-'
-    return new Date(dateString).toLocaleString('th-TH', {
+    // API sends time with Z (UTC) but it's actually Bangkok time already
+    const localDateString = dateString.replace('Z', '+07:00')
+    return new Date(localDateString).toLocaleString('th-TH', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
+      timeZone: 'Asia/Bangkok'
     })
   }
 

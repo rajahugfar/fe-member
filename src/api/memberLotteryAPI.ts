@@ -328,7 +328,15 @@ export const memberLotteryAPI = {
   // Get poy detail
   getPoyDetail: async (poyId: string): Promise<any> => {
     const response = await memberAPIClient.get(`/lottery/poy/${poyId}`)
-    return response.data.data
+    const data = response.data.data
+    // API returns { header, items }, merge them for component compatibility
+    if (data.header && data.items) {
+      return {
+        ...data.header,
+        items: data.items
+      }
+    }
+    return data
   },
 
   // ============================================

@@ -131,8 +131,11 @@ const MemberLottery: React.FC = () => {
   useEffect(() => {
     if (activeTab === 'list') {
       loadOpenPeriods()
+    } else if (activeTab === 'history') {
+      // Redirect to lottery history page
+      navigate('/member/lottery/history')
     }
-  }, [activeTab])
+  }, [activeTab, navigate])
 
   const loadOpenPeriods = async () => {
     setLoading(true)
@@ -334,16 +337,6 @@ const MemberLottery: React.FC = () => {
               </motion.div>
             )}
 
-            {activeTab === 'history' && (
-              <motion.div
-                key="history"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <LotteryMyBets />
-              </motion.div>
-            )}
           </AnimatePresence>
         </div>
       </div>

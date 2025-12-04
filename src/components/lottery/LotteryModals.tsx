@@ -243,6 +243,7 @@ interface SuccessModalProps {
   show: boolean
   onClose: () => void
   poyId: string
+  poyNumber?: string
   cart: CartItem[]
   totalAmount: number
   totalPotentialWin: number
@@ -256,6 +257,7 @@ interface SuccessModalProps {
 export const SuccessModal: React.FC<SuccessModalProps> = ({
   show,
   poyId,
+  poyNumber,
   cart,
   totalAmount,
   totalPotentialWin,
@@ -318,7 +320,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
             <FaCheckCircle className="text-green-400 text-6xl mx-auto mb-4" />
           </motion.div>
           <h3 className="text-3xl font-bold text-white mb-2">ส่งโพยสำเร็จ!</h3>
-          <p className="text-white/70">โพยเลขที่ #{poyId}</p>
+          <p className="text-white/70">โพยเลขที่ #{poyNumber || poyId}</p>
         </div>
 
         {/* Capture Area */}
@@ -331,19 +333,25 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
             </div>
             <div className="text-right">
               <div className="text-white/50 text-xs">โพยเลขที่</div>
-              <div className="text-2xl font-bold text-white">#{poyId}</div>
+              <div className="text-2xl font-bold text-white">#{poyNumber || poyId}</div>
             </div>
           </div>
 
           {/* Date Time */}
           <div className="text-sm text-white/60 mb-4">
-            ทำรายการเมื่อ: {new Date().toLocaleString('th-TH', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })}
+            ทำรายการเมื่อ: {(() => {
+              const now = new Date()
+              const localString = now.toISOString().replace('Z', '+07:00')
+              const bangkokDate = new Date(localString)
+              return bangkokDate.toLocaleString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Bangkok'
+              })
+            })()}
           </div>
 
           {/* Cart Items */}
