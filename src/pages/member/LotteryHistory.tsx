@@ -101,29 +101,27 @@ const LotteryHistory: React.FC = () => {
     // Must have dateClose to cancel
     if (!poy.dateClose) return false
 
-    // Must cancel at least 1 hour before lottery draw time
+    // Can cancel before lottery closing time
     const localCloseTime = poy.dateClose.replace('Z', '+07:00')
     const closeTime = new Date(localCloseTime).getTime()
     const now = new Date().getTime()
     const timeUntilDraw = closeTime - now
-    const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
 
-    return timeUntilDraw >= oneHour
+    return timeUntilDraw > 0
   }
 
   const getTimeLeftToCancel = (poy: Poy) => {
     // Must have dateClose
     if (!poy.dateClose) return null
 
-    // Show minutes until lottery draw (must be at least 1 hour)
+    // Show minutes until lottery draw
     const localCloseTime = poy.dateClose.replace('Z', '+07:00')
     const closeTime = new Date(localCloseTime).getTime()
     const now = new Date().getTime()
     const timeUntilDraw = closeTime - now
-    const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
 
-    // Cannot cancel if less than 1 hour remaining
-    if (timeUntilDraw < oneHour) return null
+    // Cannot cancel if time has passed
+    if (timeUntilDraw <= 0) return null
 
     const diffMinutes = timeUntilDraw / (1000 * 60)
     return Math.floor(diffMinutes)
