@@ -28,6 +28,7 @@ interface Poy {
   status: number
   note: string
   dateBuy?: string
+  dateClose?: string
   huayTime?: string
   createdAt: string
   updatedAt: string
@@ -97,12 +98,12 @@ const LotteryHistory: React.FC = () => {
   const filteredPoys = getFilteredPoys()
 
   const canCancelPoy = (poy: Poy) => {
-    // Must have huayTime to cancel
-    if (!poy.huayTime) return false
+    // Must have dateClose to cancel
+    if (!poy.dateClose) return false
 
     // Must cancel at least 1 hour before lottery draw time
-    const localHuayTime = poy.huayTime.replace('Z', '+07:00')
-    const closeTime = new Date(localHuayTime).getTime()
+    const localCloseTime = poy.dateClose.replace('Z', '+07:00')
+    const closeTime = new Date(localCloseTime).getTime()
     const now = new Date().getTime()
     const timeUntilDraw = closeTime - now
     const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
@@ -111,12 +112,12 @@ const LotteryHistory: React.FC = () => {
   }
 
   const getTimeLeftToCancel = (poy: Poy) => {
-    // Must have huayTime
-    if (!poy.huayTime) return null
+    // Must have dateClose
+    if (!poy.dateClose) return null
 
     // Show minutes until lottery draw (must be at least 1 hour)
-    const localHuayTime = poy.huayTime.replace('Z', '+07:00')
-    const closeTime = new Date(localHuayTime).getTime()
+    const localCloseTime = poy.dateClose.replace('Z', '+07:00')
+    const closeTime = new Date(localCloseTime).getTime()
     const now = new Date().getTime()
     const timeUntilDraw = closeTime - now
     const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
