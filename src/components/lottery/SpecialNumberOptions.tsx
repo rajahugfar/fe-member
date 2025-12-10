@@ -37,7 +37,7 @@ const SpecialNumberOptions: React.FC<SpecialNumberOptionsProps> = ({
   const is3Digit = selectedBetTypes.some(t => t === 'teng_bon_3' || t === 'tode_3' || t === 'teng_lang_3')
   const is4Tode = selectedBetTypes.some(t => t === 'tode_4')
 
-  const handleQuickGenerate = (type: string) => {
+  const handleQuickGenerate = async (type: string) => {
     let numbers: string[] = []
 
     switch (type) {
@@ -59,7 +59,7 @@ const SpecialNumberOptions: React.FC<SpecialNumberOptionsProps> = ({
     }
 
     if (numbers.length > 0) {
-      onAddNumbers(numbers)
+      await onAddNumbers(numbers)
     }
   }
 
@@ -69,7 +69,7 @@ const SpecialNumberOptions: React.FC<SpecialNumberOptionsProps> = ({
     setInputValue('')
   }
 
-  const handleSubmitInput = () => {
+  const handleSubmitInput = async () => {
     if (inputValue.length !== 1) return
 
     let numbers: string[] = []
@@ -87,7 +87,7 @@ const SpecialNumberOptions: React.FC<SpecialNumberOptionsProps> = ({
     }
 
     if (numbers.length > 0) {
-      onAddNumbers(numbers)
+      await onAddNumbers(numbers)
       setShowInputModal(false)
       setInputValue('')
     }
