@@ -324,9 +324,14 @@ const LotteryBetting: React.FC = () => {
     const loadingToast = itemsToAdd.length > 10 ? toast.loading(`กำลังเพิ่ม ${itemsToAdd.length} รายการ...`) : null
 
     try {
-      // Check multiply for all items in parallel
-      const results = await Promise.all(
-        itemsToAdd.map(async ({ betType, number, rate, config }) => {
+      // Process in batches of 30 for special options (19ประตู, etc)
+      const BATCH_SIZE = 30
+      const allResults = []
+
+      for (let i = 0; i < itemsToAdd.length; i += BATCH_SIZE) {
+        const batch = itemsToAdd.slice(i, i + BATCH_SIZE)
+        const batchResults = await Promise.all(
+          batch.map(async ({ betType, number, rate, config }) => {
           try {
             const checkResult = await memberLotteryCheckAPI.checkMultiply({
               huayId: period?.lotteryId || 1,
@@ -358,11 +363,13 @@ const LotteryBetting: React.FC = () => {
             return null
           }
         })
-      )
+        )
+        allResults.push(...batchResults)
+      }
 
       // Add all valid results to cart
       let addedCount = 0
-      results.forEach(result => {
+      allResults.forEach(result => {
         if (result) {
           addToCart(result.item)
           addedCount++
@@ -506,6 +513,57 @@ const LotteryBetting: React.FC = () => {
     }
   }
 
+  // Helper function to process items in batches
+  const processBatch = async (batch: any[], period: any, rates: any[]) => {
+    return Promise.all(
+      batch.map(async (item) => {
+        const config = BET_TYPES[item.betType] || {
+          id: item.betType,
+          label: item.betType,
+          digitCount: item.number.length
+        }
+
+        const rate = rates.find(r => r.bet_type === item.betType)
+        if (!rate) return null
+
+        try {
+          const checkResult = await memberLotteryCheckAPI.checkMultiply({
+            huayId: period?.lotteryId || 1,
+            stockType: period?.huayCode?.startsWith('g') ? 'g' : 's',
+            huayOption: item.betType,
+            poyNumber: item.number,
+            multiply: rate.multiply,
+            value: 1
+          })
+
+          return {
+            bet_type: item.betType,
+            bet_type_label: config.label,
+            number: item.number,
+            amount: item.amount,
+            payout_rate: checkResult.multiply,
+            huayName: period?.huayName,
+            isSpecialNumber: checkResult.isSpecialNumber,
+            soldAmount: checkResult.soldAmount,
+            remainingAmount: checkResult.remainingAmount,
+            maxSaleAmount: checkResult.maxSaleAmount,
+            checkResult: checkResult.result
+          }
+        } catch (error) {
+          console.error('Check multiply error:', error)
+          return {
+            bet_type: item.betType,
+            bet_type_label: config.label,
+            number: item.number,
+            amount: item.amount,
+            payout_rate: rate.multiply,
+            huayName: period?.huayName
+          }
+        }
+      })
+    )
+  }
+
   // Handle Load Template
   const handleLoadTemplate = async (items: { betType: string; number: string; amount: number }[]) => {
     // Filter out duplicates first
@@ -520,59 +578,24 @@ const LotteryBetting: React.FC = () => {
     const loadingToast = toast.loading(`กำลังโหลด ${itemsToAdd.length} รายการ...`)
 
     try {
-      // Check multiply for all items in parallel
-      const results = await Promise.all(
-        itemsToAdd.map(async (item) => {
-          const config = BET_TYPES[item.betType] || {
-            id: item.betType,
-            label: item.betType,
-            digitCount: item.number.length
-          }
+      // Process in batches of 50 to avoid overwhelming the server
+      const BATCH_SIZE = 50
+      const allResults = []
 
-          const rate = rates.find(r => r.bet_type === item.betType)
-          if (!rate) return null
+      for (let i = 0; i < itemsToAdd.length; i += BATCH_SIZE) {
+        const batch = itemsToAdd.slice(i, i + BATCH_SIZE)
+        const batchResults = await processBatch(batch, period, rates)
+        allResults.push(...batchResults)
 
-          try {
-            const checkResult = await memberLotteryCheckAPI.checkMultiply({
-              huayId: period?.lotteryId || 1,
-              stockType: period?.huayCode?.startsWith('g') ? 'g' : 's',
-              huayOption: item.betType,
-              poyNumber: item.number,
-              multiply: rate.multiply,
-              value: 1
-            })
-
-            return {
-              bet_type: item.betType,
-              bet_type_label: config.label,
-              number: item.number,
-              amount: item.amount,
-              payout_rate: checkResult.multiply,
-              huayName: period?.huayName,
-              isSpecialNumber: checkResult.isSpecialNumber,
-              soldAmount: checkResult.soldAmount,
-              remainingAmount: checkResult.remainingAmount,
-              maxSaleAmount: checkResult.maxSaleAmount,
-              checkResult: checkResult.result
-            }
-          } catch (error) {
-            console.error('Check multiply error:', error)
-            // Fallback to default rate
-            return {
-              bet_type: item.betType,
-              bet_type_label: config.label,
-              number: item.number,
-              amount: item.amount,
-              payout_rate: rate.multiply,
-              huayName: period?.huayName
-            }
-          }
-        })
-      )
+        // Update loading message
+        if (itemsToAdd.length > BATCH_SIZE) {
+          toast.loading(`กำลังโหลด ${Math.min(i + BATCH_SIZE, itemsToAdd.length)}/${itemsToAdd.length} รายการ...`, { id: loadingToast })
+        }
+      }
 
       // Add all valid results to cart
       let addedCount = 0
-      results.forEach(result => {
+      allResults.forEach(result => {
         if (result) {
           addToCart(result)
           addedCount++
@@ -589,6 +612,7 @@ const LotteryBetting: React.FC = () => {
       console.error('Load template error:', error)
     }
   }
+
 
   // Loading State
   if (loading) {
