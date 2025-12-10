@@ -201,18 +201,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                             disabled={isSoldOut(item)}
                           />
 
-                          {/* Special Number Info */}
-                          {item.isSpecialNumber && item.maxSaleAmount !== undefined && (
-                            <div className="mt-0.5 space-y-0.5">
-                              <div className="text-[8px] text-white/60">
-                                ขายแล้ว: {formatNumber(item.soldAmount || 0)} / {formatNumber(item.maxSaleAmount)}
-                              </div>
-                              <div className={`text-[8px] font-bold ${getRemainingColor(item.remainingAmount || 0, item.maxSaleAmount)}`}>
-                                เหลือ: {formatNumber(item.remainingAmount || 0)} บาท
-                                {isSoldOut(item) && <span className="text-red-400"> (ขายหมด)</span>}
-                              </div>
-                            </div>
-                          )}
                         </div>
 
                         {/* Win Amount */}
