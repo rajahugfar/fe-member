@@ -136,7 +136,13 @@ const LotteryBetting: React.FC = () => {
 
       // Check if period is closed
       const now = new Date()
-      const closeTime = new Date(foundPeriod.closeTime)
+      let closeTime = new Date(foundPeriod.closeTime)
+
+      // If flag_nextday is true, add 1 day to closeTime
+      if (foundPeriod.flagNextday) {
+        closeTime = new Date(closeTime.getTime() + 24 * 60 * 60 * 1000)
+      }
+
       if (now > closeTime) {
         setIsClosed(true)
         // Load lottery result

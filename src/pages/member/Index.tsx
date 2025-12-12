@@ -204,15 +204,34 @@ const MemberIndex = () => {
       const priorityOrder = ['GLO', 'GSB', 'BAAC']
       const sortedData = (data || []).sort((a, b) => {
         const now = new Date().getTime()
-        const aExpired = new Date(a.closeTime).getTime() <= now
-        const bExpired = new Date(b.closeTime).getTime() <= now
+
+        // Calculate actual close time with flag_nextday
+        let aCloseTime = new Date(a.closeTime).getTime()
+        if (a.flagNextday) {
+          aCloseTime += 24 * 60 * 60 * 1000
+        }
+
+        let bCloseTime = new Date(b.closeTime).getTime()
+        if (b.flagNextday) {
+          bCloseTime += 24 * 60 * 60 * 1000
+        }
+
+        const aExpired = aCloseTime <= now
+        const bExpired = bCloseTime <= now
 
         // Open lotteries come before closed ones
         if (aExpired !== bExpired) {
           return aExpired ? 1 : -1
         }
 
-        // Within same status (both open or both closed), prioritize GLO, GSB, BAAC
+        // Within open lotteries, flagNextday = true goes to bottom
+        if (!aExpired && !bExpired) {
+          if (a.flagNextday !== b.flagNextday) {
+            return a.flagNextday ? 1 : -1
+          }
+        }
+
+        // Within same status and flagNextday status, prioritize GLO, GSB, BAAC
         const indexA = priorityOrder.indexOf(a.huayCode)
         const indexB = priorityOrder.indexOf(b.huayCode)
 
@@ -224,7 +243,7 @@ const MemberIndex = () => {
         if (indexA !== -1) return -1
         if (indexB !== -1) return 1
         // Others sorted by close time
-        return new Date(a.closeTime).getTime() - new Date(b.closeTime).getTime()
+        return aCloseTime - bCloseTime
       })
 
       setLotteryPeriods(sortedData)
@@ -264,8 +283,14 @@ const MemberIndex = () => {
   }
 
   // Calculate countdown
-  const getCountdown = (closeTime: string) => {
-    const close = new Date(closeTime).getTime()
+  const getCountdown = (closeTime: string, flagNextday?: boolean) => {
+    let close = new Date(closeTime).getTime()
+
+    // If flag_nextday is true, add 1 day
+    if (flagNextday) {
+      close += 24 * 60 * 60 * 1000
+    }
+
     const now = currentTime.getTime()
     const diff = close - now
 
@@ -277,7 +302,7 @@ const MemberIndex = () => {
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
     const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
-    return { 
+    return {
       text: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
       expired: false,
       hours,
@@ -564,7 +589,7 @@ const MemberIndex = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {lotteryPeriods.map((period) => {
                     const theme = getLotteryTheme(period.huayCode)
-                    const countdown = getCountdown(period.closeTime)
+                    const countdown = getCountdown(period.closeTime, period.flagNextday)
 
                     // If lottery is closed, redirect to results page instead of betting page
                     const targetUrl = countdown.expired

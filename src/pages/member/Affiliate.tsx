@@ -304,10 +304,17 @@ const Affiliate: React.FC = () => {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('th-TH', {
+    // API sends Bangkok time in UTC format (Z suffix)
+    // Remove 'Z' to treat as local time without timezone conversion
+    const localDate = dateString.replace('Z', '')
+    const date = new Date(localDate)
+
+    return date.toLocaleString('th-TH', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     })
   }
 
@@ -789,7 +796,7 @@ const Affiliate: React.FC = () => {
                       <tbody>
                         {memberPoys.map((poy) => (
                           <tr key={poy.id} className="border-b border-white/5 hover:bg-white/5">
-                            <td className="py-3 px-4 text-white">{formatDate(poy.dateBuy)}</td>
+                            <td className="py-3 px-4 text-white">{formatDate(poy.createDate)}</td>
                             <td className="py-3 px-4 text-white font-mono">{poy.poyNumber || '-'}</td>
                             <td className="py-3 px-4 text-white">{poy.poyName || '-'}</td>
                             <td className="py-3 px-4 text-right text-white">฿{formatCurrency(poy.totalPrice)}</td>

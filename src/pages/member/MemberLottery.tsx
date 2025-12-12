@@ -354,7 +354,13 @@ const PremiumLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ p
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date()
-      const closeTime = new Date(period.closeTime)
+      let closeTime = new Date(period.closeTime)
+
+      // If flag_nextday is true, add 1 day to closeTime
+      if (period.flagNextday) {
+        closeTime = new Date(closeTime.getTime() + 24 * 60 * 60 * 1000)
+      }
+
       const diff = closeTime.getTime() - now.getTime()
 
       if (diff <= 0) {
@@ -438,7 +444,13 @@ const StandardLotteryCard: React.FC<{ period: OpenPeriod; index: number }> = ({ 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date()
-      const closeTime = new Date(period.closeTime)
+      let closeTime = new Date(period.closeTime)
+
+      // If flag_nextday is true, add 1 day to closeTime
+      if (period.flagNextday) {
+        closeTime = new Date(closeTime.getTime() + 24 * 60 * 60 * 1000)
+      }
+
       const diff = closeTime.getTime() - now.getTime()
 
       if (diff <= 0) {

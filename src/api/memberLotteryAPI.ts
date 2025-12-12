@@ -83,6 +83,7 @@ export interface OpenPeriod {
   totalProfit: number
   createdAt: string
   updatedAt: string
+  flagNextday?: boolean
 }
 
 export interface LotteryRate {
@@ -235,26 +236,27 @@ export const memberLotteryAPI = {
     const lotteries = response.data.data || []
     return lotteries.map((lottery: any) => ({
       id: String(lottery.id),
-      name: lottery.name || lottery.stockName,
+      name: lottery.name,
       round: lottery.round,
-      closeTime: lottery.closeTime || lottery.dateClose,
-      resultTime: lottery.resultTime || lottery.stockTime,
+      closeTime: lottery.closeTime,
+      resultTime: lottery.resultTime,
       huayCode: lottery.huayCode,
       icon: lottery.icon,
+      flagNextday: lottery.flagNextday ?? false,
       // Add computed fields for backward compatibility
-      huayName: lottery.name || lottery.stockName,
-      periodName: lottery.round || lottery.name || new Date(lottery.stockTime || lottery.closeTime).toLocaleDateString('th-TH'),
-      periodDate: lottery.stockTime || lottery.closeTime,
-      drawTime: lottery.resultTime || lottery.stockTime,
-      openTime: lottery.dateBuy || lottery.openTime,
+      huayName: lottery.name,
+      periodName: lottery.round || new Date(lottery.closeTime).toLocaleDateString('th-TH'),
+      periodDate: lottery.resultTime,
+      drawTime: lottery.resultTime,
+      openTime: lottery.closeTime,
       status: 'OPEN' as const,
-      lotteryId: lottery.id || 0,
-      huayGroup: lottery.stockType || 0,
+      lotteryId: lottery.id,
+      huayGroup: 0,
       totalBetAmount: 0,
       totalPayoutAmount: 0,
       totalProfit: 0,
-      createdAt: lottery.dateBuy || '',
-      updatedAt: lottery.dateBuy || ''
+      createdAt: lottery.closeTime,
+      updatedAt: lottery.closeTime
     }))
   },
 
