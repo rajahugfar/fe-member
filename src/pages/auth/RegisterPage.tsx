@@ -28,7 +28,9 @@ const registerSchema = z
   .object({
     phone: z
       .string()
-      .regex(/^0[0-9]{9}$/, 'เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องเป็น 10 หลัก)'),
+      .min(6, 'เบอร์โทรศัพท์ไม่ถูกต้อง (อย่างน้อย 6 หลัก)')
+      .max(20, 'เบอร์โทรศัพท์ยาวเกินไป')
+      .regex(/^[+]?[0-9]+$/, 'เบอร์โทรศัพท์ต้องเป็นตัวเลข (สามารถขึ้นต้นด้วย + ได้)'),
     password: z
       .string()
       .min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'),
@@ -146,10 +148,10 @@ const RegisterPage = () => {
             <input
               {...register('phone')}
               type="tel"
-              placeholder="0812345678"
+              placeholder="0812345678 หรือ +66812345678"
               className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               disabled={isLoading}
-              maxLength={10}
+              maxLength={20}
             />
           </div>
           {errors.phone && (
