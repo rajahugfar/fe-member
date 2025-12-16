@@ -30,6 +30,7 @@ interface Poy {
   dateBuy?: string
   dateClose?: string
   huayTime?: string
+  flagNextday?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -103,10 +104,30 @@ const LotteryHistory: React.FC = () => {
 
     // Can cancel before lottery closing time
     const localCloseTime = poy.dateClose.replace('Z', '+07:00')
-    const closeTime = new Date(localCloseTime).getTime()
-    const now = new Date().getTime()
-    const timeUntilDraw = closeTime - now
+    let closeTime = new Date(localCloseTime)
 
+    // Handle flag_nextday lotteries (e.g., DJIVIP closes at 00:30 but counts as next day)
+    if (poy.flagNextday) {
+      const now = new Date()
+      const closeHour = closeTime.getHours()
+      const closeMin = closeTime.getMinutes()
+      const closeSec = closeTime.getSeconds()
+
+      // Build close time for today
+      const todayClose = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closeHour, closeMin, closeSec)
+
+      // If current time is after today's close time (e.g., 20:44 > 00:30)
+      // then the actual close time is tomorrow at that time
+      if (now > todayClose) {
+        closeTime = new Date(todayClose.getTime() + 24 * 60 * 60 * 1000)
+      } else {
+        // If current time is before today's close time (e.g., 00:15 < 00:30)
+        // then the close time is today
+        closeTime = todayClose
+      }
+    }
+
+    const timeUntilDraw = closeTime.getTime() - new Date().getTime()
     return timeUntilDraw > 0
   }
 
@@ -116,9 +137,25 @@ const LotteryHistory: React.FC = () => {
 
     // Show minutes until lottery draw
     const localCloseTime = poy.dateClose.replace('Z', '+07:00')
-    const closeTime = new Date(localCloseTime).getTime()
-    const now = new Date().getTime()
-    const timeUntilDraw = closeTime - now
+    let closeTime = new Date(localCloseTime)
+
+    // Handle flag_nextday lotteries (same logic as canCancelPoy)
+    if (poy.flagNextday) {
+      const now = new Date()
+      const closeHour = closeTime.getHours()
+      const closeMin = closeTime.getMinutes()
+      const closeSec = closeTime.getSeconds()
+
+      const todayClose = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closeHour, closeMin, closeSec)
+
+      if (now > todayClose) {
+        closeTime = new Date(todayClose.getTime() + 24 * 60 * 60 * 1000)
+      } else {
+        closeTime = todayClose
+      }
+    }
+
+    const timeUntilDraw = closeTime.getTime() - new Date().getTime()
 
     // Cannot cancel if time has passed
     if (timeUntilDraw <= 0) return null
