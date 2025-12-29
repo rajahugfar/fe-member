@@ -16,6 +16,7 @@ interface BetTypeSelectorProps {
 const BET_TYPE_GROUPS = [
   { main: 'teng_bon_4', tode: 'tode_4' },
   { main: 'teng_bon_3', tode: 'tode_3' },
+  { main: 'teng_lang_nha_3', tode: null },
   { main: 'teng_lang_3', tode: null },
   { main: 'teng_bon_2', tode: null },
   { main: 'teng_lang_2', tode: null },

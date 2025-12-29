@@ -19,11 +19,12 @@ export const BET_TYPES: Record<string, BetTypeConfig> = {
   'tode_4': { id: 'tode_4', label: '4ตัวโต๊ด', color: 'pink', digitCount: 4, multiply: 200, min: 1, max: 1000 },
   'teng_bon_3': { id: 'teng_bon_3', label: '3ตัวบน', color: 'red', digitCount: 3, multiply: 500, min: 1, max: 1000 },
   'tode_3': { id: 'tode_3', label: '3ตัวโต๊ด', color: 'orange', digitCount: 3, multiply: 120, min: 1, max: 1000 },
-  'teng_lang_3': { id: 'teng_lang_3', label: '3ตัวหน้า', color: 'yellow', digitCount: 3, multiply: 500, min: 1, max: 1000 },
+  'teng_lang_nha_3': { id: 'teng_lang_nha_3', label: '3ตัวหน้า', color: 'yellow', digitCount: 3, multiply: 250, min: 1, max: 1000 },
+  'teng_lang_3': { id: 'teng_lang_3', label: '3ตัวล่าง', color: 'cyan', digitCount: 3, multiply: 250, min: 1, max: 1000 },
   'teng_bon_2': { id: 'teng_bon_2', label: '2ตัวบน', color: 'green', digitCount: 2, multiply: 90, min: 1, max: 1000 },
   'teng_lang_2': { id: 'teng_lang_2', label: '2ตัวล่าง', color: 'blue', digitCount: 2, multiply: 90, min: 1, max: 1000 },
-  'teng_bon_1': { id: 'teng_bon_1', label: 'วิ่งบน', color: 'cyan', digitCount: 1, multiply: 3.2, min: 1, max: 500 },
-  'teng_lang_1': { id: 'teng_lang_1', label: 'วิ่งล่าง', color: 'indigo', digitCount: 1, multiply: 4.2, min: 1, max: 500 },
+  'teng_bon_1': { id: 'teng_bon_1', label: 'วิ่งบน', color: 'indigo', digitCount: 1, multiply: 3.2, min: 1, max: 500 },
+  'teng_lang_1': { id: 'teng_lang_1', label: 'วิ่งล่าง', color: 'pink', digitCount: 1, multiply: 4.2, min: 1, max: 500 },
 }
 
 // Conflict Rules: ไม่มี conflict (สามารถแทงหลายประเภทพร้อมกันได้)
