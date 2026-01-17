@@ -47,30 +47,26 @@ export const SavedTemplatesModal = ({
   const [expandedTemplate, setExpandedTemplate] = useState<SavedPoyTemplate | null>(null)
   const [loadingDetails, setLoadingDetails] = useState(false)
   const [error, setError] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalTemplates, setTotalTemplates] = useState(0)
 
   useEffect(() => {
     if (isOpen) {
-      fetchTemplates()
+      setCurrentPage(1)
+      fetchTemplates(1)
     }
   }, [isOpen])
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = async (page: number = currentPage) => {
     setLoading(true)
     setError('')
     try {
-      const data = await memberLotteryAPI.getSavedTemplates()
-      // โหลด items สำหรับแต่ละ template
-      const templatesWithItems = await Promise.all(
-        data.map(async (template) => {
-          try {
-            const fullTemplate = await memberLotteryAPI.getSavedTemplate(template.id)
-            return fullTemplate
-          } catch {
-            return template
-          }
-        })
-      )
-      setTemplates(templatesWithItems)
+      const { templates: data, pagination } = await memberLotteryAPI.getSavedTemplatesWithItems(page, 20)
+      setTemplates(data)
+      setTotalPages(pagination.totalPages)
+      setTotalTemplates(pagination.total)
+      setCurrentPage(page)
     } catch (err) {
       setError('ไม่สามารถโหลดโพยที่บันทึกไว้ได้')
       console.error(err)
@@ -104,7 +100,7 @@ export const SavedTemplatesModal = ({
       setNewTemplateName('')
       setNewTemplateDesc('')
       setShowSaveForm(false)
-      await fetchTemplates()
+      await fetchTemplates(1) // Go to first page to see the new template
     } catch (err: any) {
       setError(err.response?.data?.message || 'ไม่สามารถบันทึกโพยได้')
       console.error(err)
@@ -133,30 +129,12 @@ export const SavedTemplatesModal = ({
 
     try {
       await memberLotteryAPI.deleteSavedTemplate(templateId)
-      await fetchTemplates()
+      await fetchTemplates(currentPage)
       setSelectedTemplate(null)
       setExpandedTemplate(null)
     } catch (err) {
       setError('ไม่สามารถลบโพยได้')
       console.error(err)
-    }
-  }
-
-  const handleExpandTemplate = async (template: SavedPoyTemplate) => {
-    if (expandedTemplate?.id === template.id) {
-      setExpandedTemplate(null)
-      return
-    }
-
-    setLoadingDetails(true)
-    try {
-      const fullTemplate = await memberLotteryAPI.getSavedTemplate(template.id)
-      setExpandedTemplate(fullTemplate)
-    } catch (err) {
-      setError('ไม่สามารถโหลดรายละเอียดได้')
-      console.error(err)
-    } finally {
-      setLoadingDetails(false)
     }
   }
 
@@ -232,6 +210,13 @@ export const SavedTemplatesModal = ({
             </div>
           )}
 
+          {/* Templates count */}
+          {totalTemplates > 0 && (
+            <div className="text-sm text-gray-400 mb-2">
+              แสดง {(currentPage - 1) * 20 + 1}-{Math.min(currentPage * 20, totalTemplates)} จาก {totalTemplates} โพย
+            </div>
+          )}
+
           {/* Templates list */}
           {loading ? (
             <div className="text-center text-gray-400 py-8">{t("common:messages.loading")}</div>
@@ -290,6 +275,29 @@ export const SavedTemplatesModal = ({
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-gray-700">
+              <button
+                onClick={() => fetchTemplates(currentPage - 1)}
+                disabled={currentPage === 1 || loading}
+                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded text-sm transition-colors"
+              >
+                ก่อนหน้า
+              </button>
+              <span className="text-gray-400 text-sm px-2">
+                หน้า {currentPage} / {totalPages}
+              </span>
+              <button
+                onClick={() => fetchTemplates(currentPage + 1)}
+                disabled={currentPage === totalPages || loading}
+                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded text-sm transition-colors"
+              >
+                ถัดไป
+              </button>
             </div>
           )}
         </div>

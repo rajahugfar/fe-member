@@ -351,6 +351,25 @@ export const memberLotteryAPI = {
     return response.data.data || []
   },
 
+  // Get saved templates with items (optimized version with pagination)
+  getSavedTemplatesWithItems: async (page: number = 1, pageSize: number = 20): Promise<{
+    templates: SavedPoyTemplate[]
+    pagination: {
+      page: number
+      pageSize: number
+      total: number
+      totalPages: number
+    }
+  }> => {
+    const response = await memberAPIClient.get('/lottery/templates-with-items', {
+      params: { page, pageSize }
+    })
+    return {
+      templates: response.data.data || [],
+      pagination: response.data.pagination
+    }
+  },
+
   // Get single template with items
   getSavedTemplate: async (id: string): Promise<SavedPoyTemplate> => {
     const response = await memberAPIClient.get(`/lottery/templates/${id}`)
